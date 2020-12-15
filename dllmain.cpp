@@ -108,13 +108,13 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			io->KeyShift = true;
 		}
-		io->KeysDown[vkey] = 1;
+		io->KeysDown[vkey] = true;
 		break;
 	}
 	case WM_SYSKEYUP:
 	{
 		const int vkey = (int)wParam;
-		io->KeysDown[vkey] = 0;
+		io->KeysDown[vkey] = false;
 		if (vkey == VK_CONTROL)
 		{
 			io->KeyCtrl = false;
@@ -132,7 +132,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_SYSKEYDOWN:
 	{
 		const int vkey = (int)wParam;
-		io->KeysDown[vkey] = 1;
+		io->KeysDown[vkey] = true;
 		if (vkey == VK_CONTROL)
 		{
 			io->KeyCtrl = true;
