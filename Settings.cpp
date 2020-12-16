@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+#include "imgui/imgui.h"
+
 Settings& Settings::instance() {
     static Settings b;
     return b;
@@ -9,6 +11,14 @@ Settings& Settings::instance() {
 
 std::map<Killproof, bool>& Settings::getActive() {
     return settings.active;
+}
+
+int Settings::getKillProofKey() const {
+	return settings.killproofKey;
+}
+
+void Settings::setKillProofKey(const int key) {
+	settings.killproofKey = key;
 }
 
 Settings::~Settings() {
@@ -52,6 +62,9 @@ Settings::Settings() {
 	settings.active[Killproof::adina] = false;
 	settings.active[Killproof::sabir] = false;
 	settings.active[Killproof::qadim2] = true;
+
+	// set default key to "K"
+	settings.killproofKey = 0x4B;
 	
 	// according to standard, this constructor is completely thread-safe
 	// read settings from file
@@ -70,15 +83,19 @@ void Settings::saveToFile() {
 }
 
 void Settings::readFromFile() {
-	// read a JSON file as stream
-	std::ifstream jsonFile("addons\\arcdps\\arcdps_killproof.me.json");
-	if (jsonFile.is_open()) {
-		nlohmann::json json;
+	try {
+		// read a JSON file as stream
+		std::ifstream jsonFile("addons\\arcdps\\arcdps_killproof.me.json");
+		if (jsonFile.is_open()) {
+			nlohmann::json json;
 
-		// push stream into json object (this also parses it)
-		jsonFile >> json;
+			// push stream into json object (this also parses it)
+			jsonFile >> json;
 
-		// get the objet into the settings object
-		json.get_to(settings);
+			// get the objet into the settings object
+			json.get_to(settings);
+		}
+	} catch (const std::exception& e) {
+		// some exception was thrown, all settings are reset!
 	}
 }

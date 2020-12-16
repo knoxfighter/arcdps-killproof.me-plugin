@@ -11,6 +11,7 @@
 #include "imgui/imgui.h"
 #include "KillproofUI.h"
 #include "Player.h"
+#include "Settings.h"
 #include "SettingsUI.h"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
@@ -62,52 +63,6 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	switch (uMsg)
 	{
 	case WM_KEYUP:
-	{
-		const int vkey = (int)wParam;
-		io->KeysDown[vkey] = 0;
-		if (vkey == VK_CONTROL)
-		{
-			io->KeyCtrl = false;
-		}
-		else if (vkey == VK_MENU)
-		{
-			io->KeyAlt = false;
-		}
-		else if (vkey == VK_SHIFT)
-		{
-			io->KeyShift = false;
-		}
-		break;
-	}
-	case WM_KEYDOWN:
-	{
-		const int vkey = (int)wParam;
-		// close windows on escape press (return 0, so arc and gw2 are not processing this event)
-		if (!arc_hide_all && vkey == VK_ESCAPE) {
-			if (show_settings) {
-				show_settings = false;
-				return 0;
-			}
-			if (show_killproof) {
-				show_killproof = false;
-				return 0;
-			}
-		}
-		else if (vkey == VK_CONTROL)
-		{
-			io->KeyCtrl = true;
-		}
-		else if (vkey == VK_MENU)
-		{
-			io->KeyAlt = true;
-		}
-		else if (vkey == VK_SHIFT)
-		{
-			io->KeyShift = true;
-		}
-		io->KeysDown[vkey] = true;
-		break;
-	}
 	case WM_SYSKEYUP:
 	{
 		const int vkey = (int)wParam;
@@ -126,10 +81,30 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	}
+	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	{
 		const int vkey = (int)wParam;
-		io->KeysDown[vkey] = true;
+		// close windows on escape press (return 0, so arc and gw2 are not processing this event)
+		if (!arc_hide_all && vkey == VK_ESCAPE) {
+			// close settings menu first
+			if (arc_window_fastclose && show_settings) {
+				show_settings = false;
+				return 0;
+			}
+			// close killproof window with escape
+			if (arc_window_fastclose && show_killproof) {
+				show_killproof = false;
+				return 0;
+			}
+		}
+		// toggle killproof window
+		Settings& settings = Settings::instance();
+		if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey())
+		{
+			show_killproof = !show_killproof;
+			return 0;
+		}
 		if (vkey == VK_CONTROL)
 		{
 			io->KeyCtrl = true;
@@ -142,6 +117,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			io->KeyShift = true;
 		}
+		io->KeysDown[vkey] = true;
 		break;
 	}
 	case WM_ACTIVATEAPP:
@@ -153,9 +129,10 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	}
-	break;
+	default:
+		break;
 	}
-
+	
 	return uMsg;
 }
 
