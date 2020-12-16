@@ -39,9 +39,9 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 				ImGui::Text("no data available");
 			}
 			else {
-				const Settings& settings = Settings::instance();
-				const std::map<Killproof, bool>& actives = settings.getActive();
-				for (const auto& active : actives) {
+				Settings& settings = Settings::instance();
+				std::map<Killproof, bool>& actives = settings.getActive();
+				for (auto& active : actives) {
 					if (active.second) {
 						amountVal amount = player.killproofs.getAmountFromEnum(active.first);
 						drawSingleKP(toString(active.first), amount);

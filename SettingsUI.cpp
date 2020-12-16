@@ -14,7 +14,7 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::Text("Everything selected is shown in the killproofs menu");
 
 	Settings& settings = Settings::instance();
-	for (auto& active : settings.active) {
+	for (auto& active : settings.getActive()) {
 		ImGui::Checkbox(toString(active.first), &active.second);
 	}
 

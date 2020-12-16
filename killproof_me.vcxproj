@@ -186,7 +186,6 @@
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="Killproofs.cpp" />
     <ClCompile Include="KillproofUI.cpp" />
-    <ClCompile Include="parson\parson.c" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsUI.cpp" />
@@ -198,8 +197,8 @@
     <ClInclude Include="imgui\stb_rect_pack.h" />
     <ClInclude Include="imgui\stb_textedit.h" />
     <ClInclude Include="imgui\stb_truetype.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="Killproofs.h" />
-    <ClInclude Include="parson\parson.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_internal.h" />

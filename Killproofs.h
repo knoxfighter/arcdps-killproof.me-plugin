@@ -50,8 +50,10 @@ class Killproofs {
 	std::map<Killproof, amountVal> killproofs;
 
 public:
-	amountVal getAmountFromId(const std::string& id);
+	amountVal getAmountFromId(const std::string& id) const;
 	amountVal getAmountFromEnum(const Killproof& id) const;
 
 	void setAmountFromId(const std::string& id, const amountVal& amount);
+	void setAmountFromId(const int& id, const uint16_t& amount);
+	void setAmountFromEnum(const Killproof& killproof, const amountVal& amount);
 };

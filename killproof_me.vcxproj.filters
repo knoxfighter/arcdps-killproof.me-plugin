@@ -19,12 +19,6 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{363c521e-e32e-4231-b878-d9fc40a31335}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\parson">
-      <UniqueIdentifier>{553828f9-b5eb-4737-a3af-05cf881378fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\parson">
-      <UniqueIdentifier>{f370ab30-c039-447f-8b47-20d55caa8577}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -41,9 +35,6 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="parson\parson.c">
-      <Filter>Source Files\parson</Filter>
     </ClCompile>
     <ClCompile Include="Settings.cpp">
       <Filter>Source Files</Filter>
@@ -86,9 +77,6 @@
     <ClInclude Include="Killproofs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parson\parson.h">
-      <Filter>Header Files\parson</Filter>
-    </ClInclude>
     <ClInclude Include="Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -96,6 +84,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

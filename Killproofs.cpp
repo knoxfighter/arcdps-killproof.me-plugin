@@ -32,7 +32,7 @@ const char* toString(Killproof e) {
 	}
 }
 
-amountVal Killproofs::getAmountFromId(const std::string& id) {
+amountVal Killproofs::getAmountFromId(const std::string& id) const {
 	if (id == "77302") {
 		return killproofs.at(Killproof::li);
 	}
@@ -121,80 +121,91 @@ amountVal Killproofs::getAmountFromEnum(const Killproof& id) const {
 void Killproofs::setAmountFromId(const std::string& id, const amountVal& amount) {
 	if (id == "77302") {
 		killproofs[Killproof::li] = amount;
-	}
-	else if (id == "88485") {
+	} else if (id == "88485") {
 		killproofs[Killproof::ld] = amount;
-	}
-	else if (id == "81743") {
+	} else if (id == "81743") {
 		killproofs[Killproof::uce] = amount;
-	}
-	else if (id == "94020") {
+	} else if (id == "94020") {
 		killproofs[Killproof::ufe] = amount;
-	}
-	else if (id == "77705") {
+	} else if (id == "77705") {
 		killproofs[Killproof::vg] = amount;
-	}
-	else if (id == "77751") {
+	} else if (id == "77751") {
 		killproofs[Killproof::gorse] = amount;
-	}
-	else if (id == "77728") {
+	} else if (id == "77728") {
 		killproofs[Killproof::sabetha] = amount;
-	}
-	else if (id == "77706") {
+	} else if (id == "77706") {
 		killproofs[Killproof::sloth] = amount;
-	}
-	else if (id == "77679") {
+	} else if (id == "77679") {
 		killproofs[Killproof::matthias] = amount;
-	}
-	else if (id == "78873") {
+	} else if (id == "78873") {
 		killproofs[Killproof::escort] = amount;
-	}
-	else if (id == "78902") {
+	} else if (id == "78902") {
 		killproofs[Killproof::kc] = amount;
-	}
-	else if (id == "78942") {
+	} else if (id == "78942") {
 		killproofs[Killproof::xera] = amount;
-	}
-	else if (id == "80623") {
+	} else if (id == "80623") {
 		killproofs[Killproof::cairn] = amount;
-	}
-	else if (id == "80269") {
+	} else if (id == "80269") {
 		killproofs[Killproof::mo] = amount;
-	}
-	else if (id == "80087") {
+	} else if (id == "80087") {
 		killproofs[Killproof::samarog] = amount;
-	}
-	else if (id == "80542") {
+	} else if (id == "80542") {
 		killproofs[Killproof::deimos] = amount;
-	}
-	else if (id == "85993") {
+	} else if (id == "85993") {
 		killproofs[Killproof::desmina] = amount;
-	}
-	else if (id == "85785") {
+	} else if (id == "85785") {
 		killproofs[Killproof::river] = amount;
-	}
-	else if (id == "85800") {
+	} else if (id == "85800") {
 		killproofs[Killproof::statues] = amount;
-	}
-	else if (id == "85633") {
+	} else if (id == "85633") {
 		killproofs[Killproof::dhuum] = amount;
-	}
-	else if (id == "88543") {
+	} else if (id == "88543") {
 		killproofs[Killproof::ca] = amount;
-	}
-	else if (id == "88860") {
+	} else if (id == "88860") {
 		killproofs[Killproof::twins] = amount;
-	}
-	else if (id == "88645") {
+	} else if (id == "88645") {
 		killproofs[Killproof::qadim] = amount;
-	}
-	else if (id == "91270") {
+	} else if (id == "91270") {
 		killproofs[Killproof::sabir] = amount;
-	}
-	else if (id == "91246") {
+	} else if (id == "91246") {
 		killproofs[Killproof::adina] = amount;
-	}
-	else if (id == "91175") {
+	} else if (id == "91175") {
 		killproofs[Killproof::qadim2] = amount;
 	}
+}
+
+void Killproofs::setAmountFromId(const int& id, const amountVal& amount) {
+	switch (id) {
+	case 77302: killproofs[Killproof::li] = amount; break;
+	case 88485: killproofs[Killproof::ld] = amount; break;
+	case 81743: killproofs[Killproof::uce] = amount; break;
+	case 94020: killproofs[Killproof::ufe] = amount; break;
+	case 77705: killproofs[Killproof::vg] = amount; break;
+	case 77751: killproofs[Killproof::gorse] = amount; break;
+	case 77728: killproofs[Killproof::sabetha] = amount; break;
+	case 77706: killproofs[Killproof::sloth] = amount; break;
+	case 77679: killproofs[Killproof::matthias] = amount; break;
+	case 78873: killproofs[Killproof::escort] = amount; break;
+	case 78902: killproofs[Killproof::kc] = amount; break;
+	case 78942: killproofs[Killproof::xera] = amount; break;
+	case 80623: killproofs[Killproof::cairn] = amount; break;
+	case 80269: killproofs[Killproof::mo] = amount; break;
+	case 80087: killproofs[Killproof::samarog] = amount; break;
+	case 80542: killproofs[Killproof::deimos] = amount; break;
+	case 85993: killproofs[Killproof::desmina] = amount; break;
+	case 85785: killproofs[Killproof::river] = amount; break;
+	case 85800: killproofs[Killproof::statues] = amount; break;
+	case 85633: killproofs[Killproof::dhuum] = amount; break;
+	case 88543: killproofs[Killproof::ca] = amount; break;
+	case 88860: killproofs[Killproof::twins] = amount; break;
+	case 88645: killproofs[Killproof::qadim] = amount; break;
+	case 91270: killproofs[Killproof::sabir] = amount; break;
+	case 91246: killproofs[Killproof::adina] = amount; break;
+	case 91175: killproofs[Killproof::qadim2] = amount; break;
+	default: break;
+	}
+}
+
+void Killproofs::setAmountFromEnum(const Killproof& killproof, const amountVal& amount) {
+	killproofs[killproof] = amount;
 }

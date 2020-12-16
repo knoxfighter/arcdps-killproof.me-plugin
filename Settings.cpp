@@ -1,14 +1,14 @@
 #include "Settings.h"
 
-#include "parson/parson.h"
+#include <fstream>
 
 Settings& Settings::instance() {
     static Settings b;
     return b;
 }
 
-std::map<Killproof, bool> Settings::getActive() const {
-    return active;
+std::map<Killproof, bool>& Settings::getActive() {
+    return settings.active;
 }
 
 Settings::~Settings() {
@@ -18,40 +18,40 @@ Settings::~Settings() {
 Settings::Settings() {
 	// set defaults, they will be overriden, with what is saved in the file
 	// raid
-	active[Killproof::li] = true;
-	active[Killproof::ld] = true;
+	settings.active[Killproof::li] = true;
+	settings.active[Killproof::ld] = true;
 	// fractal
-	active[Killproof::ufe] = true;
-	active[Killproof::uce] = true;
+	settings.active[Killproof::ufe] = true;
+	settings.active[Killproof::uce] = true;
 	// w1
-	active[Killproof::vg] = false;
-	active[Killproof::gorse] = false;
-	active[Killproof::sabetha] = false;
+	settings.active[Killproof::vg] = false;
+	settings.active[Killproof::gorse] = false;
+	settings.active[Killproof::sabetha] = false;
 	// w2
-	active[Killproof::sloth] = false;
-	active[Killproof::matthias] = false;
+	settings.active[Killproof::sloth] = false;
+	settings.active[Killproof::matthias] = false;
 	// w3
-	active[Killproof::escort] = false;
-	active[Killproof::kc] = false;
-	active[Killproof::xera] = false;
+	settings.active[Killproof::escort] = false;
+	settings.active[Killproof::kc] = false;
+	settings.active[Killproof::xera] = false;
 	// w4
-	active[Killproof::cairn] = false;
-	active[Killproof::mo] = false;
-	active[Killproof::samarog] = false;
-	active[Killproof::deimos] = false;
+	settings.active[Killproof::cairn] = false;
+	settings.active[Killproof::mo] = false;
+	settings.active[Killproof::samarog] = false;
+	settings.active[Killproof::deimos] = false;
 	// w5
-	active[Killproof::desmina] = false;
-	active[Killproof::river] = false;
-	active[Killproof::statues] = false;
-	active[Killproof::dhuum] = true;
+	settings.active[Killproof::desmina] = false;
+	settings.active[Killproof::river] = false;
+	settings.active[Killproof::statues] = false;
+	settings.active[Killproof::dhuum] = true;
 	// w6
-	active[Killproof::ca] = false;
-	active[Killproof::twins] = false;
-	active[Killproof::qadim] = true;
+	settings.active[Killproof::ca] = false;
+	settings.active[Killproof::twins] = false;
+	settings.active[Killproof::qadim] = true;
 	// w7
-	active[Killproof::adina] = false;
-	active[Killproof::sabir] = false;
-	active[Killproof::qadim2] = true;
+	settings.active[Killproof::adina] = false;
+	settings.active[Killproof::sabir] = false;
+	settings.active[Killproof::qadim2] = true;
 	
 	// according to standard, this constructor is completely thread-safe
 	// read settings from file
@@ -59,49 +59,26 @@ Settings::Settings() {
 }
 
 void Settings::saveToFile() {
-    // setup json object
-    JSON_Value* rootValue = json_value_init_object();
-    JSON_Object* rootObject = json_value_get_object(rootValue);
+	// create json object
+	auto json = nlohmann::json(settings);
 
-    // write active map
-    JSON_Value* activeValue = json_value_init_array();
-    JSON_Array* activeArray = json_value_get_array(activeValue);
-	
-    for (auto activeVal : active) {
-	    JSON_Value* activeSingleValue = json_value_init_object();
-	    JSON_Object* activeSingleObject = json_value_get_object(activeSingleValue);
+	// open output file
+	std::ofstream jsonFile("addons\\arcdps\\arcdps_killproof.me.json");
 
-        json_object_set_number(activeSingleObject, "key", static_cast<double>(activeVal.first));
-        json_object_set_boolean(activeSingleObject, "value", activeVal.second);
-
-        json_array_append_value(activeArray, activeSingleValue);
-	}
-
-    json_object_set_value(rootObject, "active", activeValue);
-
-    json_serialize_to_file_pretty(rootValue, "addons\\arcdps\\arcdps_killproof.me.json");
-    
-    json_value_free(rootValue);
+	// save json to file
+	jsonFile << json;
 }
 
 void Settings::readFromFile() {
-    JSON_Value* rootValue = json_parse_file("addons\\arcdps\\arcdps_killproof.me.json");
-    if (json_value_get_type(rootValue) != JSONObject) {
-        return;
-    }
-	
-	JSON_Object* rootObject = json_value_get_object(rootValue);
+	// read a JSON file as stream
+	std::ifstream jsonFile("addons\\arcdps\\arcdps_killproof.me.json");
+	if (jsonFile.is_open()) {
+		nlohmann::json json;
 
-    JSON_Array* activeArray = json_object_get_array(rootObject, "active");
+		// push stream into json object (this also parses it)
+		jsonFile >> json;
 
-    for (size_t i = 0; i < json_array_get_count(activeArray); ++i) {
-        JSON_Object* activeObject = json_array_get_object(activeArray, i);
-
-        double activeKey = json_object_get_number(activeObject, "key");
-        bool activeValue = json_object_get_boolean(activeObject, "value");
-
-        active[static_cast<Killproof>(activeKey)] = activeValue;
-    }
-
-    json_value_free(rootValue);
+		// get the objet into the settings object
+		json.get_to(settings);
+	}
 }
