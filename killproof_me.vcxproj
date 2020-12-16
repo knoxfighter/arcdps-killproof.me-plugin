@@ -193,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arcdps_structs.h" />
+    <ClInclude Include="global.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\stb_rect_pack.h" />
     <ClInclude Include="imgui\stb_textedit.h" />

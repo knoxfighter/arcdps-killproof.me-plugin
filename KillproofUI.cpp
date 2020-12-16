@@ -1,5 +1,8 @@
 #include "KillproofUI.h"
 
+#include <mutex>
+#include <set>
+
 #include "Player.h"
 #include "Settings.h"
 
@@ -7,21 +10,28 @@
 #define windowsHeight 650
 #define leftItemWidth  100
 
+extern std::set<std::string> trackedPlayers;
+extern std::mutex trackedPlayersMutex;
+extern std::map<std::string, Player> cachedPlayers;
+extern std::mutex cachedPlayersMutex;
+
 void KillproofUI::drawSingleKP(const char* name, uint16_t amount) {
 	ImGui::Text(name);
 	ImGui::SameLine(leftItemWidth);
 	ImGui::Text("%i", amount);
 }
 
-void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags, const std::map<std::string, Player>& cachedPlayers, const std::set<std::string>& trackedPlayers) {
+void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowsHeight), ImGuiSetCond_FirstUseEver);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(150, 50));
 	ImGui::Begin(title, p_open, flags);
 
 	// ImGui::SetNextTreeNodeOpen(true);
 	// TreeNode with the player name
-	for (const auto& trackedPlayer : trackedPlayers) {
-		Player player = cachedPlayers.at(trackedPlayer);
+	std::lock_guard<std::mutex> playerGuard(trackedPlayersMutex);
+	std::lock_guard<std::mutex> cacheGuard(cachedPlayersMutex);
+	for (const std::string& trackedPlayer : trackedPlayers) {
+		const Player& player = cachedPlayers.at(trackedPlayer);
 		char buf[2048];
 		snprintf(buf, 2048, "%s - %s", player.username.c_str(), player.characterName.c_str());
 		if (ImGui::TreeNode(buf)) {

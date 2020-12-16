@@ -2,13 +2,12 @@
 #include <Windows.h>
 #include <d3d9.h>
 #include <cstdint>
-#include <map>
 #include <mutex>
-#include <set>
 #include <stdexcept>
 #include <string>
 
 #include "arcdps_structs.h"
+#include "global.h"
 #include "imgui/imgui.h"
 #include "KillproofUI.h"
 #include "Player.h"
@@ -37,8 +36,6 @@ bool show_killproof = false;
 bool show_settings = false;
 KillproofUI killproofUi;
 SettingsUI settingsUi;
-std::set<std::string> trackedPlayers;
-std::map<std::string, Player> cachedPlayers;
 
 typedef uint64_t(*arc_export_func_u64)();
 auto arc_dll = LoadLibraryA("d3d9.dll");
@@ -162,8 +159,6 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return uMsg;
 }
 
-
-std::mutex trackedPlayerLock;
 /* combat callback -- may be called asynchronously. return ignored */
 /* one participant will be party/squad, or minion of. no spawn statechange events. despawn statechange only on marked boss npcs */
 uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t id, uint64_t revision) {
@@ -178,29 +173,33 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 				const char* username = ++dst->name;
 				try {
 					// get player (exception when it not exists)
+					std::lock_guard<std::mutex> guard(cachedPlayersMutex);
 					Player& player = cachedPlayers.at(username);
 
 					// update charactername
 					player.characterName = src->name;
 				} catch (const std::out_of_range& e) {
 					// no element found, create it
+					std::lock_guard<std::mutex> guard(cachedPlayersMutex);
 					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, src->name);
+					
 					// check if emplacing successful, if yes, load the kp.me page
 					if (tryEmplace.second) {
 						// save player object to work on
 						Player& player = tryEmplace.first->second;
+
 						// load killproofs
 						player.loadKillproofs();
 					}
 				}
 
 				// add to tracking
-				std::lock_guard<std::mutex> guard(trackedPlayerLock);
+				std::lock_guard<std::mutex> guard(trackedPlayersMutex);
 				trackedPlayers.emplace(username);
 			}
 			/* remove */
 			else {
-				std::lock_guard<std::mutex> guard(trackedPlayerLock);
+				std::lock_guard<std::mutex> guard(trackedPlayersMutex);
 				trackedPlayers.erase(++dst->name);
 			}
 		}
@@ -243,7 +242,7 @@ bool canMoveWindows()
 
 void ShowKillproof(bool* p_open) {
 	if (show_killproof) {
-		killproofUi.draw("Killproof.me", p_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0), cachedPlayers, trackedPlayers);
+		killproofUi.draw("Killproof.me", p_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
 	}
 }
 

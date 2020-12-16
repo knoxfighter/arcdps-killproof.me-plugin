@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include <cpr/cpr.h>
+
 #include "parson/parson.h"
 
 void Player::loadKillproofs() {
