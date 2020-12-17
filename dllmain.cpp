@@ -188,10 +188,8 @@ uintptr_t mod_options()
 {
 	if (ImGui::BeginMenu("Killproof.me"))
 	{
-		//ImGui::Checkbox("Mechanics Log", &show_app_log);
-		//ImGui::Checkbox("Mechanics Chart", &show_app_chart);
-		ImGui::Checkbox("Show Killproofs", &show_killproof);
-		ImGui::Checkbox("Show Settings", &show_settings);
+		ImGui::Checkbox("Killproofs", &show_killproof);
+		ImGui::Checkbox("Settings", &show_settings);
 		ImGui::EndMenu();
 	}
 
