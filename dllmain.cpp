@@ -32,7 +32,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
 // globals
 char* arcvers;
-arcdps_exports arc_exports;
+arcdps_exports arc_exports = {};
 bool show_killproof = false;
 bool show_settings = false;
 KillproofUI killproofUi;
@@ -264,11 +264,10 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading)
 /* initialize mod -- return table that arcdps will use for callbacks */
 arcdps_exports* mod_init() {
 	/* for arcdps */
-	memset(&arc_exports, 0, sizeof(arcdps_exports));
 	arc_exports.sig = 0x6BAF1938322278DE;
 	arc_exports.size = sizeof(arcdps_exports);
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "0.1";
+	arc_exports.out_build = "1.0.0";
 	arc_exports.wnd_nofilter = mod_wnd;
 	arc_exports.combat = mod_combat;
 	arc_exports.imgui = mod_imgui;
