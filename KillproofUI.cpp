@@ -19,7 +19,7 @@ void KillproofUI::drawSingleKP(const char* name, amountVal amount) {
 	ImGui::Text(name);
 	ImGui::SameLine(leftItemWidth);
 	if (amount == -1) {
-		ImGui::Text("data blocked");
+		ImGui::Text("data private");
 	}
 	else {
 		ImGui::Text("%i", amount);
