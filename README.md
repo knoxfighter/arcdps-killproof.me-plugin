@@ -1,6 +1,10 @@
 # arcdps killproof.me plugin
 A Plugin for arcdps, that is loading killproof.me info and displaying it ingame.
 
+## Contact
+For any errors, feature requests and questions, simply open a new issue here.  
+You can also join the [Elite Insights discord](https://discord.gg/dCDEPXx) and write in the channel #killproof-me-plugin.  
+
 ## Installation
 Make sure arcdps is installed. If arcdps is not installed, this plugin is simply not loaded and does nothing.  
 Download the latest version from [github releases](https://github.com/knoxfighter/arcdps-killproof.me-plugin/releases/latest).  
@@ -25,9 +29,6 @@ In the settings you can choose, what will be listed for each user.
 The UI is updated to a table version, as soon, as arcdps is updating to the new ImGui version 1.80 (will be around christmas).
 
 ![Ingame screenshot](screenshot.png)
-
-## Contact
-For any errors, feature requests and question, simply open a new issue here.  
 
 ## Development
 
