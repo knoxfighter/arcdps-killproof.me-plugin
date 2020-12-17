@@ -209,3 +209,35 @@ void Killproofs::setAmountFromId(const int& id, const amountVal& amount) {
 void Killproofs::setAmountFromEnum(const Killproof& killproof, const amountVal& amount) {
 	killproofs[killproof] = amount;
 }
+
+void Killproofs::setAllTokensFieldsToBlocked() {
+	killproofs[Killproof::vg] = -1;
+	killproofs[Killproof::gorse] = -1;
+	killproofs[Killproof::sabetha] = -1;
+	killproofs[Killproof::sloth] = -1;
+	killproofs[Killproof::matthias] = -1;
+	killproofs[Killproof::escort] = -1;
+	killproofs[Killproof::kc] = -1;
+	killproofs[Killproof::xera] = -1;
+	killproofs[Killproof::cairn] = -1;
+	killproofs[Killproof::mo] = -1;
+	killproofs[Killproof::samarog] = -1;
+	killproofs[Killproof::deimos] = -1;
+	killproofs[Killproof::desmina] = -1;
+	killproofs[Killproof::river] = -1;
+	killproofs[Killproof::statues] = -1;
+	killproofs[Killproof::dhuum] = -1;
+	killproofs[Killproof::ca] = -1;
+	killproofs[Killproof::twins] = -1;
+	killproofs[Killproof::qadim] = -1;
+	killproofs[Killproof::sabir] = -1;
+	killproofs[Killproof::adina] = -1;
+	killproofs[Killproof::qadim2] = -1;
+}
+
+void Killproofs::setAllKillproofFieldsToBlocked() {
+	killproofs[Killproof::li] = -1;
+	killproofs[Killproof::ld] = -1;
+	killproofs[Killproof::uce] = -1;
+	killproofs[Killproof::ufe] = -1;
+}

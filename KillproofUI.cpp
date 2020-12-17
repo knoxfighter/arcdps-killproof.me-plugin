@@ -15,10 +15,15 @@ extern std::mutex trackedPlayersMutex;
 extern std::map<std::string, Player> cachedPlayers;
 extern std::mutex cachedPlayersMutex;
 
-void KillproofUI::drawSingleKP(const char* name, uint16_t amount) {
+void KillproofUI::drawSingleKP(const char* name, amountVal amount) {
 	ImGui::Text(name);
 	ImGui::SameLine(leftItemWidth);
-	ImGui::Text("%i", amount);
+	if (amount == -1) {
+		ImGui::Text("data blocked");
+	}
+	else {
+		ImGui::Text("%i", amount);
+	}
 }
 
 void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
