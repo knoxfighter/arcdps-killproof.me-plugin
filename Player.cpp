@@ -4,11 +4,12 @@
 
 #include "json.hpp"
 
-void Player::loadKillproofs() {
+void Player::loadKillproofs(e3_func_ptr out) {
 	std::string link("https://killproof.me/api/kp/");
 	link.append(username);
 	link.append("?lang=en");
-	auto callback = cpr::GetCallback([this](cpr::Response r) {
+
+	auto callback = cpr::GetCallback([this, out](cpr::Response r) {
 		if (r.status_code == 200) {
 			auto json = nlohmann::json::parse(r.text);
 			auto tokens = json.at("tokens");
@@ -39,8 +40,28 @@ void Player::loadKillproofs() {
 
 			this->noDataAvailable = false;
 		}
+		// silently set, when user not found
+		else if (r.status_code == 404) {
+			this->noDataAvailable = true;
+		}
+		// on any other error, print verbose output into the arcdps.log file
 		else {
 			this->noDataAvailable = true;
+			
+			std::string cs = "URL: ";
+			cs.append(r.url.str());
+			cs.append(" -- Status: ");
+			cs.append(std::to_string(r.status_code));
+			cs.append(" -- Response: ");
+			cs.append(r.text);
+			cs.append(" -- ErrorMessage: ");
+			cs.append(r.error.message);
+			cs.append(" -- Reason: ");
+			cs.append(r.reason);
+			cs.append(" -- StatusLine: ");
+			cs.append(r.status_line);
+			cs.append("\n");
+			out((char*)cs.c_str());
 		}
 	}, cpr::Url{ link });
 }

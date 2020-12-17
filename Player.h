@@ -5,6 +5,8 @@
 #include "Killproofs.h"
 
 
+typedef void(*e3_func_ptr)(char* str);
+
 class Player {
 public:
 	Player(std::string username, std::string characterName)
@@ -19,5 +21,5 @@ public:
 	Killproofs killproofs;
 	bool noDataAvailable = true;
 
-	void loadKillproofs();
+	void loadKillproofs(e3_func_ptr out);
 };

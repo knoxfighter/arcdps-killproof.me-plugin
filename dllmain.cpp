@@ -55,6 +55,10 @@ DWORD arc_global_mod1 = 0;
 DWORD arc_global_mod2 = 0;
 DWORD arc_global_mod_multi = 0;
 
+// arc add to log
+typedef void(*e3_func_ptr)(char* str);
+e3_func_ptr arc_export_e3 = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
+
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -144,10 +148,15 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 
 		/* notify tracking change */
 		if (!src->elite) {
+			std::string username(dst->name);
 
+			// remove ':' at the beginning of the name.
+			if (username.at(0) == ':') {
+				username.erase(0, 1);
+			}
+			
 			/* add */
 			if (src->prof) {
-				const char* username = ++dst->name;
 				try {
 					// get player (exception when it not exists)
 					std::lock_guard<std::mutex> guard(cachedPlayersMutex);
@@ -166,7 +175,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 						Player& player = tryEmplace.first->second;
 
 						// load killproofs
-						player.loadKillproofs();
+						player.loadKillproofs(arc_export_e3);
 					}
 				}
 
@@ -177,7 +186,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			/* remove */
 			else {
 				std::lock_guard<std::mutex> guard(trackedPlayersMutex);
-				trackedPlayers.erase(++dst->name);
+				trackedPlayers.erase(username);
 			}
 		}
 	}
@@ -267,7 +276,7 @@ arcdps_exports* mod_init() {
 	arc_exports.sig = 0x6BAF1938322278DE;
 	arc_exports.size = sizeof(arcdps_exports);
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "1.0.1";
+	arc_exports.out_build = "1.0.2-beta";
 	arc_exports.wnd_nofilter = mod_wnd;
 	arc_exports.combat = mod_combat;
 	arc_exports.imgui = mod_imgui;
