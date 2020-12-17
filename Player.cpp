@@ -9,9 +9,12 @@ void Player::loadKillproofs(e3_func_ptr out) {
 	link.append(username);
 	link.append("?lang=en");
 
-	auto callback = cpr::GetCallback([this, out](cpr::Response r) {
-		if (r.status_code == 200) {
-			auto json = nlohmann::json::parse(r.text);
+	// download it in a new thread (fire and forget)
+	std::thread cprCall([=]() {
+		cpr::Response response = cpr::Get(cpr::Url{ link });
+
+		if (response.status_code == 200) {
+			auto json = nlohmann::json::parse(response.text);
 			auto tokens = json.at("tokens");
 			// when field is null, data is not available
 			if (tokens.type() == nlohmann::json::value_t::null) {
@@ -41,27 +44,29 @@ void Player::loadKillproofs(e3_func_ptr out) {
 			this->noDataAvailable = false;
 		}
 		// silently set, when user not found
-		else if (r.status_code == 404) {
+		else if (response.status_code == 404) {
 			this->noDataAvailable = true;
 		}
 		// on any other error, print verbose output into the arcdps.log file
 		else {
 			this->noDataAvailable = true;
-			
+
 			std::string cs = "URL: ";
-			cs.append(r.url.str());
+			cs.append(response.url.str());
 			cs.append(" -- Status: ");
-			cs.append(std::to_string(r.status_code));
+			cs.append(std::to_string(response.status_code));
 			cs.append(" -- Response: ");
-			cs.append(r.text);
+			cs.append(response.text);
 			cs.append(" -- ErrorMessage: ");
-			cs.append(r.error.message);
+			cs.append(response.error.message);
 			cs.append(" -- Reason: ");
-			cs.append(r.reason);
+			cs.append(response.reason);
 			cs.append(" -- StatusLine: ");
-			cs.append(r.status_line);
+			cs.append(response.status_line);
 			cs.append("\n");
 			out((char*)cs.c_str());
 		}
-	}, cpr::Url{ link });
+	});
+	// we want to run async completely, so just detach
+	cprCall.detach();
 }

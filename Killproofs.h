@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <map>
+#include <mutex>
 #include <string>
 
 #define amountVal int32_t
@@ -75,6 +76,7 @@ class Killproofs {
 		{Killproof::adina, 0},
 		{Killproof::qadim2, 0},
 	};
+	mutable std::mutex mapMutex;
 
 public:
 	amountVal getAmountFromId(const std::string& id) const;

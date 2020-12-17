@@ -33,6 +33,8 @@ const char* toString(Killproof e) {
 }
 
 amountVal Killproofs::getAmountFromId(const std::string& id) const {
+	std::lock_guard<std::mutex> guard(mapMutex);
+	
 	if (id == "77302") {
 		return killproofs.at(Killproof::li);
 	}
@@ -115,10 +117,13 @@ amountVal Killproofs::getAmountFromId(const std::string& id) const {
 }
 
 amountVal Killproofs::getAmountFromEnum(const Killproof& id) const {
+	std::lock_guard<std::mutex> guard(mapMutex);
 	return killproofs.at(id);
 }
 
 void Killproofs::setAmountFromId(const std::string& id, const amountVal& amount) {
+	std::lock_guard<std::mutex> guard(mapMutex);
+	
 	if (id == "77302") {
 		killproofs[Killproof::li] = amount;
 	} else if (id == "88485") {
@@ -175,6 +180,8 @@ void Killproofs::setAmountFromId(const std::string& id, const amountVal& amount)
 }
 
 void Killproofs::setAmountFromId(const int& id, const amountVal& amount) {
+	std::lock_guard<std::mutex> guard(mapMutex);
+
 	switch (id) {
 	case 77302: killproofs[Killproof::li] = amount; break;
 	case 88485: killproofs[Killproof::ld] = amount; break;
@@ -207,10 +214,14 @@ void Killproofs::setAmountFromId(const int& id, const amountVal& amount) {
 }
 
 void Killproofs::setAmountFromEnum(const Killproof& killproof, const amountVal& amount) {
+	std::lock_guard<std::mutex> guard(mapMutex);
+
 	killproofs[killproof] = amount;
 }
 
 void Killproofs::setAllTokensFieldsToBlocked() {
+	std::lock_guard<std::mutex> guard(mapMutex);
+
 	killproofs[Killproof::vg] = -1;
 	killproofs[Killproof::gorse] = -1;
 	killproofs[Killproof::sabetha] = -1;
@@ -236,6 +247,8 @@ void Killproofs::setAllTokensFieldsToBlocked() {
 }
 
 void Killproofs::setAllKillproofFieldsToBlocked() {
+	std::lock_guard<std::mutex> guard(mapMutex);
+
 	killproofs[Killproof::li] = -1;
 	killproofs[Killproof::ld] = -1;
 	killproofs[Killproof::uce] = -1;
