@@ -40,13 +40,11 @@ git clone https://github.com/Microsoft/vcpkg.git
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg integrate install
-./vcpkg install cpr:x64-windows
+./vcpkg install cpr:x64-windows-static-md
 ```
 
 Then download this project and open it with Visual Studio. Everything should be set up and you should be able to compile it.  
 The default output directory is `C:\Program Files\Guild Wars 2\bin64\`, you can change that in `Properties -> Configuration Properties -> General -> Output Directory`. Also, running the Local Windows Debugger, will start `C:\Program Files\Guild Wars 2\Gw2-64.exe` and attaches the debugger to it. Make sure to NOT use your normal account, cause you could get banned for it!
-
-If things fail that ways, i have more setups done, than i remember, just open an issue and i will sort them out.
 
 ## LICENSE
 
