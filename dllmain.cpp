@@ -38,9 +38,14 @@ bool show_settings = false;
 KillproofUI killproofUi;
 SettingsUI settingsUi;
 
-typedef uint64_t(*arc_export_func_u64)();
-auto arc_dll = LoadLibraryA("d3d9.dll");
+// load arcdps dll.
+// When loading directly, arcdps is the "d3d9.dll"
+// When loading with the addon manager, arcdps is called "gw2addon_arcdps.dll"
+HMODULE arc_dllD = LoadLibraryA("d3d9.dll");
+HMODULE arc_dllL = LoadLibraryA("gw2addon_arcdps.dll");
+HMODULE arc_dll = (arc_dllD == nullptr) ? arc_dllD : arc_dllL;
 
+typedef uint64_t(*arc_export_func_u64)();
 // arc options
 auto arc_export_e6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
 bool arc_hide_all = false;

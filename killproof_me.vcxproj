@@ -72,24 +72,24 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>C:\Program Files\Guild Wars 2\bin64\</OutDir>
+    <OutDir>C:\Program Files\Guild Wars 2\addons\arcdps\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>d3d9_arcdps_killproof_me</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>C:\Program Files\Guild Wars 2\bin64\</OutDir>
+    <OutDir>C:\Program Files\Guild Wars 2\addons\arcdps\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>d3d9_arcdps_killproof_me</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>C:\Program Files\Guild Wars 2\bin64\</OutDir>
+    <OutDir>C:\Program Files\Guild Wars 2\addons\arcdps\</OutDir>
     <TargetName>d3d9_arcdps_killproof_me</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>C:\Program Files\Guild Wars 2\bin64\</OutDir>
+    <OutDir>C:\Program Files\Guild Wars 2\addons\arcdps\</OutDir>
     <TargetName>d3d9_arcdps_killproof_me</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
