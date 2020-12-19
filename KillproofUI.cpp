@@ -23,7 +23,7 @@ void KillproofUI::drawSingleKP(const char* name, amountVal amount) {
 }
 
 void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
-	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowsHeight), ImGuiSetCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowsHeight), ImGuiCond_FirstUseEver);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(150, 50));
 	ImGui::Begin(title, p_open, flags);
 

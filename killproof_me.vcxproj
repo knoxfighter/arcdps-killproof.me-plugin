@@ -193,6 +193,8 @@
     <ClCompile Include="global.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="Killproofs.cpp" />
     <ClCompile Include="KillproofUI.cpp" />
     <ClCompile Include="Player.cpp" />
