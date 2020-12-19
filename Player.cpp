@@ -1,6 +1,5 @@
 #include "Player.h"
 
-
 #include <set>
 #include <cpr/cpr.h>
 

@@ -2,8 +2,6 @@
 
 #include <fstream>
 
-#include "imgui/imgui.h"
-
 Settings& Settings::instance() {
     static Settings b;
     return b;

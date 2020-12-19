@@ -61,8 +61,7 @@ DWORD arc_global_mod2 = 0;
 DWORD arc_global_mod_multi = 0;
 
 // arc add to log
-typedef void(*e3_func_ptr)(char* str);
-e3_func_ptr arc_export_e3 = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
+e3_func_ptr arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -180,7 +179,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 						Player& player = tryEmplace.first->second;
 
 						// load killproofs
-						player.loadKillproofs(arc_export_e3);
+						player.loadKillproofs(arc_log);
 					}
 				}
 
@@ -200,8 +199,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 
 uintptr_t mod_options()
 {
-	if (ImGui::BeginMenu("Killproof.me"))
-	{
+	if (ImGui::BeginMenu("Killproof.me")) {
 		ImGui::Checkbox("Killproofs", &show_killproof);
 		ImGui::Checkbox("Settings", &show_settings);
 		ImGui::EndMenu();
