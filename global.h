@@ -3,7 +3,7 @@
 #include <mutex>
 #include <set>
 
-#include "Player.h"
+class Player;
 
 std::set<std::string> trackedPlayers;
 std::mutex trackedPlayersMutex;
