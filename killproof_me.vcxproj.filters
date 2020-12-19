@@ -45,6 +45,9 @@
     <ClCompile Include="Killproofs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arcdps_structs.h">

@@ -3,17 +3,13 @@
 #include <mutex>
 #include <set>
 
+#include "global.h"
 #include "Player.h"
 #include "Settings.h"
 
 #define windowWidth 800
 #define windowsHeight 650
 #define leftItemWidth  100
-
-extern std::set<std::string> trackedPlayers;
-extern std::mutex trackedPlayersMutex;
-extern std::map<std::string, Player> cachedPlayers;
-extern std::mutex cachedPlayersMutex;
 
 void KillproofUI::drawSingleKP(const char* name, amountVal amount) {
 	ImGui::Text(name);
