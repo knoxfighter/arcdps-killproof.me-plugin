@@ -34,7 +34,7 @@ const char* toString(Killproof e) {
 
 amountVal Killproofs::getAmountFromId(const std::string& id) const {
 	std::lock_guard<std::mutex> guard(mapMutex);
-	
+
 	if (id == "77302") {
 		return killproofs.at(Killproof::li);
 	}
@@ -123,7 +123,7 @@ amountVal Killproofs::getAmountFromEnum(const Killproof& id) const {
 
 void Killproofs::setAmountFromId(const std::string& id, const amountVal& amount) {
 	std::lock_guard<std::mutex> guard(mapMutex);
-	
+
 	if (id == "77302") {
 		killproofs[Killproof::li] = amount;
 	} else if (id == "88485") {
@@ -183,32 +183,58 @@ void Killproofs::setAmountFromId(const int& id, const amountVal& amount) {
 	std::lock_guard<std::mutex> guard(mapMutex);
 
 	switch (id) {
-	case 77302: killproofs[Killproof::li] = amount; break;
-	case 88485: killproofs[Killproof::ld] = amount; break;
-	case 81743: killproofs[Killproof::uce] = amount; break;
-	case 94020: killproofs[Killproof::ufe] = amount; break;
-	case 77705: killproofs[Killproof::vg] = amount; break;
-	case 77751: killproofs[Killproof::gorse] = amount; break;
-	case 77728: killproofs[Killproof::sabetha] = amount; break;
-	case 77706: killproofs[Killproof::sloth] = amount; break;
-	case 77679: killproofs[Killproof::matthias] = amount; break;
-	case 78873: killproofs[Killproof::escort] = amount; break;
-	case 78902: killproofs[Killproof::kc] = amount; break;
-	case 78942: killproofs[Killproof::xera] = amount; break;
-	case 80623: killproofs[Killproof::cairn] = amount; break;
-	case 80269: killproofs[Killproof::mo] = amount; break;
-	case 80087: killproofs[Killproof::samarog] = amount; break;
-	case 80542: killproofs[Killproof::deimos] = amount; break;
-	case 85993: killproofs[Killproof::desmina] = amount; break;
-	case 85785: killproofs[Killproof::river] = amount; break;
-	case 85800: killproofs[Killproof::statues] = amount; break;
-	case 85633: killproofs[Killproof::dhuum] = amount; break;
-	case 88543: killproofs[Killproof::ca] = amount; break;
-	case 88860: killproofs[Killproof::twins] = amount; break;
-	case 88645: killproofs[Killproof::qadim] = amount; break;
-	case 91270: killproofs[Killproof::sabir] = amount; break;
-	case 91246: killproofs[Killproof::adina] = amount; break;
-	case 91175: killproofs[Killproof::qadim2] = amount; break;
+	case 77302: killproofs[Killproof::li] = amount;
+		break;
+	case 88485: killproofs[Killproof::ld] = amount;
+		break;
+	case 81743: killproofs[Killproof::uce] = amount;
+		break;
+	case 94020: killproofs[Killproof::ufe] = amount;
+		break;
+	case 77705: killproofs[Killproof::vg] = amount;
+		break;
+	case 77751: killproofs[Killproof::gorse] = amount;
+		break;
+	case 77728: killproofs[Killproof::sabetha] = amount;
+		break;
+	case 77706: killproofs[Killproof::sloth] = amount;
+		break;
+	case 77679: killproofs[Killproof::matthias] = amount;
+		break;
+	case 78873: killproofs[Killproof::escort] = amount;
+		break;
+	case 78902: killproofs[Killproof::kc] = amount;
+		break;
+	case 78942: killproofs[Killproof::xera] = amount;
+		break;
+	case 80623: killproofs[Killproof::cairn] = amount;
+		break;
+	case 80269: killproofs[Killproof::mo] = amount;
+		break;
+	case 80087: killproofs[Killproof::samarog] = amount;
+		break;
+	case 80542: killproofs[Killproof::deimos] = amount;
+		break;
+	case 85993: killproofs[Killproof::desmina] = amount;
+		break;
+	case 85785: killproofs[Killproof::river] = amount;
+		break;
+	case 85800: killproofs[Killproof::statues] = amount;
+		break;
+	case 85633: killproofs[Killproof::dhuum] = amount;
+		break;
+	case 88543: killproofs[Killproof::ca] = amount;
+		break;
+	case 88860: killproofs[Killproof::twins] = amount;
+		break;
+	case 88645: killproofs[Killproof::qadim] = amount;
+		break;
+	case 91270: killproofs[Killproof::sabir] = amount;
+		break;
+	case 91246: killproofs[Killproof::adina] = amount;
+		break;
+	case 91175: killproofs[Killproof::qadim2] = amount;
+		break;
 	default: break;
 	}
 }
@@ -253,4 +279,64 @@ void Killproofs::setAllKillproofFieldsToBlocked() {
 	killproofs[Killproof::ld] = -1;
 	killproofs[Killproof::uce] = -1;
 	killproofs[Killproof::ufe] = -1;
+}
+
+void Killproofs::setBlockedFromId(const int& id) {
+	std::lock_guard<std::mutex> guard(mapMutex);
+
+	switch (id) {
+	case 77302: killproofs[Killproof::li] = -1;
+		break;
+	case 88485: killproofs[Killproof::ld] = -1;
+		break;
+	case 81743: killproofs[Killproof::uce] = -1;
+		break;
+	case 94020: killproofs[Killproof::ufe] = -1;
+		break;
+	case 77705: killproofs[Killproof::vg] = -1;
+		break;
+	case 77751: killproofs[Killproof::gorse] = -1;
+		break;
+	case 77728: killproofs[Killproof::sabetha] = -1;
+		break;
+	case 77706: killproofs[Killproof::sloth] = -1;
+		break;
+	case 77679: killproofs[Killproof::matthias] = -1;
+		break;
+	case 78873: killproofs[Killproof::escort] = -1;
+		break;
+	case 78902: killproofs[Killproof::kc] = -1;
+		break;
+	case 78942: killproofs[Killproof::xera] = -1;
+		break;
+	case 80623: killproofs[Killproof::cairn] = -1;
+		break;
+	case 80269: killproofs[Killproof::mo] = -1;
+		break;
+	case 80087: killproofs[Killproof::samarog] = -1;
+		break;
+	case 80542: killproofs[Killproof::deimos] = -1;
+		break;
+	case 85993: killproofs[Killproof::desmina] = -1;
+		break;
+	case 85785: killproofs[Killproof::river] = -1;
+		break;
+	case 85800: killproofs[Killproof::statues] = -1;
+		break;
+	case 85633: killproofs[Killproof::dhuum] = -1;
+		break;
+	case 88543: killproofs[Killproof::ca] = -1;
+		break;
+	case 88860: killproofs[Killproof::twins] = -1;
+		break;
+	case 88645: killproofs[Killproof::qadim] = -1;
+		break;
+	case 91270: killproofs[Killproof::sabir] = -1;
+		break;
+	case 91246: killproofs[Killproof::adina] = -1;
+		break;
+	case 91175: killproofs[Killproof::qadim2] = -1;
+		break;
+	default: break;
+	}
 }

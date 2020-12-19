@@ -79,12 +79,19 @@ class Killproofs {
 	mutable std::mutex mapMutex;
 
 public:
+	/**
+	 * GETTER
+	 */
 	amountVal getAmountFromId(const std::string& id) const;
 	amountVal getAmountFromEnum(const Killproof& id) const;
 
+	/**
+	 * SETTER
+	 */
 	void setAmountFromId(const std::string& id, const amountVal& amount);
 	void setAmountFromId(const int& id, const amountVal& amount);
 	void setAmountFromEnum(const Killproof& killproof, const amountVal& amount);
 	void setAllTokensFieldsToBlocked();
 	void setAllKillproofFieldsToBlocked();
+	void setBlockedFromId(const int& id);
 };

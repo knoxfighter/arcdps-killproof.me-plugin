@@ -1,5 +1,7 @@
 #include "Player.h"
 
+
+#include <set>
 #include <cpr/cpr.h>
 
 #include "json.hpp"
@@ -36,8 +38,19 @@ void Player::loadKillproofs(e3_func_ptr out) {
 			}
 			// else it is an array (can be empty)
 			else if (killproofs.type() == nlohmann::json::value_t::array) {
+				// track all used killproof IDs
+				std::set<int> unUsedKPs = { 77302, 81743, 88485, 94020 };
+
+				// iterate over all available killproofs
 				for (auto killproof : killproofs) {
-					this->killproofs.setAmountFromId(killproof.at("id").get<int>(), killproof.at("amount"));
+					int kpId = killproof.at("id").get<int>();
+					unUsedKPs.erase(kpId);
+					this->killproofs.setAmountFromId(kpId, killproof.at("amount"));
+				}
+
+				// set rest KPs to blocked
+				for (int unUsedKP : unUsedKPs) {
+					this->killproofs.setBlockedFromId(unUsedKP);
 				}
 			}
 
