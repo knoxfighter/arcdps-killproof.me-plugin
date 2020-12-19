@@ -161,18 +161,12 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			
 			/* add */
 			if (src->prof) {
-				try {
-					// get player (exception when it not exists)
-					std::lock_guard<std::mutex> guard(cachedPlayersMutex);
-					Player& player = cachedPlayers.at(username);
-
-					// update charactername
-					player.characterName = src->name;
-				} catch (const std::out_of_range& e) {
+				std::lock_guard<std::mutex> cachedGuard(cachedPlayersMutex);
+				auto playerIt = cachedPlayers.find(username);
+				if (playerIt == cachedPlayers.end()) {
 					// no element found, create it
-					std::lock_guard<std::mutex> guard(cachedPlayersMutex);
 					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, src->name);
-					
+
 					// check if emplacing successful, if yes, load the kp.me page
 					if (tryEmplace.second) {
 						// save player object to work on
@@ -181,10 +175,13 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 						// load killproofs
 						player.loadKillproofs(arc_log);
 					}
+				} else {
+					// update charactername
+					playerIt->second.characterName = src->name;
 				}
 
 				// add to tracking
-				std::lock_guard<std::mutex> guard(trackedPlayersMutex);
+				std::lock_guard<std::mutex> trackedGuard(trackedPlayersMutex);
 				trackedPlayers.emplace(username);
 			}
 			/* remove */
