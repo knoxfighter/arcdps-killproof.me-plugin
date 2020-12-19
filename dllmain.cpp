@@ -43,7 +43,7 @@ SettingsUI settingsUi;
 // When loading with the addon manager, arcdps is called "gw2addon_arcdps.dll"
 HMODULE arc_dllD = LoadLibraryA("d3d9.dll");
 HMODULE arc_dllL = LoadLibraryA("gw2addon_arcdps.dll");
-HMODULE arc_dll = (arc_dllD == nullptr) ? arc_dllD : arc_dllL;
+HMODULE arc_dll = (arc_dllL != nullptr) ? arc_dllL : arc_dllD;
 
 typedef uint64_t(*arc_export_func_u64)();
 // arc options
