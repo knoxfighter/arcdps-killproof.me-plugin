@@ -161,7 +161,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 						Player& player = tryEmplace.first->second;
 
 						// load killproofs
-						player.loadKillproofs(arc_log);
+						player.loadKillproofs();
 					}
 				} else {
 					// update charactername

@@ -21,5 +21,5 @@ public:
 	Killproofs killproofs;
 	bool noDataAvailable = true;
 
-	void loadKillproofs(e3_func_ptr out);
+	void loadKillproofs();
 };

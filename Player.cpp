@@ -3,9 +3,10 @@
 #include <set>
 #include <cpr/cpr.h>
 
+#include "global.h"
 #include "json.hpp"
 
-void Player::loadKillproofs(e3_func_ptr out) {
+void Player::loadKillproofs() {
 	std::string link("https://killproof.me/api/kp/");
 	link.append(username);
 	link.append("?lang=en");
@@ -76,7 +77,7 @@ void Player::loadKillproofs(e3_func_ptr out) {
 			cs.append(" -- StatusLine: ");
 			cs.append(response.status_line);
 			cs.append("\n");
-			out((char*)cs.c_str());
+			arc_log((char*)cs.c_str());
 		}
 	});
 	// we want to run async completely, so just detach
