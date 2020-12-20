@@ -21,7 +21,10 @@ SettingsUI::SettingsUI() {
 
 void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::SetNextWindowSize(ImVec2(windowWidth, 650), ImGuiSetCond_FirstUseEver);
+	// set min size of the object
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(150, 50));
+	// set frame padding smaller (small buttons)
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 	ImGui::Begin(title, p_open, flags);
 
 	Settings& settings = Settings::instance();
@@ -55,5 +58,5 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	}
 
 	ImGui::End();
-	ImGui::PopStyleVar(1);
+	ImGui::PopStyleVar(2);
 }
