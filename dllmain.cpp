@@ -28,6 +28,9 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	return TRUE;
 }
 
+// predefine some functions
+void readArcExports();
+
 // globals
 char* arcvers;
 arcdps_exports arc_exports = {};
@@ -83,6 +86,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 		{
+			readArcExports();
 			const int vkey = (int)wParam;
 			// close windows on escape press (return 0, so arc and gw2 are not processing this event)
 			if (!arc_hide_all && vkey == VK_ESCAPE) {
@@ -99,7 +103,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			}
 			// toggle killproof window
 			Settings& settings = Settings::instance();
-			if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey()) {
+			if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey() && !arc_hide_all) {
 				show_killproof = !show_killproof;
 				return 0;
 			}
@@ -236,8 +240,6 @@ void readArcExports() {
 }
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
-	readArcExports();
-
 	if (!not_charsel_or_loading) return 0;
 
 	ShowKillproof(&show_killproof);
