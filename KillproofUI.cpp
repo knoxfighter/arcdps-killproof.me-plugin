@@ -27,8 +27,7 @@ void KillproofUI::drawSingleKP(const char* name, amountVal amount, Settings& set
 }
 
 void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
-	ImGui::SetNextWindowSize(ImVec2(windowWidth, windowsHeight), ImGuiSetCond_FirstUseEver);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(150, 50));
+	ImGui::SetNextWindowSizeConstraints(ImVec2(150, 50), ImVec2(windowWidth, windowsHeight));
 	ImGui::Begin(title, p_open, flags);
 
 	// ImGui::SetNextTreeNodeOpen(true);
@@ -62,5 +61,4 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 	}
 
 	ImGui::End();
-	ImGui::PopStyleVar(1);
 }
