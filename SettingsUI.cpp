@@ -32,7 +32,7 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::PushItemWidth(30);
 	if (ImGui::InputText("##shortcut", shortcut, 64)) {
 		const int keyId = std::stoi(shortcut);
-		settings.setKillProofKey(keyId);
+		settings.settings.killproofKey = keyId;
 		// convert virtual key to vsc key
 		UINT vscKey = MapVirtualKeyA(keyId, MAPVK_VK_TO_VSC);
 		// get the name representation of the key
@@ -41,6 +41,8 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 	ImGui::Text(shortCutRealName);
+
+	ImGui::Checkbox("hide players without killproof.me account", &settings.settings.hidePrivateAccount);
 
 	ImGui::Separator();
 

@@ -15,8 +15,8 @@ int Settings::getKillProofKey() const {
 	return settings.killproofKey;
 }
 
-void Settings::setKillProofKey(const int key) {
-	settings.killproofKey = key;
+bool Settings::getHidePrivateAccount() const {
+	return settings.hidePrivateAccount;
 }
 
 Settings::~Settings() {

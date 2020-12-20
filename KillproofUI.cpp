@@ -35,22 +35,25 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		const Player& player = cachedPlayers.at(trackedPlayer);
 		char buf[2048];
 		snprintf(buf, 2048, "%s - %s", player.username.c_str(), player.characterName.c_str());
-		if (ImGui::TreeNode(buf)) {
-			if (player.noDataAvailable) {
-				ImGui::Text("no data available");
-			}
-			else {
-				Settings& settings = Settings::instance();
-				kpActiveMap& actives = settings.getActive();
-				for (auto& active : actives) {
-					if (active.second) {
-						amountVal amount = player.killproofs.getAmountFromEnum(active.first);
-						drawSingleKP(toString(active.first), amount);
+		Settings& settings = Settings::instance();
+		if (!(settings.getHidePrivateAccount() && player.noDataAvailable)) {
+			if (ImGui::TreeNode(buf)) {
+				if (player.noDataAvailable) {
+					ImGui::Text("no data available");
+				}
+				else {
+					Settings& settings = Settings::instance();
+					kpActiveMap& actives = settings.getActive();
+					for (auto& active : actives) {
+						if (active.second) {
+							amountVal amount = player.killproofs.getAmountFromEnum(active.first);
+							drawSingleKP(toString(active.first), amount);
+						}
 					}
 				}
-			}
 
-			ImGui::TreePop();
+				ImGui::TreePop();
+			}
 		}
 	}
 

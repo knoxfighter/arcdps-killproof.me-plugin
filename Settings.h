@@ -17,8 +17,9 @@ public:
     struct SettingsObject {
         kpActiveMap active;
         int killproofKey;
+        bool hidePrivateAccount;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, active, killproofKey)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, active, killproofKey, hidePrivateAccount)
     };
 
     static Settings& instance();
@@ -26,7 +27,7 @@ public:
 	// getter/setter
     [[nodiscard]] kpActiveMap& getActive();
     [[nodiscard]] int getKillProofKey() const;
-    void setKillProofKey(int key);
+    [[nodiscard]] bool getHidePrivateAccount() const;
 
 private:
     // copy/move etc. will be deleted implicitly
