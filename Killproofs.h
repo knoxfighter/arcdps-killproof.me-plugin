@@ -9,46 +9,58 @@
 
 enum class Killproof {
 	// raid
-	li,
-	ld,
+	li = 0,
+	ld = 1,
+	liLd = 26, // added li and ld
 	// fractal
-	uce,
-	ufe,
+	uce = 2,
+	ufe = 3,
 	// w1
-	vg,
-	gorse,
-	sabetha,
+	vg = 4,
+	gorse = 5,
+	sabetha = 6,
 	// w2
-	sloth,
-	matthias,
+	sloth = 7,
+	matthias = 8,
 	// w3
-	escort,
-	kc,
-	xera,
+	escort = 9,
+	kc = 10,
+	xera = 11,
 	// w4
-	cairn,
-	mo,
-	samarog,
-	deimos,
+	cairn = 12,
+	mo = 13,
+	samarog = 14,
+	deimos = 15,
 	// w5
-	desmina,
-	river,
-	statues,
-	dhuum,
+	desmina = 16,
+	river = 17,
+	statues = 18,
+	dhuum = 19,
 	// w6
-	ca,
-	twins,
-	qadim,
+	ca = 20,
+	twins = 21,
+	qadim = 22,
 	// w7
-	sabir,
-	adina,
-	qadim2,
+	sabir = 23,
+	adina = 24,
+	qadim2 = 25,
 };
+uint8_t convertToPos(const Killproof& kp);
+
+// cannot use this operator, it would be ambiguous, cause of a msvc++ compiler bug
+// bool operator<(const Killproof& lhs, const Killproof& rhs);
+// use this comparison object as Compare implementation
+struct comparatorKillProof {
+	bool operator()(const Killproof& lhs, const Killproof& rhs) const {
+		return convertToPos(lhs) < convertToPos(rhs);
+	}
+};
+
 
 const char* toString(Killproof e);
 
 class Killproofs {
-	std::map<Killproof, amountVal> killproofs = {
+	std::map < Killproof, amountVal, comparatorKillProof> killproofs = {
 		{Killproof::li, 0},
 		{Killproof::ld, 0},
 		{Killproof::uce, 0},
@@ -75,6 +87,7 @@ class Killproofs {
 		{Killproof::sabir, 0},
 		{Killproof::adina, 0},
 		{Killproof::qadim2, 0},
+		{Killproof::liLd, 0},
 	};
 	mutable std::mutex mapMutex;
 

@@ -7,7 +7,7 @@ Settings& Settings::instance() {
     return b;
 }
 
-std::map<Killproof, bool>& Settings::getActive() {
+kpActiveMap& Settings::getActive() {
     return settings.active;
 }
 
@@ -24,49 +24,54 @@ Settings::~Settings() {
 }
 
 Settings::Settings() {
-	// set defaults, they will be overriden, with what is saved in the file
-	// raid
-	settings.active[Killproof::li] = true;
-	settings.active[Killproof::ld] = true;
-	// fractal
-	settings.active[Killproof::ufe] = true;
-	settings.active[Killproof::uce] = true;
-	// w1
-	settings.active[Killproof::vg] = false;
-	settings.active[Killproof::gorse] = false;
-	settings.active[Killproof::sabetha] = false;
-	// w2
-	settings.active[Killproof::sloth] = false;
-	settings.active[Killproof::matthias] = false;
-	// w3
-	settings.active[Killproof::escort] = false;
-	settings.active[Killproof::kc] = false;
-	settings.active[Killproof::xera] = false;
-	// w4
-	settings.active[Killproof::cairn] = false;
-	settings.active[Killproof::mo] = false;
-	settings.active[Killproof::samarog] = false;
-	settings.active[Killproof::deimos] = false;
-	// w5
-	settings.active[Killproof::desmina] = false;
-	settings.active[Killproof::river] = false;
-	settings.active[Killproof::statues] = false;
-	settings.active[Killproof::dhuum] = true;
-	// w6
-	settings.active[Killproof::ca] = false;
-	settings.active[Killproof::twins] = false;
-	settings.active[Killproof::qadim] = true;
-	// w7
-	settings.active[Killproof::adina] = false;
-	settings.active[Killproof::sabir] = false;
-	settings.active[Killproof::qadim2] = true;
-
-	// set default key to "K"
-	settings.killproofKey = 0x4B;
-	
 	// according to standard, this constructor is completely thread-safe
 	// read settings from file
 	readFromFile();
+}
+
+void Settings::setDefaults() {
+	// set defaults, they will be overriden, with what is saved in the file
+	// raid
+	settings.active.try_emplace(Killproof::li, true);
+	settings.active.try_emplace(Killproof::ld, true);
+	settings.active.try_emplace(Killproof::liLd, false);
+	// fractal
+	settings.active.try_emplace(Killproof::ufe, true);
+	settings.active.try_emplace(Killproof::uce, true);
+	// w1
+	settings.active.try_emplace(Killproof::vg, false);
+	settings.active.try_emplace(Killproof::gorse, false);
+	settings.active.try_emplace(Killproof::sabetha, false);
+	// w2
+	settings.active.try_emplace(Killproof::sloth, false);
+	settings.active.try_emplace(Killproof::matthias, false);
+	// w3
+	settings.active.try_emplace(Killproof::escort, false);
+	settings.active.try_emplace(Killproof::kc, false);
+	settings.active.try_emplace(Killproof::xera, false);
+	// w4
+	settings.active.try_emplace(Killproof::cairn, false);
+	settings.active.try_emplace(Killproof::mo, false);
+	settings.active.try_emplace(Killproof::samarog, false);
+	settings.active.try_emplace(Killproof::deimos, false);
+	// w5
+	settings.active.try_emplace(Killproof::desmina, false);
+	settings.active.try_emplace(Killproof::river, false);
+	settings.active.try_emplace(Killproof::statues, false);
+	settings.active.try_emplace(Killproof::dhuum, true);
+	// w6
+	settings.active.try_emplace(Killproof::ca, false);
+	settings.active.try_emplace(Killproof::twins, false);
+	settings.active.try_emplace(Killproof::qadim, true);
+	// w7
+	settings.active.try_emplace(Killproof::adina, false);
+	settings.active.try_emplace(Killproof::sabir, false);
+	settings.active.try_emplace(Killproof::qadim2, true);
+
+	// set default key to "K"
+	if (settings.killproofKey == 0) {
+		settings.killproofKey = 0x4B;
+	}
 }
 
 void Settings::saveToFile() {
@@ -96,4 +101,7 @@ void Settings::readFromFile() {
 	} catch (const std::exception& e) {
 		// some exception was thrown, all settings are reset!
 	}
+
+	// merge in defaults, when not set
+	setDefaults();
 }
