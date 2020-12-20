@@ -14,20 +14,18 @@
 #include "Settings.h"
 #include "SettingsUI.h"
 
-BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-)
-{
-    switch (ul_reason_for_call)
-    {
-    case DLL_PROCESS_ATTACH:
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
-    }
-    return TRUE;
+BOOL APIENTRY DllMain(HMODULE hModule,
+                      DWORD ul_reason_for_call,
+                      LPVOID lpReserved
+) {
+	switch (ul_reason_for_call) {
+	case DLL_PROCESS_ATTACH:
+	case DLL_THREAD_ATTACH:
+	case DLL_THREAD_DETACH:
+	case DLL_PROCESS_DETACH:
+		break;
+	}
+	return TRUE;
 }
 
 // globals
@@ -45,7 +43,7 @@ HMODULE arc_dllD = LoadLibraryA("d3d9.dll");
 HMODULE arc_dllL = LoadLibraryA("gw2addon_arcdps.dll");
 HMODULE arc_dll = (arc_dllL != nullptr) ? arc_dllL : arc_dllD;
 
-typedef uint64_t(*arc_export_func_u64)();
+typedef uint64_t (*arc_export_func_u64)();
 // arc options
 auto arc_export_e6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
 bool arc_hide_all = false;
@@ -64,83 +62,69 @@ DWORD arc_global_mod_multi = 0;
 e3_func_ptr arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
-uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	auto const io = &ImGui::GetIO();
 
-	switch (uMsg)
-	{
+	switch (uMsg) {
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-	{
-		const int vkey = (int)wParam;
-		io->KeysDown[vkey] = false;
-		if (vkey == VK_CONTROL)
 		{
-			io->KeyCtrl = false;
+			const int vkey = (int)wParam;
+			io->KeysDown[vkey] = false;
+			if (vkey == VK_CONTROL) {
+				io->KeyCtrl = false;
+			} else if (vkey == VK_MENU) {
+				io->KeyAlt = false;
+			} else if (vkey == VK_SHIFT) {
+				io->KeyShift = false;
+			}
+			break;
 		}
-		else if (vkey == VK_MENU)
-		{
-			io->KeyAlt = false;
-		}
-		else if (vkey == VK_SHIFT)
-		{
-			io->KeyShift = false;
-		}
-		break;
-	}
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
-	{
-		const int vkey = (int)wParam;
-		// close windows on escape press (return 0, so arc and gw2 are not processing this event)
-		if (!arc_hide_all && vkey == VK_ESCAPE) {
-			// close settings menu first
-			if (arc_window_fastclose && show_settings) {
-				show_settings = false;
+		{
+			const int vkey = (int)wParam;
+			// close windows on escape press (return 0, so arc and gw2 are not processing this event)
+			if (!arc_hide_all && vkey == VK_ESCAPE) {
+				// close settings menu first
+				if (arc_window_fastclose && show_settings) {
+					show_settings = false;
+					return 0;
+				}
+				// close killproof window with escape
+				if (arc_window_fastclose && show_killproof) {
+					show_killproof = false;
+					return 0;
+				}
+			}
+			// toggle killproof window
+			Settings& settings = Settings::instance();
+			if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey()) {
+				show_killproof = !show_killproof;
 				return 0;
 			}
-			// close killproof window with escape
-			if (arc_window_fastclose && show_killproof) {
-				show_killproof = false;
-				return 0;
+			if (vkey == VK_CONTROL) {
+				io->KeyCtrl = true;
+			} else if (vkey == VK_MENU) {
+				io->KeyAlt = true;
+			} else if (vkey == VK_SHIFT) {
+				io->KeyShift = true;
 			}
+			io->KeysDown[vkey] = true;
+			break;
 		}
-		// toggle killproof window
-		Settings& settings = Settings::instance();
-		if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey())
-		{
-			show_killproof = !show_killproof;
-			return 0;
-		}
-		if (vkey == VK_CONTROL)
-		{
-			io->KeyCtrl = true;
-		}
-		else if (vkey == VK_MENU)
-		{
-			io->KeyAlt = true;
-		}
-		else if (vkey == VK_SHIFT)
-		{
-			io->KeyShift = true;
-		}
-		io->KeysDown[vkey] = true;
-		break;
-	}
 	case WM_ACTIVATEAPP:
-	{
-		if (!wParam)
 		{
-			io->KeysDown[arc_global_mod1] = false;
-			io->KeysDown[arc_global_mod2] = false;
+			if (!wParam) {
+				io->KeysDown[arc_global_mod1] = false;
+				io->KeysDown[arc_global_mod2] = false;
+			}
+			break;
 		}
-		break;
-	}
 	default:
 		break;
 	}
-	
+
 	return uMsg;
 }
 
@@ -158,7 +142,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			if (username.at(0) == ':') {
 				username.erase(0, 1);
 			}
-			
+
 			/* add */
 			if (src->prof) {
 				std::lock_guard<std::mutex> cachedGuard(cachedPlayersMutex);
@@ -184,7 +168,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 				std::lock_guard<std::mutex> trackedGuard(trackedPlayersMutex);
 				trackedPlayers.emplace(username);
 			}
-			/* remove */
+				/* remove */
 			else {
 				std::lock_guard<std::mutex> guard(trackedPlayersMutex);
 				trackedPlayers.erase(username);
@@ -194,8 +178,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 	return 0;
 }
 
-uintptr_t mod_options()
-{
+uintptr_t mod_options() {
 	if (ImGui::BeginMenu("Killproof.me")) {
 		ImGui::Checkbox("Killproofs", &show_killproof);
 		ImGui::Checkbox("Settings", &show_settings);
@@ -205,39 +188,35 @@ uintptr_t mod_options()
 	return 0;
 }
 
-bool modsPressed()
-{
+bool modsPressed() {
 	auto io = &ImGui::GetIO();
 
 	return io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2];
 }
 
-bool canMoveWindows()
-{
-	if (!arc_movelock_altui)
-	{
+bool canMoveWindows() {
+	if (!arc_movelock_altui) {
 		return true;
-	}
-	else
-	{
+	} else {
 		return modsPressed();
 	}
 }
 
 void ShowKillproof(bool* p_open) {
 	if (show_killproof) {
-		killproofUi.draw("Killproof.me", p_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
+		killproofUi.draw("Killproof.me", p_open,
+		                 ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
 	}
 }
 
 void ShowSettings(bool* p_open) {
 	if (show_settings) {
-		settingsUi.draw("Killproof.me Settings", p_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
+		settingsUi.draw("Killproof.me Settings", p_open,
+		                ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
 	}
 }
 
-void readArcExports()
-{
+void readArcExports() {
 	uint64_t e6_result = arc_export_e6();
 	uint64_t e7_result = arc_export_e7();
 
@@ -249,16 +228,14 @@ void readArcExports()
 
 
 	uint16_t* ra = (uint16_t*)&e7_result;
-	if (ra)
-	{
+	if (ra) {
 		arc_global_mod1 = ra[0];
 		arc_global_mod2 = ra[1];
 		arc_global_mod_multi = ra[2];
 	}
 }
 
-uintptr_t mod_imgui(uint32_t not_charsel_or_loading)
-{
+uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	readArcExports();
 
 	if (!not_charsel_or_loading) return 0;
