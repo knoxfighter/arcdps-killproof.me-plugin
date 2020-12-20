@@ -163,17 +163,6 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 						// load killproofs
 						player.loadKillproofs();
 					}
-
-					const auto& tryEmplace2 = cachedPlayers.try_emplace("username", "username", "src->name");
-
-					// check if emplacing successful, if yes, load the kp.me page
-					if (tryEmplace2.second) {
-						// save player object to work on
-						Player& player = tryEmplace2.first->second;
-
-						// load killproofs
-						player.loadKillproofs();
-					}
 				} else {
 					// update charactername
 					playerIt->second.characterName = src->name;
@@ -182,7 +171,6 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 				// add to tracking
 				std::lock_guard<std::mutex> trackedGuard(trackedPlayersMutex);
 				trackedPlayers.emplace(username);
-				trackedPlayers.emplace("username");
 			}
 				/* remove */
 			else {
