@@ -255,7 +255,7 @@ arcdps_exports* mod_init() {
 	arc_exports.sig = 0x6BAF1938322278DE;
 	arc_exports.size = sizeof(arcdps_exports);
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "1.0.3";
+	arc_exports.out_build = "1.1.0";
 	arc_exports.wnd_nofilter = mod_wnd;
 	arc_exports.combat = mod_combat;
 	arc_exports.imgui = mod_imgui;
