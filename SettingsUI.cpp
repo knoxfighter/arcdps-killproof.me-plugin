@@ -43,6 +43,7 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::Text(shortCutRealName);
 
 	ImGui::Checkbox("hide players without killproof.me account", &settings.settings.hidePrivateAccount);
+	ImGui::Checkbox("hide private data from players", &settings.settings.hidePrivateData);
 
 	ImGui::Separator();
 

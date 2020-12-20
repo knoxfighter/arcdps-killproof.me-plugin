@@ -19,6 +19,10 @@ bool Settings::getHidePrivateAccount() const {
 	return settings.hidePrivateAccount;
 }
 
+bool Settings::getHidePrivateData() const {
+	return settings.hidePrivateData;
+}
+
 Settings::~Settings() {
     saveToFile();
 }
