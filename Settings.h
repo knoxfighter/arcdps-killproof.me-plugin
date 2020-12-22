@@ -19,8 +19,9 @@ public:
         int killproofKey;
         bool hidePrivateAccount;
         bool hidePrivateData;
+        bool showKillproof;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, active, killproofKey, hidePrivateAccount, hidePrivateData)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, active, killproofKey, hidePrivateAccount, hidePrivateData, showKillproof)
     };
 
     static Settings& instance();
@@ -30,6 +31,7 @@ public:
     [[nodiscard]] int getKillProofKey() const;
     [[nodiscard]] bool getHidePrivateAccount() const;
     [[nodiscard]] bool getHidePrivateData() const;
+    [[nodiscard]] bool& getShowKillproof();
 
 private:
     // copy/move etc. will be deleted implicitly

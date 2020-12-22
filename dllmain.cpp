@@ -3,8 +3,8 @@
 #include <d3d9.h>
 #include <cstdint>
 #include <mutex>
-#include <stdexcept>
 #include <string>
+#include <iostream>
 
 #include "arcdps_structs.h"
 #include "global.h"
@@ -34,7 +34,6 @@ void readArcExports();
 // globals
 char* arcvers;
 arcdps_exports arc_exports = {};
-bool show_killproof = false;
 bool show_settings = false;
 KillproofUI killproofUi;
 SettingsUI settingsUi;
@@ -68,6 +67,8 @@ e3_func_ptr arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	auto const io = &ImGui::GetIO();
 
+	std::cout << "mod_wnd(" << hWnd << ", " << uMsg << ", " << wParam << std::endl;
+
 	switch (uMsg) {
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
@@ -89,6 +90,8 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			readArcExports();
 			const int vkey = (int)wParam;
 			// close windows on escape press (return 0, so arc and gw2 are not processing this event)
+			Settings& settings = Settings::instance();
+			bool& show_killproof = settings.getShowKillproof();
 			if (!arc_hide_all && vkey == VK_ESCAPE) {
 				// close settings menu first
 				if (arc_window_fastclose && show_settings) {
@@ -102,7 +105,6 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				}
 			}
 			// toggle killproof window
-			Settings& settings = Settings::instance();
 			if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey() && !arc_hide_all) {
 				show_killproof = !show_killproof;
 				return 0;
@@ -175,7 +177,15 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 				/* remove */
 			else {
 				std::lock_guard<std::mutex> guard(trackedPlayersMutex);
-				trackedPlayers.erase(username);
+				try {
+					trackedPlayers.erase(username);
+				} catch (const std::exception& e) {
+					std::string out("Something went wrong inside trackedPlayers.erase(): ");
+					out.append(e.what());
+					arc_log((char*)out.c_str());
+					arc_log((char*)username.c_str());
+					throw e;
+				}
 			}
 		}
 	}
@@ -184,7 +194,8 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 
 uintptr_t mod_options() {
 	if (ImGui::BeginMenu("Killproof.me")) {
-		ImGui::Checkbox("Killproofs", &show_killproof);
+		bool& showKillproof = Settings::instance().getShowKillproof();
+		ImGui::Checkbox("Killproofs", &showKillproof);
 		ImGui::Checkbox("Settings", &show_settings);
 		ImGui::EndMenu();
 	}
@@ -207,7 +218,7 @@ bool canMoveWindows() {
 }
 
 void ShowKillproof(bool* p_open) {
-	if (show_killproof) {
+	if (*p_open) {
 		killproofUi.draw("Killproof.me", p_open,
 		                 ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
 	}
@@ -241,8 +252,8 @@ void readArcExports() {
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	if (!not_charsel_or_loading) return 0;
-
-	ShowKillproof(&show_killproof);
+	bool& showKillproof = Settings::instance().getShowKillproof();
+	ShowKillproof(&showKillproof);
 	ShowSettings(&show_settings);
 
 	return 0;
@@ -255,7 +266,7 @@ arcdps_exports* mod_init() {
 	arc_exports.sig = 0x6BAF1938322278DE;
 	arc_exports.size = sizeof(arcdps_exports);
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "1.1.0";
+	arc_exports.out_build = "1.2.0-beta";
 	arc_exports.wnd_nofilter = mod_wnd;
 	arc_exports.combat = mod_combat;
 	arc_exports.imgui = mod_imgui;

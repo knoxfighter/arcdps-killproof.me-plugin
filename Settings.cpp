@@ -23,6 +23,10 @@ bool Settings::getHidePrivateData() const {
 	return settings.hidePrivateData;
 }
 
+bool& Settings::getShowKillproof() {
+	return settings.showKillproof;
+}
+
 Settings::~Settings() {
     saveToFile();
 }
