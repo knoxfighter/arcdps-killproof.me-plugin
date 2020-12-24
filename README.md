@@ -13,6 +13,11 @@ To disable, just remove the .dll or move it to a different folder.
 
 Alternative, install it with the [Guild Wars 2 Addon loader](https://github.com/fmmmlee/GW2-Addon-Manager/), like multiple other plugins.
 
+## Problem solving
+If the DLL is not loaded (options do not show up), make sure, that you have installed the latest C++ 2017 Redistributable.
+You can download the latest Redistributable from [Microsofts download page](https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads).
+Please use the version "Visual Studio 2015, 2017 and 2019".
+
 ## Usage
 Don't be a dick and give people a chance!
 
