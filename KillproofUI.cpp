@@ -32,8 +32,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 
 	// ImGui::SetNextTreeNodeOpen(true);
 	// TreeNode with the player name
-	std::lock_guard<std::mutex> playerGuard(trackedPlayersMutex);
-	std::lock_guard<std::mutex> cacheGuard(cachedPlayersMutex);
+	std::scoped_lock lock(trackedPlayersMutex, cachedPlayersMutex);
 	for (const std::string& trackedPlayer : trackedPlayers) {
 		const Player& player = cachedPlayers.at(trackedPlayer);
 		Settings& settings = Settings::instance();

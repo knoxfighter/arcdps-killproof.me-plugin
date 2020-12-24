@@ -48,7 +48,7 @@ enum class Killproof {
 uint8_t convertToPos(const Killproof& kp);
 
 // cannot use this operator, it would be ambiguous, cause of a msvc++ compiler bug
-// bool operator<(const Killproof& lhs, const Killproof& rhs);
+// `bool operator<(const Killproof& lhs, const Killproof& rhs);`
 // use this comparison object as Compare implementation
 struct comparatorKillProof {
 	bool operator()(const Killproof& lhs, const Killproof& rhs) const {

@@ -151,7 +151,8 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 
 			/* add */
 			if (src->prof) {
-				std::lock_guard<std::mutex> cachedGuard(cachedPlayersMutex);
+				std::scoped_lock lock(cachedPlayersMutex, trackedPlayersMutex);
+				
 				auto playerIt = cachedPlayers.find(username);
 				if (playerIt == cachedPlayers.end()) {
 					// no element found, create it
@@ -171,7 +172,6 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 				}
 
 				// add to tracking
-				std::lock_guard<std::mutex> trackedGuard(trackedPlayersMutex);
 				trackedPlayers.emplace(username);
 			}
 				/* remove */
