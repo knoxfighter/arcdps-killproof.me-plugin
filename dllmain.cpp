@@ -65,70 +65,73 @@ e3_func_ptr arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	auto const io = &ImGui::GetIO();
+	try {
+		auto const io = &ImGui::GetIO();
 
-	std::cout << "mod_wnd(" << hWnd << ", " << uMsg << ", " << wParam << std::endl;
-
-	switch (uMsg) {
-	case WM_KEYUP:
-	case WM_SYSKEYUP:
-		{
-			const int vkey = (int)wParam;
-			io->KeysDown[vkey] = false;
-			if (vkey == VK_CONTROL) {
-				io->KeyCtrl = false;
-			} else if (vkey == VK_MENU) {
-				io->KeyAlt = false;
-			} else if (vkey == VK_SHIFT) {
-				io->KeyShift = false;
+		switch (uMsg) {
+		case WM_KEYUP:
+		case WM_SYSKEYUP:
+			{
+				const int vkey = (int)wParam;
+				io->KeysDown[vkey] = false;
+				if (vkey == VK_CONTROL) {
+					io->KeyCtrl = false;
+				} else if (vkey == VK_MENU) {
+					io->KeyAlt = false;
+				} else if (vkey == VK_SHIFT) {
+					io->KeyShift = false;
+				}
+				break;
 			}
-			break;
-		}
-	case WM_KEYDOWN:
-	case WM_SYSKEYDOWN:
-		{
-			readArcExports();
-			const int vkey = (int)wParam;
-			// close windows on escape press (return 0, so arc and gw2 are not processing this event)
-			Settings& settings = Settings::instance();
-			bool& show_killproof = settings.getShowKillproof();
-			if (!arc_hide_all && vkey == VK_ESCAPE) {
-				// close settings menu first
-				if (arc_window_fastclose && show_settings) {
-					show_settings = false;
+		case WM_KEYDOWN:
+		case WM_SYSKEYDOWN:
+			{
+				readArcExports();
+				const int vkey = (int)wParam;
+				// close windows on escape press (return 0, so arc and gw2 are not processing this event)
+				Settings& settings = Settings::instance();
+				bool& show_killproof = settings.getShowKillproof();
+				if (!arc_hide_all && vkey == VK_ESCAPE) {
+					// close settings menu first
+					if (arc_window_fastclose && show_settings) {
+						show_settings = false;
+						return 0;
+					}
+					// close killproof window with escape
+					if (arc_window_fastclose && show_killproof) {
+						show_killproof = false;
+						return 0;
+					}
+				}
+				// toggle killproof window
+				if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey() && !arc_hide_all) {
+					show_killproof = !show_killproof;
 					return 0;
 				}
-				// close killproof window with escape
-				if (arc_window_fastclose && show_killproof) {
-					show_killproof = false;
-					return 0;
+				if (vkey == VK_CONTROL) {
+					io->KeyCtrl = true;
+				} else if (vkey == VK_MENU) {
+					io->KeyAlt = true;
+				} else if (vkey == VK_SHIFT) {
+					io->KeyShift = true;
 				}
+				io->KeysDown[vkey] = true;
+				break;
 			}
-			// toggle killproof window
-			if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey() && !arc_hide_all) {
-				show_killproof = !show_killproof;
-				return 0;
+		case WM_ACTIVATEAPP:
+			{
+				if (!wParam) {
+					io->KeysDown[arc_global_mod1] = false;
+					io->KeysDown[arc_global_mod2] = false;
+				}
+				break;
 			}
-			if (vkey == VK_CONTROL) {
-				io->KeyCtrl = true;
-			} else if (vkey == VK_MENU) {
-				io->KeyAlt = true;
-			} else if (vkey == VK_SHIFT) {
-				io->KeyShift = true;
-			}
-			io->KeysDown[vkey] = true;
+		default:
 			break;
 		}
-	case WM_ACTIVATEAPP:
-		{
-			if (!wParam) {
-				io->KeysDown[arc_global_mod1] = false;
-				io->KeysDown[arc_global_mod2] = false;
-			}
-			break;
-		}
-	default:
-		break;
+	} catch (const std::exception& e) {
+		arc_log(const_cast<char*>(e.what()));
+		throw e;
 	}
 
 	return uMsg;
@@ -137,57 +140,62 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 /* combat callback -- may be called asynchronously. return ignored */
 /* one participant will be party/squad, or minion of. no spawn statechange events. despawn statechange only on marked boss npcs */
 uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t id, uint64_t revision) {
-	/* ev is null. dst will only be valid on tracking add. skillname will also be null */
-	if (!ev) {
+	try {
+		/* ev is null. dst will only be valid on tracking add. skillname will also be null */
+		if (!ev) {
 
-		/* notify tracking change */
-		if (!src->elite) {
-			std::string username(dst->name);
+			/* notify tracking change */
+			if (!src->elite) {
+				std::string username(dst->name);
 
-			// remove ':' at the beginning of the name.
-			if (username.at(0) == ':') {
-				username.erase(0, 1);
-			}
-
-			/* add */
-			if (src->prof) {
-				std::scoped_lock lock(cachedPlayersMutex, trackedPlayersMutex);
-				
-				auto playerIt = cachedPlayers.find(username);
-				if (playerIt == cachedPlayers.end()) {
-					// no element found, create it
-					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, src->name);
-
-					// check if emplacing successful, if yes, load the kp.me page
-					if (tryEmplace.second) {
-						// save player object to work on
-						Player& player = tryEmplace.first->second;
-
-						// load killproofs
-						player.loadKillproofs();
-					}
-				} else {
-					// update charactername
-					playerIt->second.characterName = src->name;
+				// remove ':' at the beginning of the name.
+				if (username.at(0) == ':') {
+					username.erase(0, 1);
 				}
 
-				// add to tracking
-				trackedPlayers.emplace(username);
-			}
-				/* remove */
-			else {
-				std::lock_guard<std::mutex> guard(trackedPlayersMutex);
-				try {
-					trackedPlayers.erase(username);
-				} catch (const std::exception& e) {
-					std::string out("Something went wrong inside trackedPlayers.erase(): ");
-					out.append(e.what());
-					arc_log((char*)out.c_str());
-					arc_log((char*)username.c_str());
-					throw e;
+				/* add */
+				if (src->prof) {
+					std::scoped_lock lock(cachedPlayersMutex, trackedPlayersMutex);
+
+					auto playerIt = cachedPlayers.find(username);
+					if (playerIt == cachedPlayers.end()) {
+						// no element found, create it
+						const auto& tryEmplace = cachedPlayers.try_emplace(username, username, src->name);
+
+						// check if emplacing successful, if yes, load the kp.me page
+						if (tryEmplace.second) {
+							// save player object to work on
+							Player& player = tryEmplace.first->second;
+
+							// load killproofs
+							player.loadKillproofs();
+						}
+					} else {
+						// update charactername
+						playerIt->second.characterName = src->name;
+					}
+
+					// add to tracking
+					trackedPlayers.emplace(username);
+				}
+					/* remove */
+				else {
+					std::lock_guard<std::mutex> guard(trackedPlayersMutex);
+					try {
+						trackedPlayers.erase(username);
+					} catch (const std::exception& e) {
+						std::string out("Something went wrong inside trackedPlayers.erase(): ");
+						out.append(e.what());
+						arc_log((char*)out.c_str());
+						arc_log((char*)username.c_str());
+						throw e;
+					}
 				}
 			}
 		}
+	} catch (const std::exception& e) {
+		arc_log(const_cast<char*>(e.what()));
+		throw e;
 	}
 	return 0;
 }
@@ -251,10 +259,15 @@ void readArcExports() {
 }
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
-	if (!not_charsel_or_loading) return 0;
-	bool& showKillproof = Settings::instance().getShowKillproof();
-	ShowKillproof(&showKillproof);
-	ShowSettings(&show_settings);
+	try {
+		if (!not_charsel_or_loading) return 0;
+		bool& showKillproof = Settings::instance().getShowKillproof();
+		ShowKillproof(&showKillproof);
+		ShowSettings(&show_settings);
+	} catch (const std::exception& e) {
+		arc_log(const_cast<char*>(e.what()));
+		throw e;
+	}
 
 	return 0;
 }
