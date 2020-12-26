@@ -184,7 +184,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 					try {
 						trackedPlayers.erase(username);
 					} catch (const std::exception& e) {
-						std::string out("Something went wrong inside trackedPlayers.erase(): ");
+						std::string out = "Something went wrong inside trackedPlayers.erase(): ";
 						out.append(e.what());
 						arc_log((char*)out.c_str());
 						arc_log((char*)username.c_str());

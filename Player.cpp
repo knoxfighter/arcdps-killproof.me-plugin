@@ -7,7 +7,7 @@
 #include "json.hpp"
 
 void Player::loadKillproofs() {
-	std::string link("https://killproof.me/api/kp/");
+	std::string link = "https://killproof.me/api/kp/";
 	link.append(username);
 	link.append("?lang=en");
 
