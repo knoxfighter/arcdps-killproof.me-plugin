@@ -34,12 +34,18 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::SameLine();
 	ImGui::PushItemWidth(30);
 	if (ImGui::InputText("##shortcut", shortcut, 64)) {
-		const int keyId = std::stoi(shortcut);
-		settings.settings.killproofKey = keyId;
-		// convert virtual key to vsc key
-		UINT vscKey = MapVirtualKeyA(keyId, MAPVK_VK_TO_VSC);
-		// get the name representation of the key
-		GetKeyNameTextA((vscKey << 16), shortCutRealName, 32);
+		try {
+			const int keyId = std::stoi(shortcut);
+			settings.settings.killproofKey = keyId;
+			// convert virtual key to vsc key
+			UINT vscKey = MapVirtualKeyA(keyId, MAPVK_VK_TO_VSC);
+			// get the name representation of the key
+			GetKeyNameTextA((vscKey << 16), shortCutRealName, 32);
+		} catch ([[maybe_unused]] const std::invalid_argument& e) {
+			
+		} catch ([[maybe_unused]] const std::out_of_range& e) {
+			
+		}
 	}
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
