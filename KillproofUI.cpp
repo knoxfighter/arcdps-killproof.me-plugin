@@ -9,19 +9,28 @@
 
 #define windowWidth 800
 #define windowsHeight 650
-#define leftItemWidth  100
 
 void KillproofUI::drawSingleKP(const char* name, amountVal amount, Settings& settings) {
 	if (amount == -1) {
 		if (!settings.getHidePrivateData()) {
 			ImGui::Text(name);
-			ImGui::SameLine(leftItemWidth);
+			ImGui::SameLine();
+			float posX = ImGui::GetCursorPosX() + 10.f;
+			if (posX > leftItemWidth) {
+				leftItemWidth = posX;
+			}
+			ImGui::SetCursorPosX(leftItemWidth);
 			ImGui::Text("data private");
 		}
 	}
 	else {
 		ImGui::Text(name);
-		ImGui::SameLine(leftItemWidth);
+		ImGui::SameLine();
+		float posX = ImGui::GetCursorPosX() + 10.f;
+		if (posX > leftItemWidth) {
+			leftItemWidth = posX;
+		}
+		ImGui::SetCursorPosX(leftItemWidth);
 		ImGui::Text("%i", amount);
 	}
 }
