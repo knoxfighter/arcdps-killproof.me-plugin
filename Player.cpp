@@ -2,13 +2,14 @@
 
 #include <set>
 #include <cpr/cpr.h>
+#include <cpr/util.h>
 
 #include "global.h"
 #include "json.hpp"
 
 void Player::loadKillproofs() {
 	std::string link = "https://killproof.me/api/kp/";
-	link.append(username);
+	link.append(cpr::util::urlEncode(username));
 	link.append("?lang=en");
 
 	// download it in a new thread (fire and forget)
