@@ -144,45 +144,49 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 	try {
 		/* ev is null. dst will only be valid on tracking add. skillname will also be null */
 		if (!ev) {
-
 			/* notify tracking change */
 			if (!src->elite) {
-				std::string username(dst->name);
+				// only run, when names are set and not null
+				if (src->name != nullptr && src->name[0] != '\0' && dst->name != nullptr && dst->name[0] != '\0') {
 
-				// remove ':' at the beginning of the name.
-				if (username.at(0) == ':') {
-					username.erase(0, 1);
-				}
+					std::string username(dst->name);
 
-				/* add */
-				if (src->prof) {
-					std::scoped_lock lock(cachedPlayersMutex, trackedPlayersMutex);
-
-					auto playerIt = cachedPlayers.find(username);
-					if (playerIt == cachedPlayers.end()) {
-						// no element found, create it
-						const auto& tryEmplace = cachedPlayers.try_emplace(username, username, src->name);
-
-						// check if emplacing successful, if yes, load the kp.me page
-						if (tryEmplace.second) {
-							// save player object to work on
-							Player& player = tryEmplace.first->second;
-
-							// load killproofs
-							player.loadKillproofs();
-						}
-					} else {
-						// update charactername
-						playerIt->second.characterName = src->name;
+					// remove ':' at the beginning of the name.
+					if (username.at(0) == ':') {
+						username.erase(0, 1);
 					}
 
-					// add to tracking
-					trackedPlayers.emplace(username);
-				}
+					/* add */
+					if (src->prof) {
+						std::scoped_lock lock(cachedPlayersMutex, trackedPlayersMutex);
+
+						auto playerIt = cachedPlayers.find(username);
+						if (playerIt == cachedPlayers.end()) {
+							// no element found, create it
+							const auto& tryEmplace = cachedPlayers.try_emplace(username, username, src->name);
+
+							// check if emplacing successful, if yes, load the kp.me page
+							if (tryEmplace.second) {
+								// save player object to work on
+								Player& player = tryEmplace.first->second;
+
+								// load killproofs
+								player.loadKillproofs();
+							}
+						}
+						else {
+							// update charactername
+							playerIt->second.characterName = src->name;
+						}
+
+						// add to tracking
+						trackedPlayers.emplace(username);
+					}
 					/* remove */
-				else {
-					std::lock_guard<std::mutex> guard(trackedPlayersMutex);
-					trackedPlayers.erase(username);
+					else {
+						std::lock_guard<std::mutex> guard(trackedPlayersMutex);
+						trackedPlayers.erase(username);
+					}
 				}
 			}
 		}
@@ -195,8 +199,8 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			char event[sizeof(cbtevent)];
 			memcpy(event, ev, sizeof(cbtevent));
 			std::stringstream evss;
-			for (char i : event) {
-				evss << std::hex << (int)i;
+			for (size_t i = 0; i < sizeof(cbtevent); ++i) {
+				evss << std::hex << (int)event[i];
 			}
 			evss << "\n";
 			std::string evs = evss.str();
@@ -208,8 +212,8 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			char srcData[sizeof(ag)];
 			memcpy(srcData, src, sizeof(ag));
 			std::stringstream srcDatass;
-			for (char i : srcData) {
-				srcDatass << std::hex << (int)i;
+			for (size_t i = 0; i < sizeof(ag); ++i) {
+				srcDatass << std::hex << (int)srcData[i];
 			}
 			srcDatass << "\n";
 			std::string srcDataS = srcDatass.str();
@@ -226,8 +230,8 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			char dstData[sizeof(ag)];
 			memcpy(dstData, dst, sizeof(ag));
 			std::stringstream dstDatass;
-			for (char i : dstData) {
-				dstDatass << std::hex << (int)i;
+			for (size_t i = 0; i < sizeof(ag); ++i) {
+				dstDatass << std::hex << (int)dstData[i];
 			}
 			dstDatass << "\n";
 			std::string dstDataS = dstDatass.str();
