@@ -4,7 +4,8 @@
 #include <cstdint>
 #include <mutex>
 #include <string>
-#include <iostream>
+#include <sstream>
+
 
 #include "arcdps_structs.h"
 #include "global.h"
@@ -181,20 +182,62 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 					/* remove */
 				else {
 					std::lock_guard<std::mutex> guard(trackedPlayersMutex);
-					try {
-						trackedPlayers.erase(username);
-					} catch (const std::exception& e) {
-						std::string out = "Something went wrong inside trackedPlayers.erase(): ";
-						out.append(e.what());
-						arc_log((char*)out.c_str());
-						arc_log((char*)username.c_str());
-						throw e;
-					}
+					trackedPlayers.erase(username);
 				}
 			}
 		}
 	} catch (const std::exception& e) {
 		arc_log(const_cast<char*>(e.what()));
+
+		// create dump of params
+		if (ev) {
+			arc_log(const_cast<char*>("ev:\n"));
+			char event[sizeof(cbtevent)];
+			memcpy(event, ev, sizeof(cbtevent));
+			std::stringstream evss;
+			for (char i : event) {
+				evss << std::hex << (int)i;
+			}
+			evss << "\n";
+			std::string evs = evss.str();
+			arc_log(const_cast<char*>(evs.c_str()));
+		}
+
+		if (src) {
+			arc_log(const_cast<char*>("src:\n"));
+			char srcData[sizeof(ag)];
+			memcpy(srcData, src, sizeof(ag));
+			std::stringstream srcDatass;
+			for (char i : srcData) {
+				srcDatass << std::hex << (int)i;
+			}
+			srcDatass << "\n";
+			std::string srcDataS = srcDatass.str();
+			arc_log(const_cast<char*>(srcDataS.c_str()));
+
+			if (src->name) {
+				arc_log(const_cast<char*>("src->name:\n"));
+				arc_log(src->name);
+			}
+		}
+
+		if (dst) {
+			arc_log(const_cast<char*>("dst:\n"));
+			char dstData[sizeof(ag)];
+			memcpy(dstData, dst, sizeof(ag));
+			std::stringstream dstDatass;
+			for (char i : dstData) {
+				dstDatass << std::hex << (int)i;
+			}
+			dstDatass << "\n";
+			std::string dstDataS = dstDatass.str();
+			arc_log(const_cast<char*>(dstDataS.c_str()));
+
+			if (dst->name) {
+				arc_log(const_cast<char*>("dst->name:\n"));
+				arc_log(dst->name);
+			}
+		}
 		throw e;
 	}
 	return 0;
@@ -279,7 +322,7 @@ arcdps_exports* mod_init() {
 	arc_exports.sig = 0x6BAF1938322278DE;
 	arc_exports.size = sizeof(arcdps_exports);
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "1.2.2";
+	arc_exports.out_build = "1.2.3-beta";
 	arc_exports.wnd_nofilter = mod_wnd;
 	arc_exports.combat = mod_combat;
 	arc_exports.imgui = mod_imgui;
