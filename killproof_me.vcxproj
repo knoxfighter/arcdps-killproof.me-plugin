@@ -187,6 +187,9 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell -noprofile -command  "(Get-FileHash '$(OutDirFullPath)$(TargetFileName)').Hash  &gt; '$(OutDirFullPath)$(TargetName).sha'"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
