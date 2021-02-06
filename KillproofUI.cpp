@@ -10,7 +10,7 @@
 #define windowsHeight 650
 
 void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
-	ImGui::SetNextWindowSizeConstraints(ImVec2(150, 50), ImVec2(windowWidth, windowsHeight));
+	// ImGui::SetNextWindowSizeConstraints(ImVec2(150, 50), ImVec2(windowWidth, windowsHeight));
 	ImGui::Begin(title, p_open, flags);
 
 	// lock the mutexes, before we access sensible data
@@ -18,10 +18,17 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 
 	Settings& settings = Settings::instance();
 
-	if (ImGui::BeginTable("kp.me", static_cast<int>(Killproof::FINAL_ENTRY) + 1,
+	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 2;
+
+	if (ImGui::BeginTable("kp.me", columnCount,
 	                      ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable)) {
+		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
+		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
+
 		// Header
-		ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoHide | ImGuiTableColumnFlags_NoReorder, 0, static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1);
+		ImGui::TableSetupColumn("Accountname", ImGuiTableColumnFlags_NoReorder, 0, accountNameId);
+		ImGui::TableSetupColumn("Charactername", ImGuiTableColumnFlags_NoReorder, 0, characterNameId);
+
 		for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 			Killproof kp = static_cast<Killproof>(i);
 			int columnFlags = 0;
@@ -38,19 +45,34 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 			// Sort our data if sort specs have been changed!
 			if (sorts_specs->SpecsDirty)
 				needSort = true;
-			
+
 			bool expected = true;
 			if (needSort.compare_exchange_strong(expected, false)) {
 				const bool descend = sorts_specs->Specs->SortDirection == 2;
 
-				if (sorts_specs->Specs->ColumnUserID == static_cast<ImGuiID>(Killproof::FINAL_ENTRY) + 1) {
+				if (sorts_specs->Specs->ColumnUserID == accountNameId) {
 					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [descend](std::string playerAName, std::string playerBName) {
-						std::transform(playerAName.begin(), playerAName.end(), playerAName.begin(),[](unsigned char c) { return std::tolower(c); });
-						std::transform(playerBName.begin(), playerBName.end(), playerBName.begin(),[](unsigned char c) { return std::tolower(c); });
+						std::transform(playerAName.begin(), playerAName.end(), playerAName.begin(), [](unsigned char c) { return std::tolower(c); });
+						std::transform(playerBName.begin(), playerBName.end(), playerBName.begin(), [](unsigned char c) { return std::tolower(c); });
 						if (descend) {
 							return playerAName < playerBName;
 						} else {
 							return playerAName > playerBName;
+						}
+					});
+				} else if (sorts_specs->Specs->ColumnUserID == characterNameId) {
+					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [descend](std::string playerAName, std::string playerBName) {
+						std::string playerAChar = cachedPlayers.at(playerAName).characterName;
+						std::string playerBChar = cachedPlayers.at(playerBName).characterName;
+
+						std::transform(playerAChar.begin(), playerAChar.end(), playerAChar.begin(), [](unsigned char c) { return std::tolower(c); });
+						std::transform(playerBChar.begin(), playerBChar.end(), playerBChar.begin(), [](unsigned char c) { return std::tolower(c); });
+
+
+						if (descend) {
+							return playerAChar < playerBChar;
+						} else {
+							return playerAChar > playerBChar;
 						}
 					});
 				} else {
@@ -80,14 +102,20 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 			// hide player they have data, when setting is active
 			if (!(settings.getHidePrivateAccount() && player.noDataAvailable)) {
 				ImGui::TableNextRow();
+
+				// username
 				ImGui::TableNextColumn();
-				ImGui::Text("%s - %s", player.username.c_str(), player.characterName.c_str());
+				ImGui::Text(player.username.c_str());
+
+				// charactername
+				ImGui::TableNextColumn();
+				ImGui::Text(player.characterName.c_str());
 
 				for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 					ImGui::TableNextColumn();
 					const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
 					if (amount == -1 || player.noDataAvailable) {
-						ImGui::Text("?");
+						ImGui::Text("-");
 					} else {
 						ImGui::Text("%i", amount);
 					}
