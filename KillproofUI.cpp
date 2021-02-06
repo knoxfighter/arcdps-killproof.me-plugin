@@ -1,6 +1,7 @@
 #include "KillproofUI.h"
 
 #include <mutex>
+#include <Windows.h>
 
 #include "global.h"
 #include "Player.h"
@@ -8,6 +9,12 @@
 
 #define windowWidth 800
 #define windowsHeight 650
+
+void KillproofUI::openInBrowser(const char* username) {
+	char buf[128];
+	snprintf(buf, 128, "https://killproof.me/proof/%s", username);
+	ShellExecuteA(nullptr, nullptr, buf, nullptr, nullptr, SW_SHOW);
+}
 
 void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	// ImGui::SetNextWindowSizeConstraints(ImVec2(150, 50), ImVec2(windowWidth, windowsHeight));
@@ -109,10 +116,18 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 				// username
 				ImGui::TableNextColumn();
 				ImGui::Text(player.username.c_str());
+				if (ImGui::IsItemClicked()) {
+					// Open users kp.me in the browser
+					openInBrowser(player.username.c_str());
+				}
 
 				// charactername
 				ImGui::TableNextColumn();
 				ImGui::Text(player.characterName.c_str());
+				if (ImGui::IsItemClicked()) {
+					// Open users kp.me in the browser
+					openInBrowser(player.username.c_str());
+				}
 
 				for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 					ImGui::TableNextColumn();
