@@ -98,7 +98,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 						return 0;
 					}
 					// close killproof window with escape
-					if (arc_window_fastclose && show_killproof) {
+					if (arc_window_fastclose && !settings.getDisableEscClose() && show_killproof) {
 						show_killproof = false;
 						return 0;
 					}

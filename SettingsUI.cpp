@@ -70,6 +70,7 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::PopItemWidth();
 
 	ImGui::Checkbox("hide players without killproof.me account", &settings.settings.hidePrivateAccount);
+	ImGui::Checkbox("Do NOT close killproof.me window on ESC", &settings.settings.disableEscClose);
 
 	ImGui::PopStyleVar();
 	ImGui::End();

@@ -17,8 +17,9 @@ public:
         bool hidePrivateAccount;
         bool showKillproof;
         std::string blockedDataText;
+        bool disableEscClose;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose)
     };
 
     static Settings& instance();
@@ -28,6 +29,7 @@ public:
     [[nodiscard]] bool getHidePrivateAccount() const;
     [[nodiscard]] bool& getShowKillproof();
     [[nodiscard]] const std::string& getBlockedDataText() const;
+    [[nodiscard]] bool getDisableEscClose() const;
 
 private:
     // copy/move etc. will be deleted implicitly

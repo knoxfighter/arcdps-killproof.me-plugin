@@ -23,6 +23,10 @@ const std::string& Settings::getBlockedDataText() const {
 	return settings.blockedDataText;
 }
 
+bool Settings::getDisableEscClose() const {
+	return settings.disableEscClose;
+}
+
 Settings::~Settings() {
     saveToFile();
 }
