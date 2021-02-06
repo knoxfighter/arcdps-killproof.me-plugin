@@ -15,10 +15,10 @@ public:
     struct SettingsObject {
         int killproofKey;
         bool hidePrivateAccount;
-        bool hidePrivateData;
         bool showKillproof;
+        std::string blockedDataText;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, hidePrivateData, showKillproof)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText)
     };
 
     static Settings& instance();
@@ -26,8 +26,8 @@ public:
     // getter/setter
     [[nodiscard]] int getKillProofKey() const;
     [[nodiscard]] bool getHidePrivateAccount() const;
-    [[nodiscard]] bool getHidePrivateData() const;
     [[nodiscard]] bool& getShowKillproof();
+    [[nodiscard]] const std::string& getBlockedDataText() const;
 
 private:
     // copy/move etc. will be deleted implicitly

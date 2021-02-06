@@ -6,6 +6,7 @@ class SettingsUI
 {
 	char shortcut[64]{};
 	char shortCutRealName[32]{};
+	char blockedDataText[64]{};
 	
 public:
 	SettingsUI();

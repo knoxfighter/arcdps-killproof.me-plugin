@@ -51,9 +51,11 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 				const bool descend = sorts_specs->Specs->SortDirection == 2;
 
 				if (sorts_specs->Specs->ColumnUserID == accountNameId) {
+					// sort by account name. Account name is the value we used in trackedPlayers, so nothing more to do
 					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [descend](std::string playerAName, std::string playerBName) {
 						std::transform(playerAName.begin(), playerAName.end(), playerAName.begin(), [](unsigned char c) { return std::tolower(c); });
 						std::transform(playerBName.begin(), playerBName.end(), playerBName.begin(), [](unsigned char c) { return std::tolower(c); });
+
 						if (descend) {
 							return playerAName < playerBName;
 						} else {
@@ -61,13 +63,13 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 						}
 					});
 				} else if (sorts_specs->Specs->ColumnUserID == characterNameId) {
+					// sort by character name
 					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [descend](std::string playerAName, std::string playerBName) {
 						std::string playerAChar = cachedPlayers.at(playerAName).characterName;
 						std::string playerBChar = cachedPlayers.at(playerBName).characterName;
 
 						std::transform(playerAChar.begin(), playerAChar.end(), playerAChar.begin(), [](unsigned char c) { return std::tolower(c); });
 						std::transform(playerBChar.begin(), playerBChar.end(), playerBChar.begin(), [](unsigned char c) { return std::tolower(c); });
-
 
 						if (descend) {
 							return playerAChar < playerBChar;
@@ -76,6 +78,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 						}
 					});
 				} else {
+					// sort by any amount of KP
 					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [sorts_specs, descend](std::string playerAName, std::string playerBName) {
 						// get player object of name
 						const Player& playerA = cachedPlayers.at(playerAName);
@@ -115,7 +118,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 					ImGui::TableNextColumn();
 					const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
 					if (amount == -1 || player.noDataAvailable) {
-						ImGui::Text("-");
+						ImGui::Text("%s", settings.getBlockedDataText().c_str());
 					} else {
 						ImGui::Text("%i", amount);
 					}

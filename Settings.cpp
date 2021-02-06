@@ -15,12 +15,12 @@ bool Settings::getHidePrivateAccount() const {
 	return settings.hidePrivateAccount;
 }
 
-bool Settings::getHidePrivateData() const {
-	return settings.hidePrivateData;
-}
-
 bool& Settings::getShowKillproof() {
 	return settings.showKillproof;
+}
+
+const std::string& Settings::getBlockedDataText() const {
+	return settings.blockedDataText;
 }
 
 Settings::~Settings() {
@@ -38,6 +38,10 @@ void Settings::setDefaults() {
 	// set default key to "K"
 	if (settings.killproofKey == 0) {
 		settings.killproofKey = 0x4B;
+	}
+
+	if (settings.blockedDataText.empty()) {
+		settings.blockedDataText = "-";
 	}
 }
 

@@ -10,6 +10,9 @@
 
 SettingsUI::SettingsUI() {
 	Settings& settings = Settings::instance();
+
+	// set all buffer to the values from Settings
+
 	int killProofKey = settings.getKillProofKey();
 	// copy in the string represantation of the key ID
 	strcpy_s(shortcut, std::to_string(killProofKey).c_str());
@@ -17,6 +20,8 @@ SettingsUI::SettingsUI() {
 	UINT vscKey = MapVirtualKeyA(killProofKey, MAPVK_VK_TO_VSC);
 	// get the name representation of the key
 	GetKeyNameTextA((vscKey << 16), shortCutRealName, 32);
+
+	strcpy_s(blockedDataText, settings.settings.blockedDataText.c_str());
 }
 
 void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
@@ -43,17 +48,28 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 			// get the name representation of the key
 			GetKeyNameTextA((vscKey << 16), shortCutRealName, 32);
 		} catch ([[maybe_unused]] const std::invalid_argument& e) {
-			
+
 		} catch ([[maybe_unused]] const std::out_of_range& e) {
-			
+
 		}
 	}
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 	ImGui::Text(shortCutRealName);
 
+	// input for data private
+	ImGui::PushItemWidth(50);
+	if (ImGui::InputText("Text to display when data is unavailable/private", blockedDataText, sizeof blockedDataText)) {
+		if (strlen(blockedDataText) == 0) {
+			settings.settings.blockedDataText = " ";
+		}
+		else {
+			settings.settings.blockedDataText = blockedDataText;
+		}
+	}
+	ImGui::PopItemWidth();
+
 	ImGui::Checkbox("hide players without killproof.me account", &settings.settings.hidePrivateAccount);
-	// ImGui::Checkbox("hide private data from players", &settings.settings.hidePrivateData);
 
 	ImGui::PopStyleVar();
 	ImGui::End();
