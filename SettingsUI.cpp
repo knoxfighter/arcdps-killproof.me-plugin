@@ -20,12 +20,13 @@ SettingsUI::SettingsUI() {
 }
 
 void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
-	ImGui::SetNextWindowSize(ImVec2(windowWidth, 650), ImGuiSetCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(windowWidth, 650), ImGuiCond_FirstUseEver);
 	// set min size of the object
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(150, 50));
+	ImGui::Begin(title, p_open, flags);
+
 	// set frame padding smaller (small buttons)
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-	ImGui::Begin(title, p_open, flags);
 
 	Settings& settings = Settings::instance();
 
@@ -52,17 +53,9 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::Text(shortCutRealName);
 
 	ImGui::Checkbox("hide players without killproof.me account", &settings.settings.hidePrivateAccount);
-	ImGui::Checkbox("hide private data from players", &settings.settings.hidePrivateData);
+	// ImGui::Checkbox("hide private data from players", &settings.settings.hidePrivateData);
 
-	ImGui::Separator();
-
-	// A list of all available KPs. Can be activated and deactivated here
-	ImGui::Text("Everything selected is shown in the killproofs menu");
-
-	for (auto& active : settings.getActive()) {
-		ImGui::Checkbox(toString(active.first), &active.second);
-	}
-
+	ImGui::PopStyleVar();
 	ImGui::End();
-	ImGui::PopStyleVar(2);
+	ImGui::PopStyleVar();
 }

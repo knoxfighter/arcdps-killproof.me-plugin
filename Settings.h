@@ -7,27 +7,23 @@
 
 class SettingsUI;
 
-typedef std::map<Killproof, bool, comparatorKillProof> kpActiveMap;
-
 class Settings
 {
     friend SettingsUI;
 
 public:
     struct SettingsObject {
-        kpActiveMap active;
         int killproofKey;
         bool hidePrivateAccount;
         bool hidePrivateData;
         bool showKillproof;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, active, killproofKey, hidePrivateAccount, hidePrivateData, showKillproof)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, hidePrivateData, showKillproof)
     };
 
     static Settings& instance();
 
     // getter/setter
-    [[nodiscard]] kpActiveMap& getActive();
     [[nodiscard]] int getKillProofKey() const;
     [[nodiscard]] bool getHidePrivateAccount() const;
     [[nodiscard]] bool getHidePrivateData() const;

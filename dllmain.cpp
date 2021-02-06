@@ -36,7 +36,6 @@ void readArcExports();
 char* arcvers;
 arcdps_exports arc_exports = {};
 bool show_settings = false;
-KillproofUI killproofUi;
 SettingsUI settingsUi;
 
 // load arcdps dll.
@@ -180,12 +179,15 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 						}
 
 						// add to tracking
-						trackedPlayers.emplace(username);
+						trackedPlayers.emplace_back(username);
+
+						// Tell the UI to resort, cause we added a player
+						killproofUi.needSort = true;
 					}
 					/* remove */
 					else {
 						std::lock_guard<std::mutex> guard(trackedPlayersMutex);
-						trackedPlayers.erase(username);
+						trackedPlayers.erase(std::remove(trackedPlayers.begin(), trackedPlayers.end(), username), trackedPlayers.end());
 					}
 				}
 			}
@@ -323,10 +325,11 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 /* initialize mod -- return table that arcdps will use for callbacks */
 arcdps_exports* mod_init() {
 	/* for arcdps */
-	arc_exports.sig = 0x6BAF1938322278DE;
+	arc_exports.sig = 0x6BAF1938;
+	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.size = sizeof(arcdps_exports);
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "1.2.5-beta";
+	arc_exports.out_build = "2.0.0-beta";
 	arc_exports.wnd_nofilter = mod_wnd;
 	arc_exports.combat = mod_combat;
 	arc_exports.imgui = mod_imgui;
@@ -336,9 +339,10 @@ arcdps_exports* mod_init() {
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext) {
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, void* id3dd9, HANDLE arcdll, void* mallocfn, void* freefn) {
 	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(static_cast<ImGuiContext*>(imguicontext));
+	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);
 	return mod_init;
 }
 

@@ -6,6 +6,7 @@
 
 #include "global.h"
 #include "json.hpp"
+#include "KillproofUI.h"
 
 void Player::loadKillproofs() {
 	std::string link = "https://killproof.me/api/kp/";
@@ -60,6 +61,8 @@ void Player::loadKillproofs() {
 		// silently set, when user not found
 		else if (response.status_code == 404) {
 			this->noDataAvailable = true;
+			this->killproofs.setAllKillproofFieldsToBlocked();
+			this->killproofs.setAllTokensFieldsToBlocked();
 		}
 		// on any other error, print verbose output into the arcdps.log file
 		else {
@@ -80,6 +83,9 @@ void Player::loadKillproofs() {
 			cs.append("\n");
 			arc_log((char*)cs.c_str());
 		}
+
+		// say UI to reload sorting
+		killproofUi.needSort = true;
 	});
 	// we want to run async completely, so just detach
 	cprCall.detach();

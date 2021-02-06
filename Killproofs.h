@@ -7,60 +7,56 @@
 
 #define amountVal int32_t
 
-enum class Killproof {
+enum class Killproof : int {
 	// raid
-	li = 0,
-	ld = 1,
-	liLd = 26, // added li and ld
+	li,
+	ld,
+	liLd,
+	// added li and ld
 	// fractal
-	uce = 2,
-	ufe = 3,
+	uce,
+	ufe,
 	// w1
-	vg = 4,
-	gorse = 5,
-	sabetha = 6,
+	vg,
+	gorse,
+	sabetha,
 	// w2
-	sloth = 7,
-	matthias = 8,
+	sloth,
+	matthias,
 	// w3
-	escort = 9,
-	kc = 10,
-	xera = 11,
+	escort,
+	kc,
+	xera,
 	// w4
-	cairn = 12,
-	mo = 13,
-	samarog = 14,
-	deimos = 15,
+	cairn,
+	mo,
+	samarog,
+	deimos,
 	// w5
-	desmina = 16,
-	river = 17,
-	statues = 18,
-	dhuum = 19,
+	desmina,
+	river,
+	statues,
+	dhuum,
 	// w6
-	ca = 20,
-	twins = 21,
-	qadim = 22,
+	ca,
+	twins,
+	qadim,
 	// w7
-	sabir = 23,
-	adina = 24,
-	qadim2 = 25,
-};
-uint8_t convertToPos(const Killproof& kp);
+	sabir,
+	adina,
+	qadim2,
 
-// cannot use this operator, it would be ambiguous, cause of a msvc++ compiler bug
-// `bool operator<(const Killproof& lhs, const Killproof& rhs);`
-// use this comparison object as Compare implementation
-struct comparatorKillProof {
-	bool operator()(const Killproof& lhs, const Killproof& rhs) const {
-		return convertToPos(lhs) < convertToPos(rhs);
-	}
+	// always last element
+	// ALWAYS UPDATE AFTER CHANGING THE ENUM
+	FINAL_ENTRY,
 };
 
+bool defaultHidden(const Killproof& kp);
 
 const char* toString(Killproof e);
 
 class Killproofs {
-	std::map < Killproof, amountVal, comparatorKillProof> killproofs = {
+	std::map<Killproof, amountVal> killproofs = {
 		{Killproof::li, 0},
 		{Killproof::ld, 0},
 		{Killproof::uce, 0},

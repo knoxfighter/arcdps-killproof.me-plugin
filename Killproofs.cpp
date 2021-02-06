@@ -1,34 +1,37 @@
 #include "Killproofs.h"
 
-uint8_t convertToPos(const Killproof& kp) {
+bool defaultHidden(const Killproof& kp) {
 	switch (kp) {
-	case Killproof::li: return 1;
-	case Killproof::ld: return 2;
-	case Killproof::liLd: return 3;
-	case Killproof::uce: return 5;
-	case Killproof::ufe: return 6;
-	case Killproof::vg:  return 7;
-	case Killproof::gorse: return 8;
-	case Killproof::sabetha: return 9;
-	case Killproof::sloth: return 10;
-	case Killproof::matthias: return 11;
-	case Killproof::escort: return 12;
-	case Killproof::kc: return 13;
-	case Killproof::xera: return 14;
-	case Killproof::cairn: return 15;
-	case Killproof::mo: return 16;
-	case Killproof::samarog: return 17;
-	case Killproof::deimos: return 18;
-	case Killproof::desmina: return 19;
-	case Killproof::river: return 20;
-	case Killproof::statues: return 21;
-	case Killproof::dhuum: return 22;
-	case Killproof::ca: return 23;
-	case Killproof::twins: return 24;
-	case Killproof::qadim: return 25;
-	case Killproof::sabir: return 26;
-	case Killproof::adina: return 27;
-	case Killproof::qadim2: return 28;
+	case Killproof::li:
+	case Killproof::ld:
+	case Killproof::liLd:
+	case Killproof::uce:
+	case Killproof::ufe:
+	case Killproof::dhuum:
+	case Killproof::qadim:
+	case Killproof::qadim2:
+		return false;
+	case Killproof::vg:
+	case Killproof::gorse:
+	case Killproof::sabetha:
+	case Killproof::sloth:
+	case Killproof::matthias:
+	case Killproof::escort:
+	case Killproof::kc:
+	case Killproof::xera:
+	case Killproof::cairn:
+	case Killproof::mo:
+	case Killproof::samarog:
+	case Killproof::deimos:
+	case Killproof::desmina:
+	case Killproof::river:
+	case Killproof::statues:
+	case Killproof::ca:
+	case Killproof::twins:
+	case Killproof::sabir:
+	case Killproof::adina:
+		return true;
+	default: return false;
 	}
 }
 
@@ -151,7 +154,12 @@ amountVal Killproofs::getAmountFromId(const std::string& id) const {
 
 amountVal Killproofs::getAmountFromEnum(const Killproof& id) const {
 	std::lock_guard<std::mutex> guard(mapMutex);
-	return killproofs.at(id);
+	const auto killproofIt = killproofs.find(id);
+	if (killproofIt == killproofs.end()) {
+		return -1;
+	} else {
+		return killproofIt->second;
+	}
 }
 
 void Killproofs::setAmountFromId(const std::string& id, const amountVal& amount) {
@@ -220,12 +228,12 @@ void Killproofs::setAmountFromId(const int& id, const amountVal& amount) {
 	std::lock_guard<std::mutex> guard(mapMutex);
 
 	switch (id) {
-	case 77302: 
+	case 77302:
 		killproofs[Killproof::li] = amount;
 		// set li/ld amount
 		killproofs[Killproof::liLd] = killproofs[Killproof::ld] + amount;
 		break;
-	case 88485: 
+	case 88485:
 		killproofs[Killproof::ld] = amount;
 		// set li/ld amount
 		killproofs[Killproof::liLd] = killproofs[Killproof::li] + amount;
@@ -337,12 +345,12 @@ void Killproofs::setBlockedFromId(const int& id) {
 	std::lock_guard<std::mutex> guard(mapMutex);
 
 	switch (id) {
-	case 77302: 
+	case 77302:
 		killproofs[Killproof::li] = -1;
 		// also set li/ld to -1
 		killproofs[Killproof::liLd] = -1;
 		break;
-	case 88485: 
+	case 88485:
 		killproofs[Killproof::ld] = -1;
 		// also set li/ld to -1
 		killproofs[Killproof::liLd] = -1;
