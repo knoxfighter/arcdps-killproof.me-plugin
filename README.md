@@ -14,7 +14,7 @@ To disable, just remove the .dll or move it to a different folder.
 Alternative, install it with the [Guild Wars 2 Addon loader](https://github.com/fmmmlee/GW2-Addon-Manager/), like multiple other plugins.
 
 ## Problem solving
-If the DLL is not loaded (options do not show up), make sure, that you have installed the latest C++ 2017 Redistributable.
+If the DLL is not loaded (options do not show up), make sure, that you have installed the latest C++ 2015-2019 Redistributable.
 You can download the latest Redistributable from [Microsofts download page](https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads).
 Please use the version "Visual Studio 2015, 2017 and 2019".
 
@@ -27,11 +27,9 @@ Two way to open the window:
 - Open the arcdps options panel (Alt+Shift+T by default) and enable the "Kproofs" checkbox. It can be found in the "Killproof.me" category.
 - Use the hotkey Alt+Shift+K. This can be adjusted in the Settings menu (opened also in the arcdps options panel, in the "Killproof.me" category.
 
-To close the window, just press the X on the top right, press Escape or use the hotkey Alt+Shift+K again.
-
-In the settings you can choose, what will be listed for each user.
-
-The UI is updated to a table version, as soon, as arcdps is updating to the new ImGui version 1.80 (will be around christmas).
+To close the window, just press the X on the top right, press Escape or use the hotkey Alt+Shift+K again.  
+To change what is shown in the table, press rightclick on the header. The table can be sorted by every column, just click on the header.  
+The killproof.me website will be opened, when you click on the accountname or on the username.
 
 ![Ingame screenshot](screenshot.png)
 
