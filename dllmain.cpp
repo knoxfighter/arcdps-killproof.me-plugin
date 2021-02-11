@@ -6,7 +6,6 @@
 #include <string>
 #include <sstream>
 
-
 #include "arcdps_structs.h"
 #include "global.h"
 #include "imgui/imgui.h"
@@ -37,17 +36,11 @@ char* arcvers;
 arcdps_exports arc_exports = {};
 bool show_settings = false;
 SettingsUI settingsUi;
-
-// load arcdps dll.
-// When loading directly, arcdps is the "d3d9.dll"
-// When loading with the addon manager, arcdps is called "gw2addon_arcdps.dll"
-HMODULE arc_dllD = LoadLibraryA("d3d9.dll");
-HMODULE arc_dllL = LoadLibraryA("gw2addon_arcdps.dll");
-HMODULE arc_dll = (arc_dllL != nullptr) ? arc_dllL : arc_dllD;
+HMODULE arc_dll;
 
 typedef uint64_t (*arc_export_func_u64)();
 // arc options
-auto arc_export_e6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
+arc_export_func_u64 arc_export_e6;
 bool arc_hide_all = false;
 bool arc_panel_always_draw = false;
 bool arc_movelock_altui = false;
@@ -55,13 +48,13 @@ bool arc_clicklock_altui = false;
 bool arc_window_fastclose = false;
 
 // arc keyboard modifier
-auto arc_export_e7 = (arc_export_func_u64)GetProcAddress(arc_dll, "e7");
+arc_export_func_u64 arc_export_e7;
 DWORD arc_global_mod1 = 0;
 DWORD arc_global_mod2 = 0;
 DWORD arc_global_mod_multi = 0;
 
 // arc add to log
-e3_func_ptr arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
+e3_func_ptr arc_log;
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -339,10 +332,15 @@ arcdps_exports* mod_init() {
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, void* id3dd9, HANDLE arcdll, void* mallocfn, void* freefn) {
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, void* id3dd9, HMODULE new_arcdll, void* mallocfn, void* freefn) {
 	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(static_cast<ImGuiContext*>(imguicontext));
 	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);
+
+	arc_dll = new_arcdll;
+	arc_export_e6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
+	arc_export_e7 = (arc_export_func_u64)GetProcAddress(arc_dll, "e7");
+	arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
 	return mod_init;
 }
 
