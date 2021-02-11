@@ -116,7 +116,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 				// username
 				ImGui::TableNextColumn();
 				ImGui::Text(player.username.c_str());
-				if (ImGui::IsItemClicked()) {
+				if (!player.noDataAvailable && ImGui::IsItemClicked()) {
 					// Open users kp.me in the browser
 					openInBrowser(player.username.c_str());
 				}
