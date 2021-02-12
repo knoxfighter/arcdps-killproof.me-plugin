@@ -123,7 +123,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 		}
 	} catch (const std::exception& e) {
-		arc_log(const_cast<char*>(e.what()));
+		arc_log(e.what());
 		throw e;
 	}
 
@@ -186,11 +186,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 		}
 	} catch (const std::exception& e) {
-		arc_log(const_cast<char*>(e.what()));
+		arc_log(e.what());
 
 		// create dump of params
 		if (ev) {
-			arc_log(const_cast<char*>("ev:\n"));
+			arc_log("ev:\n");
 			char event[sizeof(cbtevent)];
 			memcpy(event, ev, sizeof(cbtevent));
 			std::stringstream evss;
@@ -199,11 +199,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 			evss << "\n";
 			std::string evs = evss.str();
-			arc_log(const_cast<char*>(evs.c_str()));
+			arc_log(evs.c_str());
 		}
 
 		if (src) {
-			arc_log(const_cast<char*>("src:\n"));
+			arc_log("src:\n");
 			char srcData[sizeof(ag)];
 			memcpy(srcData, src, sizeof(ag));
 			std::stringstream srcDatass;
@@ -212,16 +212,16 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 			srcDatass << "\n";
 			std::string srcDataS = srcDatass.str();
-			arc_log(const_cast<char*>(srcDataS.c_str()));
+			arc_log(srcDataS.c_str());
 
 			if (src->name) {
-				arc_log(const_cast<char*>("src->name:\n"));
+				arc_log("src->name:\n");
 				arc_log(src->name);
 			}
 		}
 
 		if (dst) {
-			arc_log(const_cast<char*>("dst:\n"));
+			arc_log("dst:\n");
 			char dstData[sizeof(ag)];
 			memcpy(dstData, dst, sizeof(ag));
 			std::stringstream dstDatass;
@@ -230,10 +230,10 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 			dstDatass << "\n";
 			std::string dstDataS = dstDatass.str();
-			arc_log(const_cast<char*>(dstDataS.c_str()));
+			arc_log(dstDataS.c_str());
 
 			if (dst->name) {
-				arc_log(const_cast<char*>("dst->name:\n"));
+				arc_log("dst->name:\n");
 				arc_log(dst->name);
 			}
 		}
@@ -307,7 +307,7 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 		ShowKillproof(&showKillproof);
 		ShowSettings(&show_settings);
 	} catch (const std::exception& e) {
-		arc_log(const_cast<char*>(e.what()));
+		arc_log(e.what());
 		throw e;
 	}
 
