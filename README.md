@@ -25,7 +25,7 @@ This plugin will load the killproof.me profiles, from everybody in your group, w
 
 Two way to open the window:  
 - Open the arcdps options panel (Alt+Shift+T by default) and enable the "Killproofs" checkbox. It can be found in the "Killproof.me" category.
-- Use the hotkey Alt+Shift+K. This can be adjusted in the Settings menu (opened also in the arcdps options panel, in the "Killproof.me" category.
+- Use the hotkey Alt+Shift+K. This can be adjusted in the Settings menu (opened also in the arcdps options panel, in the "Killproof.me" category).
 
 To close the window, just press the X on the top right, press Escape or use the hotkey Alt+Shift+K again.  
 To change what is shown in the table, press rightclick on the header. The table can be sorted by every column, just click on the header.  
