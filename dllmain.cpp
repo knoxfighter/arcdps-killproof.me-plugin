@@ -64,18 +64,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		switch (uMsg) {
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
-			{
-				const int vkey = (int)wParam;
-				io->KeysDown[vkey] = false;
-				if (vkey == VK_CONTROL) {
-					io->KeyCtrl = false;
-				} else if (vkey == VK_MENU) {
-					io->KeyAlt = false;
-				} else if (vkey == VK_SHIFT) {
-					io->KeyShift = false;
-				}
-				break;
-			}
+			break;
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
 			{
@@ -100,22 +89,6 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey() && !arc_hide_all) {
 					show_killproof = !show_killproof;
 					return 0;
-				}
-				if (vkey == VK_CONTROL) {
-					io->KeyCtrl = true;
-				} else if (vkey == VK_MENU) {
-					io->KeyAlt = true;
-				} else if (vkey == VK_SHIFT) {
-					io->KeyShift = true;
-				}
-				io->KeysDown[vkey] = true;
-				break;
-			}
-		case WM_ACTIVATEAPP:
-			{
-				if (!wParam) {
-					io->KeysDown[arc_global_mod1] = false;
-					io->KeysDown[arc_global_mod2] = false;
 				}
 				break;
 			}
