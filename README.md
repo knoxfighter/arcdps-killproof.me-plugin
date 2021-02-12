@@ -24,7 +24,7 @@ Don't be a dick and give people a chance!
 This plugin will load the killproof.me profiles, from everybody in your group, when they are on the same map, than you are. Those information, can be accessed in the killproof.me windows. No information is shown, when the individual has no killproof.me account or it is on private.
 
 Two way to open the window:  
-- Open the arcdps options panel (Alt+Shift+T by default) and enable the "Kproofs" checkbox. It can be found in the "Killproof.me" category.
+- Open the arcdps options panel (Alt+Shift+T by default) and enable the "Killproofs" checkbox. It can be found in the "Killproof.me" category.
 - Use the hotkey Alt+Shift+K. This can be adjusted in the Settings menu (opened also in the arcdps options panel, in the "Killproof.me" category.
 
 To close the window, just press the X on the top right, press Escape or use the hotkey Alt+Shift+K again.  
