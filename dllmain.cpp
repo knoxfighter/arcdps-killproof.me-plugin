@@ -152,6 +152,9 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 					if (src->prof) {
 						std::scoped_lock lock(cachedPlayersMutex, trackedPlayersMutex);
 
+						// add to tracking
+						trackedPlayers.emplace_back(username);
+
 						auto playerIt = cachedPlayers.find(username);
 						if (playerIt == cachedPlayers.end()) {
 							// no element found, create it
@@ -163,7 +166,10 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 								Player& player = tryEmplace.first->second;
 
 								// load killproofs
-								player.loadKillproofs();
+								// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
+								if (trackedPlayers.size() <= 10) {
+									player.loadKillproofs();
+								}
 							}
 						}
 						else {
@@ -172,11 +178,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 							player.characterName = src->name;
 
 							// load user data if not yet loaded (check inside function)
-							player.loadKillproofs();
+							// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
+							if (trackedPlayers.size() <= 10) {
+								player.loadKillproofs();
+							}
 						}
-
-						// add to tracking
-						trackedPlayers.emplace_back(username);
 
 						// Tell the UI to resort, cause we added a player
 						killproofUi.needSort = true;
