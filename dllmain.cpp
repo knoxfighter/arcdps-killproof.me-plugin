@@ -167,8 +167,12 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 							}
 						}
 						else {
+							Player& player = playerIt->second;
 							// update charactername
-							playerIt->second.characterName = src->name;
+							player.characterName = src->name;
+
+							// load user data if not yet loaded (check inside function)
+							player.loadKillproofs();
 						}
 
 						// add to tracking

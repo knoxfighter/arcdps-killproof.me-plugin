@@ -9,6 +9,15 @@
 #include "KillproofUI.h"
 
 void Player::loadKillproofs() {
+	// make sure this is not run twice
+	// So we skip, if the players data is unavailable, already loading or successfully loaded
+	LoadingStatus loadingStatus = status.load();
+	if (loadingStatus == LoadingStatus::Loading || loadingStatus == LoadingStatus::NoDataAvailable || loadingStatus == LoadingStatus::Loaded)
+		return;
+	// not run if Loading cannot be set or loading status was previously something different
+	if (!status.compare_exchange_strong(loadingStatus, LoadingStatus::Loading)) 
+		return;
+	
 	std::string link = "https://killproof.me/api/kp/";
 	link.append(cpr::util::urlEncode(username));
 	link.append("?lang=en");
@@ -56,17 +65,17 @@ void Player::loadKillproofs() {
 				}
 			}
 
-			this->noDataAvailable = false;
+			this->status = LoadingStatus::Loaded;
 		}
 		// silently set, when user not found
 		else if (response.status_code == 404) {
-			this->noDataAvailable = true;
+			this->status = LoadingStatus::NoDataAvailable;
 			this->killproofs.setAllKillproofFieldsToBlocked();
 			this->killproofs.setAllTokensFieldsToBlocked();
 		}
 		// on any other error, print verbose output into the arcdps.log file
 		else {
-			this->noDataAvailable = true;
+			this->status = LoadingStatus::KpMeError;
 
 			std::string cs = "URL: ";
 			cs.append(response.url.str());
@@ -81,7 +90,18 @@ void Player::loadKillproofs() {
 			cs.append(" -- StatusLine: ");
 			cs.append(response.status_line);
 			cs.append("\n");
-			arc_log((char*)cs.c_str());
+			arc_log(cs.c_str());
+
+			cs.clear();
+
+			cs.append(this->username);
+			cs.append(": ");
+			cs.append(" -- ");
+			cs.append(std::to_string(response.status_code));
+			cs.append(" -- ");
+			cs.append(response.text);
+			
+			this->errorMessage = cs;
 		}
 
 		// say UI to reload sorting

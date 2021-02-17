@@ -2,8 +2,8 @@
 
 #include <string>
 
+#include "arcdps_structs.h"
 #include "Killproofs.h"
-
 
 class Player {
 public:
@@ -17,7 +17,9 @@ public:
 	std::string username;
 	std::string characterName;
 	Killproofs killproofs;
-	bool noDataAvailable = true;
+	std::atomic<LoadingStatus> status {LoadingStatus::NotLoaded};
+	std::string errorMessage;
+	
 
 	void loadKillproofs();
 };

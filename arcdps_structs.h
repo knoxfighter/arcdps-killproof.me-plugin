@@ -54,3 +54,11 @@ typedef struct ag {
 	uint32_t self; /* 1 if self, 0 if not */
 	uint16_t team; /* sep21+ */
 } ag;
+
+enum class LoadingStatus {
+	NotLoaded, // loading was not yet tried
+	KpMeError, // Error returned from kp.me
+	NoDataAvailable, // User has no kp.me account or account is private
+	Loaded, // Successful, all data available to use
+	Loading // Data is currently being loaded
+};

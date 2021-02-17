@@ -25,6 +25,19 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 
 	Settings& settings = Settings::instance();
 
+	/**
+	 * ERROR MESSAGES
+	 */
+	for (std::string trackedPlayer : trackedPlayers) {
+		const Player& player = cachedPlayers.at(trackedPlayer);
+		if (player.status == LoadingStatus::KpMeError) {
+			ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s", player.errorMessage.c_str());
+		}
+	}
+	
+	/**
+	 * TABLE
+	 */
 	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 2;
 
 	if (ImGui::BeginTable("kp.me", columnCount,
@@ -110,13 +123,13 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 			const Player& player = cachedPlayers.at(trackedPlayer);
 
 			// hide player they have data, when setting is active
-			if (!(settings.getHidePrivateAccount() && player.noDataAvailable)) {
+			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
 				ImGui::TableNextRow();
 
 				// username
 				ImGui::TableNextColumn();
 				ImGui::Text(player.username.c_str());
-				if (!player.noDataAvailable && ImGui::IsItemClicked()) {
+				if (!(player.status == LoadingStatus::NoDataAvailable) && ImGui::IsItemClicked()) {
 					// Open users kp.me in the browser
 					openInBrowser(player.username.c_str());
 				}
@@ -132,7 +145,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 				for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 					ImGui::TableNextColumn();
 					const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
-					if (amount == -1 || player.noDataAvailable) {
+					if (amount == -1 || player.status == LoadingStatus::NoDataAvailable) {
 						ImGui::Text("%s", settings.getBlockedDataText().c_str());
 					} else {
 						ImGui::Text("%i", amount);
