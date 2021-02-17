@@ -2,6 +2,8 @@
 
 #include <map>
 
+
+#include "arcdps_structs.h"
 #include "json.hpp"
 #include "Killproofs.h"
 
@@ -18,8 +20,9 @@ public:
         bool showKillproof;
         std::string blockedDataText;
         bool disableEscClose;
+        Alignment alignment = Alignment::Left;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment)
     };
 
     static Settings& instance();
@@ -30,6 +33,7 @@ public:
     [[nodiscard]] bool& getShowKillproof();
     [[nodiscard]] const std::string& getBlockedDataText() const;
     [[nodiscard]] bool getDisableEscClose() const;
+    [[nodiscard]] Alignment getAlignment() const;
 
 private:
     // copy/move etc. will be deleted implicitly

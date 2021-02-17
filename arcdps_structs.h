@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 typedef struct arcdps_exports {
 	uintptr_t size; /* size of exports table */
 	uint32_t sig; /* pick a number between 0 and uint32_t max that isn't used by other modules */
@@ -62,3 +64,12 @@ enum class LoadingStatus {
 	Loaded, // Successful, all data available to use
 	Loading // Data is currently being loaded
 };
+
+// additional enum for alignment
+enum class Alignment {
+	Left,
+	Center,
+	Right
+};
+
+std::string to_string(Alignment alignment);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Settings.h"
 #include "imgui/imgui.h"
 
 class SettingsUI
@@ -12,5 +13,6 @@ public:
 	SettingsUI();
 
 	void draw(const char* title, bool* p_open, ImGuiWindowFlags flags);
+	void alignmentSelectable(Alignment select_alignment, Settings& settings);
 };
 

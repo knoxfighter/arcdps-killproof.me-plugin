@@ -74,6 +74,14 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::Checkbox("hide players without killproof.me account", &settings.settings.hidePrivateAccount);
 	ImGui::Checkbox("Do NOT close killproof.me window on ESC", &settings.settings.disableEscClose);
 
+	if (ImGui::BeginCombo("Alignment", to_string(settings.settings.alignment).c_str())) {
+		alignmentSelectable(Alignment::Left, settings);
+		alignmentSelectable(Alignment::Center, settings);
+		alignmentSelectable(Alignment::Right, settings);
+
+		ImGui::EndCombo();
+	}
+
 	if (ImGui::Button("Clear cache")) {
 		std::scoped_lock<std::mutex, std::mutex> guard(cachedPlayersMutex, trackedPlayersMutex);
 
@@ -101,4 +109,11 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::PopStyleVar();
 	ImGui::End();
 	ImGui::PopStyleVar();
+}
+
+void SettingsUI::alignmentSelectable(Alignment select_alignment, Settings& settings) {
+	std::string new_alignment_text = to_string(select_alignment);
+	if (ImGui::Selectable(new_alignment_text.c_str())) {
+		settings.settings.alignment = select_alignment;
+	}
 }

@@ -6,6 +6,7 @@
 #include "global.h"
 #include "Player.h"
 #include "Settings.h"
+#include "imgui/imgui_internal.h"
 
 #define windowWidth 800
 #define windowsHeight 650
@@ -173,9 +174,9 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 					ImGui::TableNextColumn();
 					const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
 					if (amount == -1 || player.status != LoadingStatus::Loaded) {
-						ImGui::Text("%s", settings.getBlockedDataText().c_str());
+						AlignedTextColumn("%s", settings.getBlockedDataText().c_str());
 					} else {
-						ImGui::Text("%i", amount);
+						AlignedTextColumn("%i", amount);
 					}
 				}
 			}
@@ -185,4 +186,39 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 	}
 
 	ImGui::End();
+}
+
+
+void KillproofUI::AlignedTextColumn(const char* text, ...) const {
+	va_list args;
+	va_start(args, text);
+	char buf[4096];
+	ImFormatStringV(buf, 4096, text, args);
+	va_end(args);
+
+	const float posX = ImGui::GetCursorPosX();
+	float newX = posX;
+	float textWidth = ImGui::CalcTextSize(buf).x;
+	float columnWidth = ImGui::GetColumnWidth();
+
+	Alignment alignment = Settings::instance().getAlignment();
+	switch (alignment) {
+	case Alignment::Left:
+		break;
+	case Alignment::Center:
+		newX = posX + columnWidth / 2 - textWidth / 2;
+		break;
+	case Alignment::Right:
+		newX = posX + columnWidth - textWidth;
+		break;
+	}
+
+	// Clip to left, if text is bigger than current column
+	if (newX < posX) {
+		newX = posX;
+	}
+
+	ImGui::SetCursorPosX(newX);
+
+	ImGui::TextUnformatted(buf);
 }

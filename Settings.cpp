@@ -27,6 +27,10 @@ bool Settings::getDisableEscClose() const {
 	return settings.disableEscClose;
 }
 
+Alignment Settings::getAlignment() const {
+	return settings.alignment;
+}
+
 Settings::~Settings() {
     saveToFile();
 }
