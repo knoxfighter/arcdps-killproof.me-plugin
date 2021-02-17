@@ -9,6 +9,8 @@
 #include "KillproofUI.h"
 
 void Player::loadKillproofs() {
+	using namespace std::chrono_literals;
+
 	// make sure this is not run twice
 	// So we skip, if the players data is unavailable, already loading or successfully loaded
 	LoadingStatus loadingStatus = status.load();
@@ -102,6 +104,11 @@ void Player::loadKillproofs() {
 			cs.append(response.text);
 			
 			this->errorMessage = cs;
+
+			// start 1 minute timeout until reloading
+			// we can just pause this detached thread :)
+			std::this_thread::sleep_for(1min);
+			this->loadKillproofs();
 		}
 
 		// say UI to reload sorting
