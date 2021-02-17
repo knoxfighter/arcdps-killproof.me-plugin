@@ -155,28 +155,32 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 				ImGui::TableNextRow();
 
 				// username
-				ImGui::TableNextColumn();
-				ImGui::Text(player.username.c_str());
-				if (!(player.status == LoadingStatus::NoDataAvailable) && ImGui::IsItemClicked()) {
-					// Open users kp.me in the browser
-					openInBrowser(player.username.c_str());
+				if (ImGui::TableNextColumn()) {
+					ImGui::Text(player.username.c_str());
+					if (!(player.status == LoadingStatus::NoDataAvailable) && ImGui::IsItemClicked()) {
+						// Open users kp.me in the browser
+						openInBrowser(player.username.c_str());
+					}
 				}
 
 				// charactername
-				ImGui::TableNextColumn();
-				ImGui::Text(player.characterName.c_str());
-				if (ImGui::IsItemClicked()) {
-					// Open users kp.me in the browser
-					openInBrowser(player.username.c_str());
+				if (ImGui::TableNextColumn()) {
+					ImGui::Text(player.characterName.c_str());
+					if (ImGui::IsItemClicked()) {
+						// Open users kp.me in the browser
+						openInBrowser(player.username.c_str());
+					}
 				}
 
 				for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
-					ImGui::TableNextColumn();
-					const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
-					if (amount == -1 || player.status != LoadingStatus::Loaded) {
-						AlignedTextColumn("%s", settings.getBlockedDataText().c_str());
-					} else {
-						AlignedTextColumn("%i", amount);
+					if (ImGui::TableNextColumn()) {
+						const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
+						if (amount == -1 || player.status != LoadingStatus::Loaded) {
+							AlignedTextColumn("%s", settings.getBlockedDataText().c_str());
+						}
+						else {
+							AlignedTextColumn("%i", amount);
+						}
 					}
 				}
 			}
