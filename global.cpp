@@ -10,3 +10,9 @@ std::mutex trackedPlayersMutex;
 std::map<std::string, Player> cachedPlayers;
 std::mutex cachedPlayersMutex;
 KillproofUI killproofUi;
+
+void loadKillproofsSizeChecked(Player& player) {
+	if (trackedPlayers.size() <= 10) {
+		player.loadKillproofs();
+	}
+}

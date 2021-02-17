@@ -167,9 +167,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 
 								// load killproofs
 								// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
-								if (trackedPlayers.size() <= 10) {
-									player.loadKillproofs();
-								}
+								loadKillproofsSizeChecked(player);
 							}
 						}
 						else {
@@ -179,9 +177,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 
 							// load user data if not yet loaded (check inside function)
 							// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
-							if (trackedPlayers.size() <= 10) {
-								player.loadKillproofs();
-							}
+							loadKillproofsSizeChecked(player);
 						}
 
 						// Tell the UI to resort, cause we added a player

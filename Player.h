@@ -11,7 +11,6 @@ public:
 		: username(std::move(username)),
 		  characterName(std::move(characterName)) {
 	}
-
 	Player() = default;
 
 	std::string username;
@@ -19,7 +18,6 @@ public:
 	Killproofs killproofs;
 	std::atomic<LoadingStatus> status {LoadingStatus::NotLoaded};
 	std::string errorMessage;
-	
 
 	void loadKillproofs();
 };

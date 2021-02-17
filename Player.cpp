@@ -114,6 +114,7 @@ void Player::loadKillproofs() {
 		// say UI to reload sorting
 		killproofUi.needSort = true;
 	});
+
 	// we want to run async completely, so just detach
 	cprCall.detach();
 }

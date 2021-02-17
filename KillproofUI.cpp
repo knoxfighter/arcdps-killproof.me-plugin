@@ -38,7 +38,29 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 	/**
 	 * Controls
 	 */
-	
+	bool addPlayer = false;
+	if (ImGui::InputText("##useradd", userAddBuf, sizeof userAddBuf, ImGuiInputTextFlags_EnterReturnsTrue)) {
+		addPlayer = true;
+	}
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Accountname to add to the list (use account names, input without '.' will be ignored)");
+	ImGui::SameLine();
+	if (ImGui::Button("Add")) {
+		addPlayer = true;
+	}
+
+	if (addPlayer) {
+		std::string username(userAddBuf);
+
+		// only add users with a '.' in it
+		if (!username.find('.')) {
+			trackedPlayers.emplace_back(username);
+
+			const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "");
+			loadKillproofsSizeChecked(tryEmplace.first->second);
+			userAddBuf[0] = '\0';
+		}
+	}
 	
 	/**
 	 * TABLE

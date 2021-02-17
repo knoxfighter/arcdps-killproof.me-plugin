@@ -5,7 +5,7 @@
 #include <vector>
 
 class Player;
-struct KillproofUI;
+class KillproofUI;
 
 extern KillproofUI killproofUi;
 
@@ -16,3 +16,5 @@ extern std::mutex cachedPlayersMutex;
 
 typedef void(*e3_func_ptr)(const char* str);
 extern e3_func_ptr arc_log;
+
+void loadKillproofsSizeChecked(Player& player);

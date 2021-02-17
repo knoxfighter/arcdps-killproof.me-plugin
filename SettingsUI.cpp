@@ -92,9 +92,7 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 			const auto& tryEmplace = cachedPlayers.try_emplace(userToCharName.first, userToCharName.first, userToCharName.second);
 
 			// load kp.me data if less than 10 people tracked
-			if (trackedPlayers.size() <= 10) {
-				tryEmplace.first->second.loadKillproofs();
-			}
+			loadKillproofsSizeChecked(tryEmplace.first->second);
 		}
 	}
 	if (ImGui::IsItemHovered())
