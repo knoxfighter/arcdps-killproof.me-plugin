@@ -34,6 +34,11 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 			ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s", player.errorMessage.c_str());
 		}
 	}
+
+	/**
+	 * Controls
+	 */
+	
 	
 	/**
 	 * TABLE
@@ -145,7 +150,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 				for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 					ImGui::TableNextColumn();
 					const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
-					if (amount == -1 || player.status == LoadingStatus::NoDataAvailable) {
+					if (amount == -1 || player.status != LoadingStatus::Loaded) {
 						ImGui::Text("%s", settings.getBlockedDataText().c_str());
 					} else {
 						ImGui::Text("%i", amount);

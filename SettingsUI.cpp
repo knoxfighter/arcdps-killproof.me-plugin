@@ -2,7 +2,9 @@
 
 #include <Windows.h>
 
+#include "Player.h"
 #include "Settings.h"
+#include "global.h"
 
 #define windowWidth 800
 #define leftItemWidth  200
@@ -71,6 +73,32 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 
 	ImGui::Checkbox("hide players without killproof.me account", &settings.settings.hidePrivateAccount);
 	ImGui::Checkbox("Do NOT close killproof.me window on ESC", &settings.settings.disableEscClose);
+
+	if (ImGui::Button("Clear cache")) {
+		std::scoped_lock<std::mutex, std::mutex> guard(cachedPlayersMutex, trackedPlayersMutex);
+
+		// get all accountnames and charnames
+		std::map<std::string, std::string> userToCharNames;
+		for (std::string trackedPlayer : trackedPlayers) {
+			const Player& player = cachedPlayers.at(trackedPlayer);
+			userToCharNames[trackedPlayer] = player.characterName;
+		}
+
+		// clear the cache
+		cachedPlayers.clear();
+
+		// refill the cache with only tracked players
+		for (const auto& userToCharName : userToCharNames) {
+			const auto& tryEmplace = cachedPlayers.try_emplace(userToCharName.first, userToCharName.first, userToCharName.second);
+
+			// load kp.me data if less than 10 people tracked
+			if (trackedPlayers.size() <= 10) {
+				tryEmplace.first->second.loadKillproofs();
+			}
+		}
+	}
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Clear the cache and reload killproof.me data for all players");
 
 	ImGui::PopStyleVar();
 	ImGui::End();
