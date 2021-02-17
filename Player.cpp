@@ -15,7 +15,7 @@ void Player::loadKillproofs() {
 
 	// download it in a new thread (fire and forget)
 	std::thread cprCall([=]() {
-		cpr::Response response = cpr::Get(cpr::Url{ link });
+		cpr::Response response = cpr::Get(cpr::Url{ link }, cpr::Header{{"User-Agent", "arcdps-killproof.me-plugin"}});
 
 		if (response.status_code == 200) {
 			auto json = nlohmann::json::parse(response.text);
