@@ -54,7 +54,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		std::string username(userAddBuf);
 
 		// only add users with a '.' in it
-		if (!username.find('.')) {
+		if (username.find('.')) {
 			trackedPlayers.emplace_back(username);
 
 			const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "");
