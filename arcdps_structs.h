@@ -1,8 +1,11 @@
 #pragma once
 
+#include <string>
+
 typedef struct arcdps_exports {
 	uintptr_t size; /* size of exports table */
-	uintptr_t sig; /* pick a number between 0 and uint64_t max that isn't used by other modules */
+	uint32_t sig; /* pick a number between 0 and uint32_t max that isn't used by other modules */
+	uint32_t imguivers; /* set this to IMGUI_VERSION_NUM. if you don't use imgui, 18000 (as of 2021-02-02) */
 	const char* out_name; /* name string */
 	const char* out_build; /* build string */
 	void* wnd_nofilter; /* wndproc callback, fn(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) */
@@ -53,3 +56,20 @@ typedef struct ag {
 	uint32_t self; /* 1 if self, 0 if not */
 	uint16_t team; /* sep21+ */
 } ag;
+
+enum class LoadingStatus {
+	NotLoaded, // loading was not yet tried
+	KpMeError, // Error returned from kp.me
+	NoDataAvailable, // User has no kp.me account or account is private
+	Loaded, // Successful, all data available to use
+	Loading // Data is currently being loaded
+};
+
+// additional enum for alignment
+enum class Alignment {
+	Left,
+	Center,
+	Right
+};
+
+std::string to_string(Alignment alignment);

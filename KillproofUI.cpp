@@ -1,72 +1,228 @@
 #include "KillproofUI.h"
 
 #include <mutex>
-#include <set>
+#include <Windows.h>
 
 #include "global.h"
 #include "Player.h"
 #include "Settings.h"
+#include "imgui/imgui_internal.h"
 
 #define windowWidth 800
 #define windowsHeight 650
 
-void KillproofUI::drawSingleKP(const char* name, amountVal amount, Settings& settings) {
-	if (amount == -1) {
-		if (!settings.getHidePrivateData()) {
-			ImGui::Text(name);
-			ImGui::SameLine();
-			float posX = ImGui::GetCursorPosX() + 10.f;
-			if (posX > leftItemWidth) {
-				leftItemWidth = posX;
-			}
-			ImGui::SetCursorPosX(leftItemWidth);
-			ImGui::Text("data private");
-		}
-	}
-	else {
-		ImGui::Text(name);
-		ImGui::SameLine();
-		float posX = ImGui::GetCursorPosX() + 10.f;
-		if (posX > leftItemWidth) {
-			leftItemWidth = posX;
-		}
-		ImGui::SetCursorPosX(leftItemWidth);
-		ImGui::Text("%i", amount);
-	}
+void KillproofUI::openInBrowser(const char* username) {
+	char buf[128];
+	snprintf(buf, 128, "https://killproof.me/proof/%s", username);
+	ShellExecuteA(nullptr, nullptr, buf, nullptr, nullptr, SW_SHOW);
 }
 
 void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
-	ImGui::SetNextWindowSizeConstraints(ImVec2(150, 50), ImVec2(windowWidth, windowsHeight));
+	// ImGui::SetNextWindowSizeConstraints(ImVec2(150, 50), ImVec2(windowWidth, windowsHeight));
 	ImGui::Begin(title, p_open, flags);
 
-	// ImGui::SetNextTreeNodeOpen(true);
-	// TreeNode with the player name
+	// lock the mutexes, before we access sensible data
 	std::scoped_lock lock(trackedPlayersMutex, cachedPlayersMutex);
-	for (const std::string& trackedPlayer : trackedPlayers) {
-		const Player& player = cachedPlayers.at(trackedPlayer);
-		Settings& settings = Settings::instance();
-		if (!(settings.getHidePrivateAccount() && player.noDataAvailable)) {
-			char buf[2048];
-			snprintf(buf, 2048, "%s - %s", player.username.c_str(), player.characterName.c_str());
-			if (ImGui::TreeNode(buf)) {
-				if (player.noDataAvailable) {
-					ImGui::Text("no data available");
-				}
-				else {
-					Settings& settings = Settings::instance();
-					kpActiveMap& actives = settings.getActive();
-					for (auto& active : actives) {
-						if (active.second) {
-							amountVal amount = player.killproofs.getAmountFromEnum(active.first);
-							drawSingleKP(toString(active.first), amount, settings);
-						}
-					}
-				}
 
-				ImGui::TreePop();
-			}
+	Settings& settings = Settings::instance();
+
+	/**
+	 * ERROR MESSAGES
+	 */
+	for (std::string trackedPlayer : trackedPlayers) {
+		const Player& player = cachedPlayers.at(trackedPlayer);
+		if (player.status == LoadingStatus::KpMeError) {
+			ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s", player.errorMessage.c_str());
 		}
 	}
 
+	/**
+	 * Controls
+	 */
+	bool addPlayer = false;
+	if (ImGui::InputText("##useradd", userAddBuf, sizeof userAddBuf, ImGuiInputTextFlags_EnterReturnsTrue)) {
+		addPlayer = true;
+	}
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Accountname to add to the list (use account names, input without '.' will be ignored)");
+	ImGui::SameLine();
+	if (ImGui::Button("Add")) {
+		addPlayer = true;
+	}
+
+	if (addPlayer) {
+		std::string username(userAddBuf);
+
+		// only add users with a '.' in it
+		if (username.find('.')) {
+			trackedPlayers.emplace_back(username);
+
+			const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "");
+			loadKillproofsSizeChecked(tryEmplace.first->second);
+			userAddBuf[0] = '\0';
+		}
+	}
+	
+	/**
+	 * TABLE
+	 */
+	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 2;
+
+	if (ImGui::BeginTable("kp.me", columnCount,
+	                      ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable | ImGuiTableFlags_RowBg)) {
+		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
+		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
+
+		// Header
+		ImGui::TableSetupColumn("Accountname", ImGuiTableColumnFlags_NoReorder, 0, accountNameId);
+		ImGui::TableSetupColumn("Charactername", ImGuiTableColumnFlags_NoReorder, 0, characterNameId);
+
+		for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
+			Killproof kp = static_cast<Killproof>(i);
+			int columnFlags = 0;
+
+			if (defaultHidden(kp)) {
+				columnFlags |= ImGuiTableColumnFlags_DefaultHide;
+			}
+
+			ImGui::TableSetupColumn(toString(kp), columnFlags, 0.f, static_cast<ImU32>(kp));
+		}
+		ImGui::TableHeadersRow();
+
+		if (ImGuiTableSortSpecs* sorts_specs = ImGui::TableGetSortSpecs()) {
+			// Sort our data if sort specs have been changed!
+			if (sorts_specs->SpecsDirty)
+				needSort = true;
+
+			bool expected = true;
+			if (needSort.compare_exchange_strong(expected, false)) {
+				const bool descend = sorts_specs->Specs->SortDirection == 2;
+
+				if (sorts_specs->Specs->ColumnUserID == accountNameId) {
+					// sort by account name. Account name is the value we used in trackedPlayers, so nothing more to do
+					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [descend](std::string playerAName, std::string playerBName) {
+						std::transform(playerAName.begin(), playerAName.end(), playerAName.begin(), [](unsigned char c) { return std::tolower(c); });
+						std::transform(playerBName.begin(), playerBName.end(), playerBName.begin(), [](unsigned char c) { return std::tolower(c); });
+
+						if (descend) {
+							return playerAName < playerBName;
+						} else {
+							return playerAName > playerBName;
+						}
+					});
+				} else if (sorts_specs->Specs->ColumnUserID == characterNameId) {
+					// sort by character name
+					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [descend](std::string playerAName, std::string playerBName) {
+						std::string playerAChar = cachedPlayers.at(playerAName).characterName;
+						std::string playerBChar = cachedPlayers.at(playerBName).characterName;
+
+						std::transform(playerAChar.begin(), playerAChar.end(), playerAChar.begin(), [](unsigned char c) { return std::tolower(c); });
+						std::transform(playerBChar.begin(), playerBChar.end(), playerBChar.begin(), [](unsigned char c) { return std::tolower(c); });
+
+						if (descend) {
+							return playerAChar < playerBChar;
+						} else {
+							return playerAChar > playerBChar;
+						}
+					});
+				} else {
+					// sort by any amount of KP
+					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [sorts_specs, descend](std::string playerAName, std::string playerBName) {
+						// get player object of name
+						const Player& playerA = cachedPlayers.at(playerAName);
+						const Player& playerB = cachedPlayers.at(playerBName);
+
+						const amountVal amountA = playerA.killproofs.getAmountFromEnum(static_cast<const Killproof>(sorts_specs->Specs->ColumnUserID));
+						const amountVal amountB = playerB.killproofs.getAmountFromEnum(static_cast<const Killproof>(sorts_specs->Specs->ColumnUserID));
+
+						if (descend) {
+							return amountA < amountB;
+						} else {
+							return amountA > amountB;
+						}
+					});
+				}
+				sorts_specs->SpecsDirty = false;
+			}
+		}
+
+		// List of all players
+		for (const std::string& trackedPlayer : trackedPlayers) {
+			const Player& player = cachedPlayers.at(trackedPlayer);
+
+			// hide player they have data, when setting is active
+			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
+				ImGui::TableNextRow();
+
+				// username
+				if (ImGui::TableNextColumn()) {
+					ImGui::Text(player.username.c_str());
+					if (!(player.status == LoadingStatus::NoDataAvailable) && ImGui::IsItemClicked()) {
+						// Open users kp.me in the browser
+						openInBrowser(player.username.c_str());
+					}
+				}
+
+				// charactername
+				if (ImGui::TableNextColumn()) {
+					ImGui::Text(player.characterName.c_str());
+					if (ImGui::IsItemClicked()) {
+						// Open users kp.me in the browser
+						openInBrowser(player.username.c_str());
+					}
+				}
+
+				for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
+					if (ImGui::TableNextColumn()) {
+						const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
+						if (amount == -1 || player.status != LoadingStatus::Loaded) {
+							AlignedTextColumn("%s", settings.getBlockedDataText().c_str());
+						}
+						else {
+							AlignedTextColumn("%i", amount);
+						}
+					}
+				}
+			}
+		}
+
+		ImGui::EndTable();
+	}
+
 	ImGui::End();
+}
+
+
+void KillproofUI::AlignedTextColumn(const char* text, ...) const {
+	va_list args;
+	va_start(args, text);
+	char buf[4096];
+	ImFormatStringV(buf, 4096, text, args);
+	va_end(args);
+
+	const float posX = ImGui::GetCursorPosX();
+	float newX = posX;
+	float textWidth = ImGui::CalcTextSize(buf).x;
+	float columnWidth = ImGui::GetColumnWidth();
+
+	Alignment alignment = Settings::instance().getAlignment();
+	switch (alignment) {
+	case Alignment::Left:
+		break;
+	case Alignment::Center:
+		newX = posX + columnWidth / 2 - textWidth / 2;
+		break;
+	case Alignment::Right:
+		newX = posX + columnWidth - textWidth;
+		break;
+	}
+
+	// Clip to left, if text is bigger than current column
+	if (newX < posX) {
+		newX = posX;
+	}
+
+	ImGui::SetCursorPosX(newX);
+
+	ImGui::TextUnformatted(buf);
 }

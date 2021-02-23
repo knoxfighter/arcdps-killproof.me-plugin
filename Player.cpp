@@ -6,15 +6,27 @@
 
 #include "global.h"
 #include "json.hpp"
+#include "KillproofUI.h"
 
 void Player::loadKillproofs() {
+	using namespace std::chrono_literals;
+
+	// make sure this is not run twice
+	// So we skip, if the players data is unavailable, already loading or successfully loaded
+	LoadingStatus loadingStatus = status.load();
+	if (loadingStatus == LoadingStatus::Loading || loadingStatus == LoadingStatus::NoDataAvailable || loadingStatus == LoadingStatus::Loaded)
+		return;
+	// not run if Loading cannot be set or loading status was previously something different
+	if (!status.compare_exchange_strong(loadingStatus, LoadingStatus::Loading)) 
+		return;
+	
 	std::string link = "https://killproof.me/api/kp/";
 	link.append(cpr::util::urlEncode(username));
 	link.append("?lang=en");
 
 	// download it in a new thread (fire and forget)
 	std::thread cprCall([=]() {
-		cpr::Response response = cpr::Get(cpr::Url{ link });
+		cpr::Response response = cpr::Get(cpr::Url{ link }, cpr::Header{{"User-Agent", "arcdps-killproof.me-plugin"}});
 
 		if (response.status_code == 200) {
 			auto json = nlohmann::json::parse(response.text);
@@ -55,15 +67,17 @@ void Player::loadKillproofs() {
 				}
 			}
 
-			this->noDataAvailable = false;
+			this->status = LoadingStatus::Loaded;
 		}
 		// silently set, when user not found
 		else if (response.status_code == 404) {
-			this->noDataAvailable = true;
+			this->status = LoadingStatus::NoDataAvailable;
+			this->killproofs.setAllKillproofFieldsToBlocked();
+			this->killproofs.setAllTokensFieldsToBlocked();
 		}
 		// on any other error, print verbose output into the arcdps.log file
 		else {
-			this->noDataAvailable = true;
+			this->status = LoadingStatus::KpMeError;
 
 			std::string cs = "URL: ";
 			cs.append(response.url.str());
@@ -78,9 +92,29 @@ void Player::loadKillproofs() {
 			cs.append(" -- StatusLine: ");
 			cs.append(response.status_line);
 			cs.append("\n");
-			arc_log((char*)cs.c_str());
+			arc_log(cs.c_str());
+
+			cs.clear();
+
+			cs.append(this->username);
+			cs.append(": ");
+			cs.append(" -- ");
+			cs.append(std::to_string(response.status_code));
+			cs.append(" -- ");
+			cs.append(response.text);
+			
+			this->errorMessage = cs;
+
+			// start 1 minute timeout until reloading
+			// we can just pause this detached thread :)
+			std::this_thread::sleep_for(1min);
+			this->loadKillproofs();
 		}
+
+		// say UI to reload sorting
+		killproofUi.needSort = true;
 	});
+
 	// we want to run async completely, so just detach
 	cprCall.detach();
 }

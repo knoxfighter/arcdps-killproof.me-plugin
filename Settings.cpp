@@ -7,10 +7,6 @@ Settings& Settings::instance() {
     return b;
 }
 
-kpActiveMap& Settings::getActive() {
-    return settings.active;
-}
-
 int Settings::getKillProofKey() const {
 	return settings.killproofKey;
 }
@@ -19,12 +15,20 @@ bool Settings::getHidePrivateAccount() const {
 	return settings.hidePrivateAccount;
 }
 
-bool Settings::getHidePrivateData() const {
-	return settings.hidePrivateData;
-}
-
 bool& Settings::getShowKillproof() {
 	return settings.showKillproof;
+}
+
+const std::string& Settings::getBlockedDataText() const {
+	return settings.blockedDataText;
+}
+
+bool Settings::getDisableEscClose() const {
+	return settings.disableEscClose;
+}
+
+Alignment Settings::getAlignment() const {
+	return settings.alignment;
 }
 
 Settings::~Settings() {
@@ -39,46 +43,13 @@ Settings::Settings() {
 
 void Settings::setDefaults() {
 	// set defaults, they will be overriden, with what is saved in the file
-	// raid
-	settings.active.try_emplace(Killproof::li, true);
-	settings.active.try_emplace(Killproof::ld, true);
-	settings.active.try_emplace(Killproof::liLd, false);
-	// fractal
-	settings.active.try_emplace(Killproof::ufe, true);
-	settings.active.try_emplace(Killproof::uce, true);
-	// w1
-	settings.active.try_emplace(Killproof::vg, false);
-	settings.active.try_emplace(Killproof::gorse, false);
-	settings.active.try_emplace(Killproof::sabetha, false);
-	// w2
-	settings.active.try_emplace(Killproof::sloth, false);
-	settings.active.try_emplace(Killproof::matthias, false);
-	// w3
-	settings.active.try_emplace(Killproof::escort, false);
-	settings.active.try_emplace(Killproof::kc, false);
-	settings.active.try_emplace(Killproof::xera, false);
-	// w4
-	settings.active.try_emplace(Killproof::cairn, false);
-	settings.active.try_emplace(Killproof::mo, false);
-	settings.active.try_emplace(Killproof::samarog, false);
-	settings.active.try_emplace(Killproof::deimos, false);
-	// w5
-	settings.active.try_emplace(Killproof::desmina, false);
-	settings.active.try_emplace(Killproof::river, false);
-	settings.active.try_emplace(Killproof::statues, false);
-	settings.active.try_emplace(Killproof::dhuum, true);
-	// w6
-	settings.active.try_emplace(Killproof::ca, false);
-	settings.active.try_emplace(Killproof::twins, false);
-	settings.active.try_emplace(Killproof::qadim, true);
-	// w7
-	settings.active.try_emplace(Killproof::adina, false);
-	settings.active.try_emplace(Killproof::sabir, false);
-	settings.active.try_emplace(Killproof::qadim2, true);
-
 	// set default key to "K"
 	if (settings.killproofKey == 0) {
 		settings.killproofKey = 0x4B;
+	}
+
+	if (settings.blockedDataText.empty()) {
+		settings.blockedDataText = "-";
 	}
 }
 

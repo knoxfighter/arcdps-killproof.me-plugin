@@ -6,7 +6,6 @@
 #include <string>
 #include <sstream>
 
-
 #include "arcdps_structs.h"
 #include "global.h"
 #include "imgui/imgui.h"
@@ -36,19 +35,12 @@ void readArcExports();
 char* arcvers;
 arcdps_exports arc_exports = {};
 bool show_settings = false;
-KillproofUI killproofUi;
 SettingsUI settingsUi;
-
-// load arcdps dll.
-// When loading directly, arcdps is the "d3d9.dll"
-// When loading with the addon manager, arcdps is called "gw2addon_arcdps.dll"
-HMODULE arc_dllD = LoadLibraryA("d3d9.dll");
-HMODULE arc_dllL = LoadLibraryA("gw2addon_arcdps.dll");
-HMODULE arc_dll = (arc_dllL != nullptr) ? arc_dllL : arc_dllD;
+HMODULE arc_dll;
 
 typedef uint64_t (*arc_export_func_u64)();
 // arc options
-auto arc_export_e6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
+arc_export_func_u64 arc_export_e6;
 bool arc_hide_all = false;
 bool arc_panel_always_draw = false;
 bool arc_movelock_altui = false;
@@ -56,13 +48,13 @@ bool arc_clicklock_altui = false;
 bool arc_window_fastclose = false;
 
 // arc keyboard modifier
-auto arc_export_e7 = (arc_export_func_u64)GetProcAddress(arc_dll, "e7");
+arc_export_func_u64 arc_export_e7;
 DWORD arc_global_mod1 = 0;
 DWORD arc_global_mod2 = 0;
 DWORD arc_global_mod_multi = 0;
 
 // arc add to log
-e3_func_ptr arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
+e3_func_ptr arc_log;
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -99,7 +91,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 						return 0;
 					}
 					// close killproof window with escape
-					if (arc_window_fastclose && show_killproof) {
+					if (arc_window_fastclose && !settings.getDisableEscClose() && show_killproof) {
 						show_killproof = false;
 						return 0;
 					}
@@ -131,7 +123,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 		}
 	} catch (const std::exception& e) {
-		arc_log(const_cast<char*>(e.what()));
+		arc_log(e.what());
 		throw e;
 	}
 
@@ -160,6 +152,9 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 					if (src->prof) {
 						std::scoped_lock lock(cachedPlayersMutex, trackedPlayersMutex);
 
+						// add to tracking
+						trackedPlayers.emplace_back(username);
+
 						auto playerIt = cachedPlayers.find(username);
 						if (playerIt == cachedPlayers.end()) {
 							// no element found, create it
@@ -171,31 +166,37 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 								Player& player = tryEmplace.first->second;
 
 								// load killproofs
-								player.loadKillproofs();
+								// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
+								loadKillproofsSizeChecked(player);
 							}
 						}
 						else {
+							Player& player = playerIt->second;
 							// update charactername
-							playerIt->second.characterName = src->name;
+							player.characterName = src->name;
+
+							// load user data if not yet loaded (check inside function)
+							// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
+							loadKillproofsSizeChecked(player);
 						}
 
-						// add to tracking
-						trackedPlayers.emplace(username);
+						// Tell the UI to resort, cause we added a player
+						killproofUi.needSort = true;
 					}
 					/* remove */
 					else {
 						std::lock_guard<std::mutex> guard(trackedPlayersMutex);
-						trackedPlayers.erase(username);
+						trackedPlayers.erase(std::remove(trackedPlayers.begin(), trackedPlayers.end(), username), trackedPlayers.end());
 					}
 				}
 			}
 		}
 	} catch (const std::exception& e) {
-		arc_log(const_cast<char*>(e.what()));
+		arc_log(e.what());
 
 		// create dump of params
 		if (ev) {
-			arc_log(const_cast<char*>("ev:\n"));
+			arc_log("ev:\n");
 			char event[sizeof(cbtevent)];
 			memcpy(event, ev, sizeof(cbtevent));
 			std::stringstream evss;
@@ -204,11 +205,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 			evss << "\n";
 			std::string evs = evss.str();
-			arc_log(const_cast<char*>(evs.c_str()));
+			arc_log(evs.c_str());
 		}
 
 		if (src) {
-			arc_log(const_cast<char*>("src:\n"));
+			arc_log("src:\n");
 			char srcData[sizeof(ag)];
 			memcpy(srcData, src, sizeof(ag));
 			std::stringstream srcDatass;
@@ -217,16 +218,16 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 			srcDatass << "\n";
 			std::string srcDataS = srcDatass.str();
-			arc_log(const_cast<char*>(srcDataS.c_str()));
+			arc_log(srcDataS.c_str());
 
 			if (src->name) {
-				arc_log(const_cast<char*>("src->name:\n"));
+				arc_log("src->name:\n");
 				arc_log(src->name);
 			}
 		}
 
 		if (dst) {
-			arc_log(const_cast<char*>("dst:\n"));
+			arc_log("dst:\n");
 			char dstData[sizeof(ag)];
 			memcpy(dstData, dst, sizeof(ag));
 			std::stringstream dstDatass;
@@ -235,10 +236,10 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 			dstDatass << "\n";
 			std::string dstDataS = dstDatass.str();
-			arc_log(const_cast<char*>(dstDataS.c_str()));
+			arc_log(dstDataS.c_str());
 
 			if (dst->name) {
-				arc_log(const_cast<char*>("dst->name:\n"));
+				arc_log("dst->name:\n");
 				arc_log(dst->name);
 			}
 		}
@@ -312,7 +313,7 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 		ShowKillproof(&showKillproof);
 		ShowSettings(&show_settings);
 	} catch (const std::exception& e) {
-		arc_log(const_cast<char*>(e.what()));
+		arc_log(e.what());
 		throw e;
 	}
 
@@ -323,10 +324,11 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 /* initialize mod -- return table that arcdps will use for callbacks */
 arcdps_exports* mod_init() {
 	/* for arcdps */
-	arc_exports.sig = 0x6BAF1938322278DE;
+	arc_exports.sig = 0x6BAF1938;
+	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.size = sizeof(arcdps_exports);
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "1.2.5-beta";
+	arc_exports.out_build = "2.0.0-beta1";
 	arc_exports.wnd_nofilter = mod_wnd;
 	arc_exports.combat = mod_combat;
 	arc_exports.imgui = mod_imgui;
@@ -336,9 +338,15 @@ arcdps_exports* mod_init() {
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext) {
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, void* id3dd9, HMODULE new_arcdll, void* mallocfn, void* freefn) {
 	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(static_cast<ImGuiContext*>(imguicontext));
+	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);
+
+	arc_dll = new_arcdll;
+	arc_export_e6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
+	arc_export_e7 = (arc_export_func_u64)GetProcAddress(arc_dll, "e7");
+	arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
 	return mod_init;
 }
 

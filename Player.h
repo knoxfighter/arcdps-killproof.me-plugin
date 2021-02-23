@@ -2,10 +2,8 @@
 
 #include <string>
 
+#include "arcdps_structs.h"
 #include "Killproofs.h"
-
-
-typedef void(*e3_func_ptr)(char* str);
 
 class Player {
 public:
@@ -13,13 +11,13 @@ public:
 		: username(std::move(username)),
 		  characterName(std::move(characterName)) {
 	}
-
 	Player() = default;
 
 	std::string username;
 	std::string characterName;
 	Killproofs killproofs;
-	bool noDataAvailable = true;
+	std::atomic<LoadingStatus> status {LoadingStatus::NotLoaded};
+	std::string errorMessage;
 
 	void loadKillproofs();
 };

@@ -2,12 +2,12 @@
 
 #include <map>
 
+
+#include "arcdps_structs.h"
 #include "json.hpp"
 #include "Killproofs.h"
 
 class SettingsUI;
-
-typedef std::map<Killproof, bool, comparatorKillProof> kpActiveMap;
 
 class Settings
 {
@@ -15,23 +15,25 @@ class Settings
 
 public:
     struct SettingsObject {
-        kpActiveMap active;
         int killproofKey;
         bool hidePrivateAccount;
-        bool hidePrivateData;
         bool showKillproof;
+        std::string blockedDataText;
+        bool disableEscClose;
+        Alignment alignment = Alignment::Left;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, active, killproofKey, hidePrivateAccount, hidePrivateData, showKillproof)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment)
     };
 
     static Settings& instance();
 
     // getter/setter
-    [[nodiscard]] kpActiveMap& getActive();
     [[nodiscard]] int getKillProofKey() const;
     [[nodiscard]] bool getHidePrivateAccount() const;
-    [[nodiscard]] bool getHidePrivateData() const;
     [[nodiscard]] bool& getShowKillproof();
+    [[nodiscard]] const std::string& getBlockedDataText() const;
+    [[nodiscard]] bool getDisableEscClose() const;
+    [[nodiscard]] Alignment getAlignment() const;
 
 private:
     // copy/move etc. will be deleted implicitly
