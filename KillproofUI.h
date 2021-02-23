@@ -16,6 +16,8 @@ private:
 	static void openInBrowser(const char* username);
 
 	char userAddBuf[1024]{};
+
+	bool temp = false;
 };
 
 

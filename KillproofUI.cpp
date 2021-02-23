@@ -74,8 +74,8 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
 
 		// Header
-		ImGui::TableSetupColumn("Accountname", ImGuiTableColumnFlags_NoReorder, 0, accountNameId);
-		ImGui::TableSetupColumn("Charactername", ImGuiTableColumnFlags_NoReorder, 0, characterNameId);
+		ImGui::TableSetupColumn("##Accountname", ImGuiTableColumnFlags_NoReorder, 0, accountNameId);
+		ImGui::TableSetupColumn("##Charactername", ImGuiTableColumnFlags_NoReorder, 0, characterNameId);
 
 		for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 			Killproof kp = static_cast<Killproof>(i);
@@ -85,9 +85,36 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 				columnFlags |= ImGuiTableColumnFlags_DefaultHide;
 			}
 
-			ImGui::TableSetupColumn(toString(kp), columnFlags, 0.f, static_cast<ImU32>(kp));
+			std::string columnName = "##";
+			columnName.append(toString(kp));
+			ImGui::TableSetupColumn(columnName.c_str(), columnFlags, 0.f, static_cast<ImU32>(kp));
 		}
-		ImGui::TableHeadersRow();
+
+		// setup visible header
+		// ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
+		// for (int column_n = 0; column_n < columnCount; ++column_n) {
+		// 	ImGui::PushID(column_n);
+		// 	ImGui::Text("test");
+		// 	ImGui::SameLine();
+		// 	ImGui::TableHeader(ImGui::TableGetColumnName(column_n));
+		// 	ImGui::PopID();
+		// }
+		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
+		for (int column = 0; column < columnCount; column++)
+		{
+			ImGui::TableSetColumnIndex(column);
+			const char* column_name = ImGui::TableGetColumnName(column); // Retrieve name passed to TableSetupColumn()
+			ImGui::PushID(column);
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+			ImGui::Checkbox("##checkall", &temp);
+			ImGui::PopStyleVar();
+			ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+			ImGui::TableHeader(column_name);
+			if (ImGui::IsItemHovered()) {
+				ImGui::SetTooltip(column_name);
+			}
+			ImGui::PopID();
+		}
 
 		if (ImGuiTableSortSpecs* sorts_specs = ImGui::TableGetSortSpecs()) {
 			// Sort our data if sort specs have been changed!

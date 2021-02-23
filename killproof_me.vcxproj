@@ -198,6 +198,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="global.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
@@ -220,8 +221,15 @@
     <ClInclude Include="Killproofs.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="KillproofUI.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsUI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="killproof_me.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icons\Legendary_Insight.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

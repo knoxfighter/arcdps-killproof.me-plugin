@@ -37,6 +37,7 @@ arcdps_exports arc_exports = {};
 bool show_settings = false;
 SettingsUI settingsUi;
 HMODULE arc_dll;
+IDirect3DDevice9* d3d9Device;
 
 typedef uint64_t (*arc_export_func_u64)();
 // arc options
@@ -308,6 +309,7 @@ void readArcExports() {
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	try {
+		ImGui::ShowDemoWindow();
 		if (!not_charsel_or_loading) return 0;
 		bool& showKillproof = Settings::instance().getShowKillproof();
 		ShowKillproof(&showKillproof);
@@ -320,9 +322,34 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	return 0;
 }
 
+bool LoadTextureFromFile(const char* filename, PDIRECT3DTEXTURE9* out_texture, int* out_width, int* out_height)
+{
+	// Load texture from disk
+	PDIRECT3DTEXTURE9 texture;
+	HRESULT hr = D3DXCreateTextureFromFileA(g_pd3dDevice, filename, &texture);
+	if (hr != S_OK)
+		return false;
+
+	// Retrieve description of the texture surface so we can access its size
+	D3DSURFACE_DESC my_image_desc;
+	texture->GetLevelDesc(0, &my_image_desc);
+	*out_texture = texture;
+	*out_width = (int)my_image_desc.Width;
+	*out_height = (int)my_image_desc.Height;
+	return true;
+}
+
+void load_images() {
+	LPDIRECT3DTEXTURE9 texture;
+	d3d9Device->CreateTexture(64, 64, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &texture, nullptr);
+	texture.
+}
 
 /* initialize mod -- return table that arcdps will use for callbacks */
 arcdps_exports* mod_init() {
+	// load images
+	load_images();
+	
 	/* for arcdps */
 	arc_exports.sig = 0x6BAF1938;
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
@@ -338,7 +365,7 @@ arcdps_exports* mod_init() {
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, void* id3dd9, HMODULE new_arcdll, void* mallocfn, void* freefn) {
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, IDirect3DDevice9* id3dd9, HMODULE new_arcdll, void* mallocfn, void* freefn) {
 	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(static_cast<ImGuiContext*>(imguicontext));
 	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);
@@ -347,6 +374,9 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* 
 	arc_export_e6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
 	arc_export_e7 = (arc_export_func_u64)GetProcAddress(arc_dll, "e7");
 	arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
+
+	d3d9Device = id3dd9;
+	
 	return mod_init;
 }
 
