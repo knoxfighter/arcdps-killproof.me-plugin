@@ -311,13 +311,13 @@ void KillproofUI::TableHeader(const char* label) {
 	if (label == NULL)
 		label = "";
 	const char* label_end = ImGui::FindRenderedTextEnd(label);
-	ImVec2 label_size = ImGui::CalcTextSize(label, label_end, true);
+	// ImVec2 label_size = ImGui::CalcTextSize(label, label_end, true);
 	ImVec2 label_pos = window->DC.CursorPos;
 
 	// If we already got a row height, there's use that.
 	// FIXME-TABLE: Padding problem if the correct outer-padding CellBgRect strays off our ClipRect?
 	ImRect cell_r = ImGui::TableGetCellBgRect(table, column_n);
-	float label_height = ImMax(label_size.y, table->RowMinHeight - table->CellPaddingY * 2.0f);
+	float label_height = table->RowMinHeight - table->CellPaddingY * 2.0f;
 
 	// Calculate ideal size for sort order arrow
 	float w_arrow = 0.0f;
@@ -333,7 +333,7 @@ void KillproofUI::TableHeader(const char* label) {
 	}
 
 	// We feed our unclipped width to the column without writing on CursorMaxPos, so that column is still considering for merging.
-	float max_pos_x = label_pos.x + label_size.x + w_sort_text + w_arrow;
+	float max_pos_x = label_pos.x + w_sort_text + w_arrow;
 	column->ContentMaxXHeadersUsed = ImMax(column->ContentMaxXHeadersUsed, column->WorkMaxX);
 	column->ContentMaxXHeadersIdeal = ImMax(column->ContentMaxXHeadersIdeal, max_pos_x);
 
@@ -415,9 +415,9 @@ void KillproofUI::TableHeader(const char* label) {
 	//window->DrawList->AddCircleFilled(ImVec2(ellipsis_max, label_pos.y), 40, IM_COL32_WHITE);
 	// ImGui::RenderTextEllipsis(window->DrawList, label_pos, ImVec2(ellipsis_max, label_pos.y + label_height + g.Style.FramePadding.y), ellipsis_max, ellipsis_max, label, label_end, &label_size);
 
-	const bool text_clipped = label_size.x > (ellipsis_max - label_pos.x);
-	if (text_clipped && hovered && g.HoveredIdNotActiveTimer > g.TooltipSlowDelay)
-		ImGui::SetTooltip("%.*s", (int)(label_end - label), label);
+	// const bool text_clipped = label_size.x > (ellipsis_max - label_pos.x);
+	// if (text_clipped && hovered && g.HoveredIdNotActiveTimer > g.TooltipSlowDelay)
+	// 	ImGui::SetTooltip("%.*s", (int)(label_end - label), label);
 
 	// We don't use BeginPopupContextItem() because we want the popup to stay up even after the column is hidden
 	if (ImGui::IsMouseReleased(1) && ImGui::IsItemHovered())
