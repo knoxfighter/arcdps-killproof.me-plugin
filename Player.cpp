@@ -25,11 +25,33 @@ void Player::loadKillproofs() {
 	link.append("?lang=en");
 
 	// download it in a new thread (fire and forget)
-	std::thread cprCall([=]() {
+	std::thread cprCall([this, link]() {
 		cpr::Response response = cpr::Get(cpr::Url{ link }, cpr::Header{{"User-Agent", "arcdps-killproof.me-plugin"}});
 
 		if (response.status_code == 200) {
 			auto json = nlohmann::json::parse(response.text);
+
+			// get kpid and accountname
+			killproofId = json.at("kpid").get<std::string>();
+			std::string accountname = json.at("account_name").get<std::string>();
+			
+			// replace the key in the global map, when kpid was used to create this player
+			if (username == killproofId) {
+				// lock the maps
+				std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);
+
+				// replace the key of the cache
+				auto node = cachedPlayers.extract(username);
+				node.key() = accountname;
+				cachedPlayers.insert(std::move(node));
+
+				// replace the player in tracked players
+				std::replace(trackedPlayers.begin(), trackedPlayers.end(), username, accountname);
+			}
+
+			// set username AFTER the check, if it the same as the kpid
+			username = accountname;
+			
 			auto tokens = json.at("tokens");
 			// when field is null, data is not available
 			if (tokens.type() == nlohmann::json::value_t::null) {
@@ -74,6 +96,9 @@ void Player::loadKillproofs() {
 			this->status = LoadingStatus::NoDataAvailable;
 			this->killproofs.setAllKillproofFieldsToBlocked();
 			this->killproofs.setAllTokensFieldsToBlocked();
+
+			// try again as charactername
+			// https://killproof.me/api/character/Lucy%20Falkenauge/kp
 		}
 		// on any other error, print verbose output into the arcdps.log file
 		else {

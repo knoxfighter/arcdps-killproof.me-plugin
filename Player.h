@@ -17,6 +17,7 @@ public:
 
 	std::string username;
 	std::string characterName;
+	std::string killproofId;
 	Killproofs killproofs;
 	std::atomic<LoadingStatus> status{LoadingStatus::NotLoaded};
 	std::string errorMessage;

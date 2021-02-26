@@ -23,7 +23,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 	ImGui::Begin(title, p_open, flags);
 
 	// lock the mutexes, before we access sensible data
-	std::scoped_lock lock(trackedPlayersMutex, cachedPlayersMutex);
+	std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);
 
 	Settings& settings = Settings::instance();
 
@@ -59,7 +59,9 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 			trackedPlayers.emplace_back(username);
 
 			const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "", true);
-			loadKillproofsSizeChecked(tryEmplace.first->second);
+			if (tryEmplace.second) {
+				loadKillproofsSizeChecked(tryEmplace.first->second);
+			}
 			userAddBuf[0] = '\0';
 		}
 	}

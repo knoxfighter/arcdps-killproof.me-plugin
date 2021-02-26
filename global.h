@@ -25,3 +25,4 @@ typedef void(*e3_func_ptr)(const char* str);
 extern e3_func_ptr arc_log;
 
 void loadKillproofsSizeChecked(Player& player);
+void loadKillproofs(Player& player);

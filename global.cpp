@@ -1,3 +1,5 @@
+#include "global.h"
+
 #include <map>
 #include <mutex>
 #include <vector>
@@ -15,6 +17,12 @@ std::map<Killproof, Icon> icons;
 
 void loadKillproofsSizeChecked(Player& player) {
 	if (trackedPlayers.size() <= 10) {
+		loadKillproofs(player);
+	}
+}
+
+void loadKillproofs(Player& player) {
+	if (player.status == LoadingStatus::NotLoaded) {
 		player.loadKillproofs();
 	}
 }
