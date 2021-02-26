@@ -129,19 +129,19 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		ImGui::PopID();
 
 		// header for killproofs
-		for (int i = 0; i < 27; ++i) {
+		for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 			if (ImGui::TableNextColumn()) {
 				Killproof kp = static_cast<Killproof>(i);
 				std::string columnName = toString(kp);
 				ImGui::PushID(columnName.c_str());
 				if (settings.getShowHeaderText()) {
-					ImGui::TableHeader(columnName.c_str());
+					TableHeader(columnName.c_str(), true);
 				} else {
 					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 					ImGui::Image(icons.at(kp).texture, ImVec2(16, 16));
 					ImGui::PopStyleVar();
 					ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-					TableHeader(columnName.c_str());
+					TableHeader(columnName.c_str(), false);
 				}
 
 				if (ImGui::IsItemHovered()) {
@@ -295,7 +295,7 @@ void KillproofUI::AlignedTextColumn(const char* text, ...) const {
 // Emit a column header (text + optional sort order)
 // We cpu-clip text here so that all columns headers can be merged into a same draw call.
 // Note that because of how we cpu-clip and display sorting indicators, you _cannot_ use SameLine() after a TableHeader()
-void KillproofUI::TableHeader(const char* label) {
+void KillproofUI::TableHeader(const char* label, bool show_text) {
 	ImGuiContext& g = *GImGui;
 	ImGuiWindow* window = g.CurrentWindow;
 	if (window->SkipItems)
@@ -311,13 +311,15 @@ void KillproofUI::TableHeader(const char* label) {
 	if (label == NULL)
 		label = "";
 	const char* label_end = ImGui::FindRenderedTextEnd(label);
-	// ImVec2 label_size = ImGui::CalcTextSize(label, label_end, true);
+	ImVec2 label_size = ImGui::CalcTextSize(label, label_end, true);
 	ImVec2 label_pos = window->DC.CursorPos;
 
 	// If we already got a row height, there's use that.
 	// FIXME-TABLE: Padding problem if the correct outer-padding CellBgRect strays off our ClipRect?
 	ImRect cell_r = ImGui::TableGetCellBgRect(table, column_n);
 	float label_height = table->RowMinHeight - table->CellPaddingY * 2.0f;
+	if (show_text)
+		label_height = ImMax(label_size.y, label_height);
 
 	// Calculate ideal size for sort order arrow
 	float w_arrow = 0.0f;
@@ -334,6 +336,8 @@ void KillproofUI::TableHeader(const char* label) {
 
 	// We feed our unclipped width to the column without writing on CursorMaxPos, so that column is still considering for merging.
 	float max_pos_x = label_pos.x + w_sort_text + w_arrow;
+	if (show_text)
+		max_pos_x += label_size.x;
 	column->ContentMaxXHeadersUsed = ImMax(column->ContentMaxXHeadersUsed, column->WorkMaxX);
 	column->ContentMaxXHeadersIdeal = ImMax(column->ContentMaxXHeadersIdeal, max_pos_x);
 
@@ -413,7 +417,8 @@ void KillproofUI::TableHeader(const char* label) {
 	// Render clipped label. Clipping here ensure that in the majority of situations, all our header cells will
 	// be merged into a single draw call.
 	//window->DrawList->AddCircleFilled(ImVec2(ellipsis_max, label_pos.y), 40, IM_COL32_WHITE);
-	// ImGui::RenderTextEllipsis(window->DrawList, label_pos, ImVec2(ellipsis_max, label_pos.y + label_height + g.Style.FramePadding.y), ellipsis_max, ellipsis_max, label, label_end, &label_size);
+	if (show_text)
+		ImGui::RenderTextEllipsis(window->DrawList, label_pos, ImVec2(ellipsis_max, label_pos.y + label_height + g.Style.FramePadding.y), ellipsis_max, ellipsis_max, label, label_end, &label_size);
 
 	// const bool text_clipped = label_size.x > (ellipsis_max - label_pos.x);
 	// if (text_clipped && hovered && g.HoveredIdNotActiveTimer > g.TooltipSlowDelay)

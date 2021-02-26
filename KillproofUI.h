@@ -11,7 +11,7 @@ public:
 	
 	void draw(const char* title, bool* p_open, ImGuiWindowFlags flags);
 	void AlignedTextColumn(const char* text, ...) const;
-	void TableHeader(const char* label);
+	void TableHeader(const char* label, bool show_text);
 
 private:
 	static void openInBrowser(const char* username);
