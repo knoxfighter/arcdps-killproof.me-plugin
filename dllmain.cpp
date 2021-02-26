@@ -313,44 +313,9 @@ void readArcExports() {
 	}
 }
 
-void temp() {
-	ImGui::Begin("image header");
-
-	if (ImGui::BeginTable("test table", 2)) {
-		ImGui::TableSetupColumn("##header1");
-		ImGui::TableSetupColumn("##header2");
-
-		// only printing text in the header works fine
-		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
-		ImGui::TableSetColumnIndex(0);
-		ImGui::PushID(0);
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-		ImGui::Text("text header");
-		ImGui::PopStyleVar();
-		ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-		ImGui::TableHeader("##header1");
-		ImGui::PopID();
-
-		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
-		ImGui::TableSetColumnIndex(1);
-		ImGui::PushID(1);
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-		ImGui::Image(icons.at(Killproof::li).texture, ImVec2(16, 16));
-		ImGui::PopStyleVar();
-		ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-		ImGui::TableHeader("##header2");
-		ImGui::PopID();
-
-		ImGui::EndTable();
-	}
-
-	ImGui::End();
-}
-
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	try {
-		ImGui::ShowDemoWindow();
-		temp();
+		// ImGui::ShowDemoWindow();
 		if (!not_charsel_or_loading) return 0;
 		bool& showKillproof = Settings::instance().getShowKillproof();
 		ShowKillproof(&showKillproof);
