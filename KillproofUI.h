@@ -11,13 +11,12 @@ public:
 	
 	void draw(const char* title, bool* p_open, ImGuiWindowFlags flags);
 	void AlignedTextColumn(const char* text, ...) const;
+	void TableHeader(const char* label);
 
 private:
 	static void openInBrowser(const char* username);
 
 	char userAddBuf[1024]{};
-
-	bool temp = false;
 };
 
 

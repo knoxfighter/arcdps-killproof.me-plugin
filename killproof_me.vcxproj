@@ -197,6 +197,7 @@
     <ClCompile Include="arcdps_structs.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="global.cpp" />
+    <ClCompile Include="Icon.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -211,6 +212,7 @@
   <ItemGroup>
     <ClInclude Include="arcdps_structs.h" />
     <ClInclude Include="global.h" />
+    <ClInclude Include="Icon.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_internal.h" />
@@ -229,7 +231,32 @@
     <ResourceCompile Include="killproof_me.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="icons\Cairn_the_Indomitable_Shard.png" />
+    <Image Include="icons\Cardinal_Adina%27s_Token.png" />
+    <Image Include="icons\Cardinal_Sabir%27s_Token.png" />
+    <Image Include="icons\Conjured_Amalgamate_Token.png" />
+    <Image Include="icons\Desmina%27s_Token.png" />
+    <Image Include="icons\Dhuum%27s_Token.png" />
+    <Image Include="icons\Ether_Djinn%27s_Token.png" />
+    <Image Include="icons\Fragment_of_Saul%27s_Burden.png" />
+    <Image Include="icons\Gorseval_Tentacle_Piece.png" />
+    <Image Include="icons\Impaled_Prisoner.png" />
+    <Image Include="icons\Keep_Construct_Rubble_(trophy).png" />
+    <Image Include="icons\Legendary_Divination.png" />
     <Image Include="icons\Legendary_Insight.png" />
+    <Image Include="icons\lild.png" />
+    <Image Include="icons\Qadim%27s_Token.png" />
+    <Image Include="icons\Rec_Room_Floor_Tile.png" />
+    <Image Include="icons\Ribbon_Scrap.png" />
+    <Image Include="icons\River_of_Souls_Token.png" />
+    <Image Include="icons\Sabetha_Flamethrower_Fragment_Piece.png" />
+    <Image Include="icons\Slothasor_Mushroom_(trophy).png" />
+    <Image Include="icons\Statue_Token.png" />
+    <Image Include="icons\Turret_Fragment.png" />
+    <Image Include="icons\Twin_Largos_Token.png" />
+    <Image Include="icons\Unstable_Fractal_Essence.png" />
+    <Image Include="icons\Vale_Guardian_Fragment.png" />
+    <Image Include="icons\White_Mantle_Abomination_Crystal_(trophy).png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

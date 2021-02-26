@@ -1,5 +1,6 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include <Windows.h>
+#include <wincodec.h>
 #include <d3d9.h>
 #include <cstdint>
 #include <mutex>
@@ -11,22 +12,10 @@
 #include "imgui/imgui.h"
 #include "KillproofUI.h"
 #include "Player.h"
+#include "resource.h"
 #include "Settings.h"
 #include "SettingsUI.h"
-
-BOOL APIENTRY DllMain(HMODULE hModule,
-                      DWORD ul_reason_for_call,
-                      LPVOID lpReserved
-) {
-	switch (ul_reason_for_call) {
-	case DLL_PROCESS_ATTACH:
-	case DLL_THREAD_ATTACH:
-	case DLL_THREAD_DETACH:
-	case DLL_PROCESS_DETACH:
-		break;
-	}
-	return TRUE;
-}
+#include "Icon.h" // this import is needed for the icons map
 
 // predefine some functions
 void readArcExports();
@@ -37,6 +26,7 @@ arcdps_exports arc_exports = {};
 bool show_settings = false;
 SettingsUI settingsUi;
 HMODULE arc_dll;
+HMODULE self_dll;
 IDirect3DDevice9* d3d9Device;
 
 typedef uint64_t (*arc_export_func_u64)();
@@ -56,6 +46,21 @@ DWORD arc_global_mod_multi = 0;
 
 // arc add to log
 e3_func_ptr arc_log;
+
+BOOL APIENTRY DllMain(HMODULE hModule,
+	DWORD ul_reason_for_call,
+	LPVOID lpReserved
+) {
+	switch (ul_reason_for_call) {
+	case DLL_PROCESS_ATTACH:
+		self_dll = hModule;
+	case DLL_THREAD_ATTACH:
+	case DLL_THREAD_DETACH:
+	case DLL_PROCESS_DETACH:
+		break;
+	}
+	return TRUE;
+}
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -307,9 +312,44 @@ void readArcExports() {
 	}
 }
 
+void temp() {
+	ImGui::Begin("image header");
+
+	if (ImGui::BeginTable("test table", 2)) {
+		ImGui::TableSetupColumn("##header1");
+		ImGui::TableSetupColumn("##header2");
+
+		// only printing text in the header works fine
+		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
+		ImGui::TableSetColumnIndex(0);
+		ImGui::PushID(0);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+		ImGui::Text("text header");
+		ImGui::PopStyleVar();
+		ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+		ImGui::TableHeader("##header1");
+		ImGui::PopID();
+
+		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
+		ImGui::TableSetColumnIndex(1);
+		ImGui::PushID(1);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+		ImGui::Image(icons.at(Killproof::li).texture, ImVec2(16, 16));
+		ImGui::PopStyleVar();
+		ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+		ImGui::TableHeader("##header2");
+		ImGui::PopID();
+		
+		ImGui::EndTable();
+	}
+
+	ImGui::End();
+}
+
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	try {
 		ImGui::ShowDemoWindow();
+		temp();
 		if (!not_charsel_or_loading) return 0;
 		bool& showKillproof = Settings::instance().getShowKillproof();
 		ShowKillproof(&showKillproof);
@@ -322,45 +362,70 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	return 0;
 }
 
-bool LoadTextureFromFile(const char* filename, PDIRECT3DTEXTURE9* out_texture, int* out_width, int* out_height)
-{
-	// Load texture from disk
-	PDIRECT3DTEXTURE9 texture;
-	HRESULT hr = D3DXCreateTextureFromFileA(g_pd3dDevice, filename, &texture);
-	if (hr != S_OK)
-		return false;
-
-	// Retrieve description of the texture surface so we can access its size
-	D3DSURFACE_DESC my_image_desc;
-	texture->GetLevelDesc(0, &my_image_desc);
-	*out_texture = texture;
-	*out_width = (int)my_image_desc.Width;
-	*out_height = (int)my_image_desc.Height;
-	return true;
-}
-
 void load_images() {
-	LPDIRECT3DTEXTURE9 texture;
-	d3d9Device->CreateTexture(64, 64, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &texture, nullptr);
-	texture.
+	icons.emplace(Killproof::li, ID_LI);
+	icons.emplace(Killproof::ld, ID_LD);
+	icons.emplace(Killproof::liLd, ID_LILD);
+	icons.emplace(Killproof::vg, ID_VG);
+	icons.emplace(Killproof::gorse, ID_Gorse);
+	icons.emplace(Killproof::sabetha, ID_Sab);
+	icons.emplace(Killproof::sloth, ID_Sloth);
+	icons.emplace(Killproof::matthias, ID_Matt);
+	icons.emplace(Killproof::escort, ID_Escort);
+	icons.emplace(Killproof::kc, ID_KC);
+	icons.emplace(Killproof::xera, ID_Xera);
+	icons.emplace(Killproof::cairn, ID_Cairn);
+	icons.emplace(Killproof::mo, ID_MO);
+	icons.emplace(Killproof::samarog, ID_Sam);
+	icons.emplace(Killproof::deimos, ID_Deimos);
+	icons.emplace(Killproof::desmina, ID_Desmina);
+	icons.emplace(Killproof::river, ID_River);
+	icons.emplace(Killproof::statues, ID_Statues);
+	icons.emplace(Killproof::dhuum, ID_Dhuum);
+	icons.emplace(Killproof::ca, ID_CA);
+	icons.emplace(Killproof::twins, ID_Twins);
+	icons.emplace(Killproof::qadim, ID_Qadim1);
+	icons.emplace(Killproof::adina, ID_Adina);
+	icons.emplace(Killproof::sabir, ID_Sabir);
+	icons.emplace(Killproof::qadim2, ID_Qadim2);
+	icons.emplace(Killproof::uce, ID_UFE);
+	icons.emplace(Killproof::ufe, ID_UFE);
 }
 
 /* initialize mod -- return table that arcdps will use for callbacks */
 arcdps_exports* mod_init() {
+	bool loading_successful = true;
+	std::string error_message = "Unknown error";
 	// load images
-	load_images();
-	
-	/* for arcdps */
-	arc_exports.sig = 0x6BAF1938;
+	try {
+		load_images();
+	} catch (const std::exception& e) {
+		loading_successful = false;
+		error_message = "Error loading all icons: ";
+		error_message.append(e.what());
+	}
+
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
-	arc_exports.size = sizeof(arcdps_exports);
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "2.0.0-beta1";
-	arc_exports.wnd_nofilter = mod_wnd;
-	arc_exports.combat = mod_combat;
-	arc_exports.imgui = mod_imgui;
-	arc_exports.options_end = mod_options;
-	//arc_exports.size = (uintptr_t)"error message if you decide to not load, sig must be 0";
+	arc_exports.out_build = "2.1.0-beta1";
+
+	if (loading_successful) {
+		/* for arcdps */
+		arc_exports.sig = 0x6BAF1938;
+		arc_exports.size = sizeof(arcdps_exports);
+		arc_exports.wnd_nofilter = mod_wnd;
+		arc_exports.combat = mod_combat;
+		arc_exports.imgui = mod_imgui;
+		arc_exports.options_end = mod_options;
+	} else {
+		arc_exports.sig = 0;
+		const std::string::size_type size = error_message.size();
+		char* buffer = new char[size + 1];   //we need extra char for NUL
+		memcpy(buffer, error_message.c_str(), size + 1);
+		arc_exports.size = (uintptr_t)buffer;
+
+		icons.clear();
+	}
 	return &arc_exports;
 }
 

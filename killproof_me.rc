@@ -50,7 +50,57 @@ END
 // PNG
 //
 
-IDB_PNG1                PNG                     "icons\\Legendary_Insight.png"
+ID_LI                   PNG                     "icons\\Legendary_Insight.png"
+
+ID_Cairn                PNG                     "icons\\Cairn_the_Indomitable_Shard.png"
+
+ID_Adina                PNG                     "icons\\Cardinal_Adina's_Token.png"
+
+ID_Sabir                PNG                     "icons\\Cardinal_Sabir's_Token.png"
+
+ID_CA                   PNG                     "icons\\Conjured_Amalgamate_Token.png"
+
+ID_Desmina              PNG                     "icons\\Desmina's_Token.png"
+
+ID_Dhuum                PNG                     "icons\\Dhuum's_Token.png"
+
+ID_Qadim2               PNG                     "icons\\Ether_Djinn's_Token.png"
+
+ID_Deimos               PNG                     "icons\\Fragment_of_Saul's_Burden.png"
+
+ID_Gorse                PNG                     "icons\\Gorseval_Tentacle_Piece.png"
+
+ID_Sam                  PNG                     "icons\\Impaled_Prisoner.png"
+
+ID_KC                   PNG                     "icons\\Keep_Construct_Rubble_(trophy).png"
+
+ID_LD                   PNG                     "icons\\Legendary_Divination.png"
+
+ID_LILD                 PNG                     "icons\\lild.png"
+
+ID_Qadim1               PNG                     "icons\\Qadim's_Token.png"
+
+ID_MO                   PNG                     "icons\\Rec_Room_Floor_Tile.png"
+
+ID_Xera                 PNG                     "icons\\Ribbon_Scrap.png"
+
+ID_River                PNG                     "icons\\River_of_Souls_Token.png"
+
+ID_Sab                  PNG                     "icons\\Sabetha_Flamethrower_Fragment_Piece.png"
+
+ID_Sloth                PNG                     "icons\\Slothasor_Mushroom_(trophy).png"
+
+ID_Statues              PNG                     "icons\\Statue_Token.png"
+
+ID_Escort               PNG                     "icons\\Turret_Fragment.png"
+
+ID_Twins                PNG                     "icons\\Twin_Largos_Token.png"
+
+ID_VG                   PNG                     "icons\\Vale_Guardian_Fragment.png"
+
+ID_Matt                 PNG                     "icons\\White_Mantle_Abomination_Crystal_(trophy).png"
+
+ID_UFE                  PNG                     "icons\\Unstable_Fractal_Essence.png"
 
 #endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
