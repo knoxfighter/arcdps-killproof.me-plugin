@@ -7,17 +7,20 @@
 
 class Player {
 public:
-	Player(std::string username, std::string characterName)
+	Player(std::string username, std::string characterName, bool manuallyAdded = false)
 		: username(std::move(username)),
-		  characterName(std::move(characterName)) {
+		  characterName(std::move(characterName)),
+		  manuallyAdded(std::move(manuallyAdded)) {
 	}
+
 	Player() = default;
 
 	std::string username;
 	std::string characterName;
 	Killproofs killproofs;
-	std::atomic<LoadingStatus> status {LoadingStatus::NotLoaded};
+	std::atomic<LoadingStatus> status{LoadingStatus::NotLoaded};
 	std::string errorMessage;
+	bool manuallyAdded = false;
 
 	void loadKillproofs();
 };

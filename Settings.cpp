@@ -31,6 +31,10 @@ Alignment Settings::getAlignment() const {
 	return settings.alignment;
 }
 
+bool Settings::getShowHeaderText() const {
+	return settings.showHeaderText;
+}
+
 Settings::~Settings() {
     saveToFile();
 }

@@ -58,25 +58,41 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		if (username.find('.')) {
 			trackedPlayers.emplace_back(username);
 
-			const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "");
+			const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "", true);
 			loadKillproofsSizeChecked(tryEmplace.first->second);
 			userAddBuf[0] = '\0';
 		}
 	}
-	
+
+	ImGui::SameLine();
+	if (ImGui::Button("Clear")) {
+		const auto end = std::remove_if(trackedPlayers.begin(), trackedPlayers.end(), [](const std::string& playerName) {
+			const auto& player = cachedPlayers.find(playerName);
+			if (player == cachedPlayers.end()) {
+				return false;
+			}
+			return player->second.manuallyAdded;
+		});
+		trackedPlayers.erase(end, trackedPlayers.end());
+	}
+	if (ImGui::IsItemHovered()) {
+		ImGui::SetTooltip("Remove all manually added users");
+	}
+
 	/**
 	 * TABLE
 	 */
 	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 2;
 
 	if (ImGui::BeginTable("kp.me", columnCount,
-	                      ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable | ImGuiTableFlags_RowBg)) {
+	                      ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable |
+	                      ImGuiTableFlags_RowBg)) {
 		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
 		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
 
 		const char accountName[] = "Accountname";
 		const char charName[] = "Charactername";
-		
+
 		// Header
 		ImGui::TableSetupColumn(accountName, ImGuiTableColumnFlags_NoReorder, 0, accountNameId);
 		ImGui::TableSetupColumn(charName, ImGuiTableColumnFlags_NoReorder, 0, characterNameId);
@@ -92,89 +108,49 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 			ImGui::TableSetupColumn(toString(kp), columnFlags, 0.f, static_cast<ImU32>(kp));
 		}
 
-		// setup visible header
-		// ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
-		// for (int column_n = 0; column_n < columnCount; ++column_n) {
-		// 	ImGui::PushID(column_n);
-		// 	ImGui::Text("test");
-		// 	ImGui::SameLine();
-		// 	ImGui::TableHeader(ImGui::TableGetColumnName(column_n));
-		// 	ImGui::PopID();
-		// }
-
 		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
-		// // accountname
-		// // ImGui::TableNextColumn();
-		// ImGui::TableSetColumnIndex(0);
-		// ImGui::PushID(0);
-		// ImGui::Text(accountName);
-		// ImGui::TableHeader(accountName);
-		// ImGui::PopID();
-		//
-		// // charactername
-		// ImGui::TableSetColumnIndex(1);
-		// ImGui::PushID(1);
-		// ImGui::Text(charName);
-		// ImGui::TableHeader(charName);
-		// ImGui::PopID();
-		//
-		// // KPs
 
-		// ImGui::TableSetColumnIndex(0);
-		// const char* column_name = ImGui::TableGetColumnName(0); // Retrieve name passed to TableSetupColumn()
-		// ImGui::PushID(0);
-		// ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-		// float textLineHeight = ImGui::GetTextLineHeight();
-		// ImGui::Text(column_name);
-		// ImGui::PopStyleVar();
-		// ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-		// ImGui::TableHeader(column_name);
-		// if (ImGui::IsItemHovered()) {
-		// 	ImGui::SetTooltip(column_name);
-		// }
-		// ImGui::PopID();
-
+		// accountname header
 		ImGui::TableNextColumn();
 		ImGui::PushID(0);
-		// ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-		// ImGui::Text(accountName);
-		// ImGui::PopStyleVar();
-		// ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 		ImGui::TableHeader(accountName);
 		if (ImGui::IsItemHovered()) {
 			ImGui::SetTooltip(accountName);
 		}
 		ImGui::PopID();
 
+		// charname header
 		ImGui::TableNextColumn();
 		ImGui::PushID(1);
-		// ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-		// ImGui::Text(charName);
-		// ImGui::PopStyleVar();
-		// ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 		ImGui::TableHeader(charName);
 		if (ImGui::IsItemHovered()) {
 			ImGui::SetTooltip(charName);
 		}
 		ImGui::PopID();
 
+		// header for killproofs
 		for (int i = 0; i < 27; ++i) {
 			if (ImGui::TableNextColumn()) {
 				Killproof kp = static_cast<Killproof>(i);
 				std::string columnName = toString(kp);
 				ImGui::PushID(columnName.c_str());
-				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-				ImGui::Image(icons.at(kp).texture, ImVec2(16, 16));
-				ImGui::PopStyleVar();
-				ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-				TableHeader(columnName.c_str());
+				if (settings.getShowHeaderText()) {
+					ImGui::TableHeader(columnName.c_str());
+				} else {
+					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+					ImGui::Image(icons.at(kp).texture, ImVec2(16, 16));
+					ImGui::PopStyleVar();
+					ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+					TableHeader(columnName.c_str());
+				}
+
 				if (ImGui::IsItemHovered()) {
 					ImGui::SetTooltip(columnName.c_str());
 				}
 				ImGui::PopID();
 			}
 		}
-		
+
 
 		if (ImGuiTableSortSpecs* sorts_specs = ImGui::TableGetSortSpecs()) {
 			// Sort our data if sort specs have been changed!
@@ -264,8 +240,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 						const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
 						if (amount == -1 || player.status != LoadingStatus::Loaded) {
 							AlignedTextColumn("%s", settings.getBlockedDataText().c_str());
-						}
-						else {
+						} else {
 							AlignedTextColumn("%i", amount);
 						}
 					}
@@ -320,8 +295,7 @@ void KillproofUI::AlignedTextColumn(const char* text, ...) const {
 // Emit a column header (text + optional sort order)
 // We cpu-clip text here so that all columns headers can be merged into a same draw call.
 // Note that because of how we cpu-clip and display sorting indicators, you _cannot_ use SameLine() after a TableHeader()
-void KillproofUI::TableHeader(const char* label)
-{
+void KillproofUI::TableHeader(const char* label) {
 	ImGuiContext& g = *GImGui;
 	ImGuiWindow* window = g.CurrentWindow;
 	if (window->SkipItems)
@@ -350,11 +324,9 @@ void KillproofUI::TableHeader(const char* label)
 	float w_sort_text = 0.0f;
 	char sort_order_suf[4] = "";
 	const float ARROW_SCALE = 0.65f;
-	if ((table->Flags & ImGuiTableFlags_Sortable) && !(column->Flags & ImGuiTableColumnFlags_NoSort))
-	{
+	if ((table->Flags & ImGuiTableFlags_Sortable) && !(column->Flags & ImGuiTableColumnFlags_NoSort)) {
 		w_arrow = ImFloor(g.FontSize * ARROW_SCALE + g.Style.FramePadding.x);
-		if (column->SortOrder > 0)
-		{
+		if (column->SortOrder > 0) {
 			ImFormatString(sort_order_suf, IM_ARRAYSIZE(sort_order_suf), "%d", column->SortOrder + 1);
 			w_sort_text = g.Style.ItemInnerSpacing.x + ImGui::CalcTextSize(sort_order_suf).x;
 		}
@@ -381,15 +353,12 @@ void KillproofUI::TableHeader(const char* label)
 	bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held, ImGuiButtonFlags_AllowItemOverlap);
 	if (g.ActiveId != id)
 		ImGui::SetItemAllowOverlap();
-	if (held || hovered || selected)
-	{
+	if (held || hovered || selected) {
 		const ImU32 col = ImGui::GetColorU32(held ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
 		//RenderFrame(bb.Min, bb.Max, col, false, 0.0f);
 		ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, col, table->CurrentColumn);
 		ImGui::RenderNavHighlight(bb, id, ImGuiNavHighlightFlags_TypeThin | ImGuiNavHighlightFlags_NoRounding);
-	}
-	else
-	{
+	} else {
 		// Submit single cell bg color in the case we didn't submit a full header row
 		if ((table->RowFlags & ImGuiTableRowFlags_Headers) == 0)
 			ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(ImGuiCol_TableHeaderBg), table->CurrentColumn);
@@ -400,8 +369,7 @@ void KillproofUI::TableHeader(const char* label)
 
 	// Drag and drop to re-order columns.
 	// FIXME-TABLE: Scroll request while reordering a column and it lands out of the scrolling zone.
-	if (held && (table->Flags & ImGuiTableFlags_Reorderable) && ImGui::IsMouseDragging(0) && !g.DragDropActive)
-	{
+	if (held && (table->Flags & ImGuiTableFlags_Reorderable) && ImGui::IsMouseDragging(0) && !g.DragDropActive) {
 		// While moving a column it will jump on the other side of the mouse, so we also test for MouseDelta.x
 		table->ReorderColumn = (ImGuiTableColumnIdx)column_n;
 		table->InstanceInteracted = table->InstanceCurrent;
@@ -421,25 +389,22 @@ void KillproofUI::TableHeader(const char* label)
 
 	// Sort order arrow
 	const float ellipsis_max = cell_r.Max.x - w_arrow - w_sort_text;
-	if ((table->Flags & ImGuiTableFlags_Sortable) && !(column->Flags & ImGuiTableColumnFlags_NoSort))
-	{
-		if (column->SortOrder != -1)
-		{
+	if ((table->Flags & ImGuiTableFlags_Sortable) && !(column->Flags & ImGuiTableColumnFlags_NoSort)) {
+		if (column->SortOrder != -1) {
 			float x = ImMax(cell_r.Min.x, cell_r.Max.x - w_arrow - w_sort_text);
 			float y = label_pos.y;
-			if (column->SortOrder > 0)
-			{
+			if (column->SortOrder > 0) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetColorU32(ImGuiCol_Text, 0.70f));
 				ImGui::RenderText(ImVec2(x + g.Style.ItemInnerSpacing.x, y), sort_order_suf);
 				ImGui::PopStyleColor();
 				x += w_sort_text;
 			}
-			ImGui::RenderArrow(window->DrawList, ImVec2(x, y), ImGui::GetColorU32(ImGuiCol_Text), column->SortDirection == ImGuiSortDirection_Ascending ? ImGuiDir_Up : ImGuiDir_Down, ARROW_SCALE);
+			ImGui::RenderArrow(window->DrawList, ImVec2(x, y), ImGui::GetColorU32(ImGuiCol_Text),
+			                   column->SortDirection == ImGuiSortDirection_Ascending ? ImGuiDir_Up : ImGuiDir_Down, ARROW_SCALE);
 		}
 
 		// Handle clicking on column header to adjust Sort Order
-		if (pressed && table->ReorderColumn != column_n)
-		{
+		if (pressed && table->ReorderColumn != column_n) {
 			ImGuiSortDirection sort_direction = ImGui::TableGetColumnNextSortDirection(column);
 			ImGui::TableSetColumnSortDirection(column_n, sort_direction, g.IO.KeyShift);
 		}

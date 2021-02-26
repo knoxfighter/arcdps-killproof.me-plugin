@@ -180,6 +180,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 							Player& player = playerIt->second;
 							// update charactername
 							player.characterName = src->name;
+							player.manuallyAdded = false;
 
 							// load user data if not yet loaded (check inside function)
 							// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff

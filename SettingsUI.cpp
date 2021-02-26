@@ -73,6 +73,7 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 
 	ImGui::Checkbox("hide players without killproof.me account", &settings.settings.hidePrivateAccount);
 	ImGui::Checkbox("Do NOT close killproof.me window on ESC", &settings.settings.disableEscClose);
+	ImGui::Checkbox("show header with text instead of images", &settings.settings.showHeaderText);
 
 	if (ImGui::BeginCombo("Alignment", to_string(settings.settings.alignment).c_str())) {
 		alignmentSelectable(Alignment::Left, settings);
