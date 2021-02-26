@@ -20,6 +20,7 @@ extern std::mutex cachedPlayersMutex;
 extern IDirect3DDevice9* d3d9Device;
 extern HMODULE self_dll;
 extern std::map<Killproof, Icon> icons;
+extern std::string selfAccountName;
 
 typedef void(*e3_func_ptr)(const char* str);
 extern e3_func_ptr arc_log;

@@ -84,6 +84,35 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		ImGui::SetTooltip("Remove all manually added users");
 	}
 
+	// get own player
+	const auto& playerIt = cachedPlayers.find(selfAccountName);
+	if (playerIt != cachedPlayers.end()) {
+		const Player& player = playerIt->second;
+		if (player.status == LoadingStatus::Loaded) {
+			static float CopyIdButtonWidth = 100.0f;
+			const float pos = CopyIdButtonWidth + ImGui::GetStyle().ItemSpacing.x;
+			ImGui::SameLine(ImGui::GetWindowWidth() - pos);
+			if (ImGui::Button("Copy own KP ID")) {
+				// copy ID to clipboard
+				//put your text in source
+				if (OpenClipboard(NULL))
+				{
+					HGLOBAL clipbuffer;
+					char* buffer;
+					EmptyClipboard();
+					clipbuffer = GlobalAlloc(GMEM_DDESHARE, player.killproofId.size() + 1);
+					buffer = (char*)GlobalLock(clipbuffer);
+					memset(buffer, 0, player.killproofId.size() + 1);
+					player.killproofId.copy(buffer, player.killproofId.size());
+					GlobalUnlock(clipbuffer);
+					SetClipboardData(CF_TEXT, clipbuffer);
+					CloseClipboard();
+				}
+			}
+			CopyIdButtonWidth = ImGui::GetItemRectSize().x;
+		}
+	}
+
 	/**
 	 * TABLE
 	 */

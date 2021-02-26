@@ -14,6 +14,7 @@ std::map<std::string, Player> cachedPlayers;
 std::mutex cachedPlayersMutex;
 KillproofUI killproofUi;
 std::map<Killproof, Icon> icons;
+std::string selfAccountName;
 
 void loadKillproofsSizeChecked(Player& player) {
 	if (player.status == LoadingStatus::NotLoaded && trackedPlayers.size() <= 10) {

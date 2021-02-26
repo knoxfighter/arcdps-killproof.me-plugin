@@ -156,8 +156,13 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 
 					/* add */
 					if (src->prof) {
-						std::scoped_lock lock(cachedPlayersMutex, trackedPlayersMutex);
+						std::scoped_lock<std::mutex, std::mutex> lock(cachedPlayersMutex, trackedPlayersMutex);
 
+						// if this is the first player, it is me
+						if (selfAccountName.empty()) {
+							selfAccountName = username;
+						}
+						
 						// add to tracking
 						trackedPlayers.emplace_back(username);
 
