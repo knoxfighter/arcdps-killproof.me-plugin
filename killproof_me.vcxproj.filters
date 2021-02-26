@@ -57,6 +57,12 @@
     <ClCompile Include="arcdps_structs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Icon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arcdps_structs.h">
@@ -101,5 +107,96 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Header Files\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Icon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="killproof_me.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icons\Legendary_Insight.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Cairn_the_Indomitable_Shard.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Cardinal_Adina%27s_Token.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Cardinal_Sabir%27s_Token.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Conjured_Amalgamate_Token.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Desmina%27s_Token.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Dhuum%27s_Token.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Ether_Djinn%27s_Token.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Fragment_of_Saul%27s_Burden.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Gorseval_Tentacle_Piece.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Impaled_Prisoner.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Keep_Construct_Rubble_(trophy).png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Legendary_Divination.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\lild.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Qadim%27s_Token.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Rec_Room_Floor_Tile.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Ribbon_Scrap.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\River_of_Souls_Token.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Sabetha_Flamethrower_Fragment_Piece.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Slothasor_Mushroom_(trophy).png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Statue_Token.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Turret_Fragment.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Twin_Largos_Token.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Vale_Guardian_Fragment.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\White_Mantle_Abomination_Crystal_(trophy).png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Unstable_Fractal_Essence.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

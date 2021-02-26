@@ -21,8 +21,9 @@ public:
         std::string blockedDataText;
         bool disableEscClose;
         Alignment alignment = Alignment::Left;
+        bool showHeaderText;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment, showHeaderText)
     };
 
     static Settings& instance();
@@ -34,6 +35,7 @@ public:
     [[nodiscard]] const std::string& getBlockedDataText() const;
     [[nodiscard]] bool getDisableEscClose() const;
     [[nodiscard]] Alignment getAlignment() const;
+    [[nodiscard]] bool getShowHeaderText() const;
 
 private:
     // copy/move etc. will be deleted implicitly

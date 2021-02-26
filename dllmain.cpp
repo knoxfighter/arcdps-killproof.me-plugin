@@ -1,5 +1,6 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include <Windows.h>
+#include <wincodec.h>
 #include <d3d9.h>
 #include <cstdint>
 #include <mutex>
@@ -11,22 +12,10 @@
 #include "imgui/imgui.h"
 #include "KillproofUI.h"
 #include "Player.h"
+#include "resource.h"
 #include "Settings.h"
 #include "SettingsUI.h"
-
-BOOL APIENTRY DllMain(HMODULE hModule,
-                      DWORD ul_reason_for_call,
-                      LPVOID lpReserved
-) {
-	switch (ul_reason_for_call) {
-	case DLL_PROCESS_ATTACH:
-	case DLL_THREAD_ATTACH:
-	case DLL_THREAD_DETACH:
-	case DLL_PROCESS_DETACH:
-		break;
-	}
-	return TRUE;
-}
+#include "Icon.h" // this import is needed for the icons map
 
 // predefine some functions
 void readArcExports();
@@ -37,6 +26,8 @@ arcdps_exports arc_exports = {};
 bool show_settings = false;
 SettingsUI settingsUi;
 HMODULE arc_dll;
+HMODULE self_dll;
+IDirect3DDevice9* d3d9Device;
 
 typedef uint64_t (*arc_export_func_u64)();
 // arc options
@@ -55,6 +46,21 @@ DWORD arc_global_mod_multi = 0;
 
 // arc add to log
 e3_func_ptr arc_log;
+
+BOOL APIENTRY DllMain(HMODULE hModule,
+	DWORD ul_reason_for_call,
+	LPVOID lpReserved
+) {
+	switch (ul_reason_for_call) {
+	case DLL_PROCESS_ATTACH:
+		self_dll = hModule;
+	case DLL_THREAD_ATTACH:
+	case DLL_THREAD_DETACH:
+	case DLL_PROCESS_DETACH:
+		break;
+	}
+	return TRUE;
+}
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -174,6 +180,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 							Player& player = playerIt->second;
 							// update charactername
 							player.characterName = src->name;
+							player.manuallyAdded = false;
 
 							// load user data if not yet loaded (check inside function)
 							// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
@@ -306,8 +313,44 @@ void readArcExports() {
 	}
 }
 
+void temp() {
+	ImGui::Begin("image header");
+
+	if (ImGui::BeginTable("test table", 2)) {
+		ImGui::TableSetupColumn("##header1");
+		ImGui::TableSetupColumn("##header2");
+
+		// only printing text in the header works fine
+		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
+		ImGui::TableSetColumnIndex(0);
+		ImGui::PushID(0);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+		ImGui::Text("text header");
+		ImGui::PopStyleVar();
+		ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+		ImGui::TableHeader("##header1");
+		ImGui::PopID();
+
+		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
+		ImGui::TableSetColumnIndex(1);
+		ImGui::PushID(1);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+		ImGui::Image(icons.at(Killproof::li).texture, ImVec2(16, 16));
+		ImGui::PopStyleVar();
+		ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+		ImGui::TableHeader("##header2");
+		ImGui::PopID();
+
+		ImGui::EndTable();
+	}
+
+	ImGui::End();
+}
+
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	try {
+		ImGui::ShowDemoWindow();
+		temp();
 		if (!not_charsel_or_loading) return 0;
 		bool& showKillproof = Settings::instance().getShowKillproof();
 		ShowKillproof(&showKillproof);
@@ -320,25 +363,75 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	return 0;
 }
 
+void load_images() {
+	icons.emplace(Killproof::li, ID_LI);
+	icons.emplace(Killproof::ld, ID_LD);
+	icons.emplace(Killproof::liLd, ID_LILD);
+	icons.emplace(Killproof::vg, ID_VG);
+	icons.emplace(Killproof::gorse, ID_Gorse);
+	icons.emplace(Killproof::sabetha, ID_Sab);
+	icons.emplace(Killproof::sloth, ID_Sloth);
+	icons.emplace(Killproof::matthias, ID_Matt);
+	icons.emplace(Killproof::escort, ID_Escort);
+	icons.emplace(Killproof::kc, ID_KC);
+	icons.emplace(Killproof::xera, ID_Xera);
+	icons.emplace(Killproof::cairn, ID_Cairn);
+	icons.emplace(Killproof::mo, ID_MO);
+	icons.emplace(Killproof::samarog, ID_Sam);
+	icons.emplace(Killproof::deimos, ID_Deimos);
+	icons.emplace(Killproof::desmina, ID_Desmina);
+	icons.emplace(Killproof::river, ID_River);
+	icons.emplace(Killproof::statues, ID_Statues);
+	icons.emplace(Killproof::dhuum, ID_Dhuum);
+	icons.emplace(Killproof::ca, ID_CA);
+	icons.emplace(Killproof::twins, ID_Twins);
+	icons.emplace(Killproof::qadim, ID_Qadim1);
+	icons.emplace(Killproof::adina, ID_Adina);
+	icons.emplace(Killproof::sabir, ID_Sabir);
+	icons.emplace(Killproof::qadim2, ID_Qadim2);
+	icons.emplace(Killproof::uce, ID_UFE);
+	icons.emplace(Killproof::ufe, ID_UFE);
+}
 
 /* initialize mod -- return table that arcdps will use for callbacks */
 arcdps_exports* mod_init() {
-	/* for arcdps */
-	arc_exports.sig = 0x6BAF1938;
+	bool loading_successful = true;
+	std::string error_message = "Unknown error";
+	// load images
+	try {
+		load_images();
+	} catch (const std::exception& e) {
+		loading_successful = false;
+		error_message = "Error loading all icons: ";
+		error_message.append(e.what());
+	}
+
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
-	arc_exports.size = sizeof(arcdps_exports);
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "2.0.0";
-	arc_exports.wnd_nofilter = mod_wnd;
-	arc_exports.combat = mod_combat;
-	arc_exports.imgui = mod_imgui;
-	arc_exports.options_end = mod_options;
-	//arc_exports.size = (uintptr_t)"error message if you decide to not load, sig must be 0";
+	arc_exports.out_build = "2.1.0-beta1";
+
+	if (loading_successful) {
+		/* for arcdps */
+		arc_exports.sig = 0x6BAF1938;
+		arc_exports.size = sizeof(arcdps_exports);
+		arc_exports.wnd_nofilter = mod_wnd;
+		arc_exports.combat = mod_combat;
+		arc_exports.imgui = mod_imgui;
+		arc_exports.options_end = mod_options;
+	} else {
+		arc_exports.sig = 0;
+		const std::string::size_type size = error_message.size();
+		char* buffer = new char[size + 1];   //we need extra char for NUL
+		memcpy(buffer, error_message.c_str(), size + 1);
+		arc_exports.size = (uintptr_t)buffer;
+
+		icons.clear();
+	}
 	return &arc_exports;
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, void* id3dd9, HMODULE new_arcdll, void* mallocfn, void* freefn) {
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, IDirect3DDevice9* id3dd9, HMODULE new_arcdll, void* mallocfn, void* freefn) {
 	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(static_cast<ImGuiContext*>(imguicontext));
 	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);
@@ -347,6 +440,9 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* 
 	arc_export_e6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
 	arc_export_e7 = (arc_export_func_u64)GetProcAddress(arc_dll, "e7");
 	arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
+
+	d3d9Device = id3dd9;
+
 	return mod_init;
 }
 
