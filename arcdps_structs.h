@@ -62,7 +62,8 @@ enum class LoadingStatus {
 	KpMeError, // Error returned from kp.me
 	NoDataAvailable, // User has no kp.me account or account is private
 	Loaded, // Successful, all data available to use
-	Loading // Data is currently being loaded
+	LoadingById, // Data is currently being loaded by accountname oder kpid
+	LoadingByChar // Data is currently bering loaded by charactername
 };
 
 // additional enum for alignment

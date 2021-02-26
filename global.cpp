@@ -16,7 +16,7 @@ KillproofUI killproofUi;
 std::map<Killproof, Icon> icons;
 
 void loadKillproofsSizeChecked(Player& player) {
-	if (trackedPlayers.size() <= 10) {
+	if (player.status == LoadingStatus::NotLoaded && trackedPlayers.size() <= 10) {
 		loadKillproofs(player);
 	}
 }

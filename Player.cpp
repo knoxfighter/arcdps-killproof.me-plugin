@@ -14,18 +14,15 @@ void Player::loadKillproofs() {
 	// make sure this is not run twice
 	// So we skip, if the players data is unavailable, already loading or successfully loaded
 	LoadingStatus loadingStatus = status.load();
-	if (loadingStatus == LoadingStatus::Loading || loadingStatus == LoadingStatus::NoDataAvailable || loadingStatus == LoadingStatus::Loaded)
+	if (loadingStatus == LoadingStatus::LoadingById || loadingStatus == LoadingStatus::LoadingByChar || 
+		loadingStatus == LoadingStatus::NoDataAvailable || loadingStatus == LoadingStatus::Loaded)
 		return;
 	// not run if Loading cannot be set or loading status was previously something different
-	if (!status.compare_exchange_strong(loadingStatus, LoadingStatus::Loading)) 
+	if (!status.compare_exchange_strong(loadingStatus, LoadingStatus::LoadingById)) 
 		return;
 	
-	std::string link = "https://killproof.me/api/kp/";
-	link.append(cpr::util::urlEncode(username));
-	link.append("?lang=en");
-
 	// download it in a new thread (fire and forget)
-	std::thread cprCall([this, link]() {
+	const auto call = [this](const auto& self, const std::string& link) -> void {
 		cpr::Response response = cpr::Get(cpr::Url{ link }, cpr::Header{{"User-Agent", "arcdps-killproof.me-plugin"}});
 
 		if (response.status_code == 200) {
@@ -35,18 +32,31 @@ void Player::loadKillproofs() {
 			killproofId = json.at("kpid").get<std::string>();
 			std::string accountname = json.at("account_name").get<std::string>();
 			
-			// replace the key in the global map, when kpid was used to create this player
-			if (username == killproofId) {
+			// replace the key in the global map, when kpid or charname was used to create this player
+			if (username == killproofId || username != accountname) {
 				// lock the maps
 				std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);
 
 				// replace the key of the cache
 				auto node = cachedPlayers.extract(username);
 				node.key() = accountname;
-				cachedPlayers.insert(std::move(node));
+				const auto inserRes = cachedPlayers.insert(std::move(node));
 
+				// When insertion of changed node fails, the key already exists and `this` gets destructed.
+				// Therefore `this` is invalid and going on further results in an UseAfterFree !
+				if (!inserRes.inserted) {
+					// last action to do: remove the wrong player from the tracked players list
+					trackedPlayers.erase(std::remove(trackedPlayers.begin(), trackedPlayers.end(), username), trackedPlayers.end());
+					return;
+				}
+				
 				// replace the player in tracked players
 				std::replace(trackedPlayers.begin(), trackedPlayers.end(), username, accountname);
+
+				// set the username as charactername
+				if (username != killproofId && username != accountname) {
+					characterName = username;
+				}
 			}
 
 			// set username AFTER the check, if it the same as the kpid
@@ -93,12 +103,19 @@ void Player::loadKillproofs() {
 		}
 		// silently set, when user not found
 		else if (response.status_code == 404) {
-			this->status = LoadingStatus::NoDataAvailable;
 			this->killproofs.setAllKillproofFieldsToBlocked();
 			this->killproofs.setAllTokensFieldsToBlocked();
 
 			// try again as charactername
-			// https://killproof.me/api/character/Lucy%20Falkenauge/kp
+			if (status == LoadingStatus::LoadingById) {
+				std::string new_link = "https://killproof.me/api/character/";
+				new_link.append(cpr::util::urlEncode(username));
+				new_link.append("/kp?lang=en");
+				status = LoadingStatus::LoadingByChar;
+				self(self, new_link);
+			} else {
+				status = LoadingStatus::NoDataAvailable;
+			}
 		}
 		// on any other error, print verbose output into the arcdps.log file
 		else {
@@ -138,7 +155,15 @@ void Player::loadKillproofs() {
 
 		// say UI to reload sorting
 		killproofUi.needSort = true;
-	});
+	};
+
+	// create the link for getting by accountname/kpid
+	std::string link = "https://killproof.me/api/kp/";
+	link.append(cpr::util::urlEncode(username));
+	link.append("?lang=en");
+
+	// call the created lambda in a new thread
+	std::thread cprCall(call, call, link);
 
 	// we want to run async completely, so just detach
 	cprCall.detach();

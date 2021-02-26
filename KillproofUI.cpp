@@ -54,13 +54,16 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 	if (addPlayer) {
 		std::string username(userAddBuf);
 
-		// only add users with a '.' in it
-		if (username.find('.')) {
-			trackedPlayers.emplace_back(username);
+		// only run when username is not empty
+		if (!username.empty()) {
+			// only add to tracking, if not already there
+			if (std::find(trackedPlayers.begin(), trackedPlayers.end(), username) == trackedPlayers.end()) {
+				trackedPlayers.emplace_back(username);
 
-			const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "", true);
-			if (tryEmplace.second) {
-				loadKillproofsSizeChecked(tryEmplace.first->second);
+				const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "", true);
+				if (tryEmplace.second) {
+					loadKillproofs(tryEmplace.first->second);
+				}
 			}
 			userAddBuf[0] = '\0';
 		}
