@@ -2,7 +2,6 @@
 
 #include <map>
 
-
 #include "arcdps_structs.h"
 #include "json.hpp"
 #include "Killproofs.h"

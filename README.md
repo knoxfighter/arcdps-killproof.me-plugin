@@ -33,6 +33,10 @@ The killproof.me website will be opened, when you click on the accountname or on
 
 ![Ingame screenshot](screenshot.png)
 
+## Translations
+Translations can be added by creating a file in `<Guild Wars 2>/addons/arcdps` called `arcdps_lang_killproof.me.json`.
+To create your own translation you can take the example file in [translation](/translations).
+
 ## Development
 
 This plugin was developed with visual studio 2019 and vcpkg. It has only one dependency, that has to be installed in vcpkg.

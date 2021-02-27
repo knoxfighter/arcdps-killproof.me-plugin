@@ -205,6 +205,7 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="Killproofs.cpp" />
     <ClCompile Include="KillproofUI.cpp" />
+    <ClCompile Include="Lang.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsUI.cpp" />
@@ -221,6 +222,8 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Killproofs.h" />
+    <ClInclude Include="Lang.h" />
+    <ClInclude Include="map.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="KillproofUI.h" />
     <ClInclude Include="resource.h" />

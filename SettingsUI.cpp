@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Settings.h"
 #include "global.h"
+#include "Lang.h"
 
 #define windowWidth 800
 #define leftItemWidth  200
@@ -38,7 +39,7 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	Settings& settings = Settings::instance();
 
 	// Setting to select, which key is used to open the killproofs menu (will also close it)
-	ImGui::Text("Shortcut to open killproofs menu:");
+	ImGui::Text(Lang::translate(LangKey::SettingsShortcutText).c_str());
 	ImGui::SameLine();
 	ImGui::PushItemWidth(30);
 	if (ImGui::InputText("##shortcut", shortcut, 64)) {
@@ -61,7 +62,7 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 
 	// input for data private
 	ImGui::PushItemWidth(50);
-	if (ImGui::InputText("Text to display when data is unavailable/private", blockedDataText, sizeof blockedDataText)) {
+	if (ImGui::InputText(Lang::translate(LangKey::SettingsBlockedText).c_str(), blockedDataText, sizeof blockedDataText)) {
 		if (strlen(blockedDataText) == 0) {
 			settings.settings.blockedDataText = " ";
 		}
@@ -71,11 +72,11 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	}
 	ImGui::PopItemWidth();
 
-	ImGui::Checkbox("hide players without killproof.me account", &settings.settings.hidePrivateAccount);
-	ImGui::Checkbox("Do NOT close killproof.me window on ESC", &settings.settings.disableEscClose);
-	ImGui::Checkbox("show header with text instead of images", &settings.settings.showHeaderText);
+	ImGui::Checkbox(Lang::translate(LangKey::SettingsHidePrivateText).c_str(), &settings.settings.hidePrivateAccount);
+	ImGui::Checkbox(Lang::translate(LangKey::SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
+	ImGui::Checkbox(Lang::translate(LangKey::SettingsShowHeaderText).c_str(), &settings.settings.showHeaderText);
 
-	if (ImGui::BeginCombo("Alignment", to_string(settings.settings.alignment).c_str())) {
+	if (ImGui::BeginCombo(Lang::translate(LangKey::Alignment).c_str(), to_string(settings.settings.alignment).c_str())) {
 		alignmentSelectable(Alignment::Left, settings);
 		alignmentSelectable(Alignment::Center, settings);
 		alignmentSelectable(Alignment::Right, settings);
@@ -83,7 +84,7 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 		ImGui::EndCombo();
 	}
 
-	if (ImGui::Button("Clear cache")) {
+	if (ImGui::Button(Lang::translate(LangKey::SettingsClearCacheText).c_str())) {
 		std::scoped_lock<std::mutex, std::mutex> guard(cachedPlayersMutex, trackedPlayersMutex);
 
 		// get all accountnames and charnames
@@ -105,7 +106,7 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 		}
 	}
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Clear the cache and reload killproof.me data for all players");
+		ImGui::SetTooltip(Lang::translate(LangKey::SettingsClearCacheTooltip).c_str());
 
 	ImGui::PopStyleVar();
 	ImGui::End();

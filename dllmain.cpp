@@ -16,6 +16,10 @@
 #include "Settings.h"
 #include "SettingsUI.h"
 #include "Icon.h" // this import is needed for the icons map
+#include "Lang.h"
+
+// FIXME remove this call!
+Lang& language = Lang::instance();
 
 // predefine some functions
 void readArcExports();
@@ -261,10 +265,10 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 }
 
 uintptr_t mod_options() {
-	if (ImGui::BeginMenu("Killproof.me")) {
+	if (ImGui::BeginMenu(Lang::translate(LangKey::MenuName).c_str())) {
 		bool& showKillproof = Settings::instance().getShowKillproof();
-		ImGui::Checkbox("Killproofs", &showKillproof);
-		ImGui::Checkbox("Settings", &show_settings);
+		ImGui::Checkbox(Lang::translate(LangKey::SubMenuKp).c_str(), &showKillproof);
+		ImGui::Checkbox(Lang::translate(LangKey::SubMenuSettings).c_str(), &show_settings);
 		ImGui::EndMenu();
 	}
 
@@ -287,14 +291,19 @@ bool canMoveWindows() {
 
 void ShowKillproof(bool* p_open) {
 	if (*p_open) {
-		killproofUi.draw("Killproof.me", p_open,
+		std::string title = Lang::translate(LangKey::KpWindowName);
+		title.append("##Killproof.me");
+		
+		killproofUi.draw(title.c_str(), p_open,
 		                 ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
 	}
 }
 
 void ShowSettings(bool* p_open) {
 	if (show_settings) {
-		settingsUi.draw("Killproof.me Settings", p_open,
+		std::string title = Lang::translate(LangKey::SettingsWindowName);
+		title.append("##Killproof.me Settings");
+		settingsUi.draw(title.c_str(), p_open,
 		                ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
 	}
 }

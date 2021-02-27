@@ -8,6 +8,7 @@
 #include "Settings.h"
 #include "imgui/imgui_internal.h"
 #include "Icon.h"
+#include "Lang.h"
 
 #define windowWidth 800
 #define windowsHeight 650
@@ -45,9 +46,9 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		addPlayer = true;
 	}
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Accountname, killproof.me ID or Charactername to search and add to the list");
+		ImGui::SetTooltip(Lang::translate(LangKey::AddPlayerTooltip).c_str());
 	ImGui::SameLine();
-	if (ImGui::Button("Add")) {
+	if (ImGui::Button(Lang::translate(LangKey::AddPlayerText).c_str())) {
 		addPlayer = true;
 	}
 
@@ -70,7 +71,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 	}
 
 	ImGui::SameLine();
-	if (ImGui::Button("Clear")) {
+	if (ImGui::Button(Lang::translate(LangKey::ClearText).c_str())) {
 		const auto end = std::remove_if(trackedPlayers.begin(), trackedPlayers.end(), [](const std::string& playerName) {
 			const auto& player = cachedPlayers.find(playerName);
 			if (player == cachedPlayers.end()) {
@@ -81,7 +82,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		trackedPlayers.erase(end, trackedPlayers.end());
 	}
 	if (ImGui::IsItemHovered()) {
-		ImGui::SetTooltip("Remove all manually added users");
+		ImGui::SetTooltip(Lang::translate(LangKey::ClearTooltip).c_str());
 	}
 
 	// get own player
@@ -94,7 +95,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 			float pos = CopyIdButtonWidth + ImGui::GetStyle().ItemSpacing.x;
 			pos = ImMax(ImGui::GetCursorPosX(), ImGui::GetWindowWidth() - pos);
 			ImGui::SetCursorPosX(pos);
-			if (ImGui::Button("Copy own KP ID")) {
+			if (ImGui::Button(Lang::translate(LangKey::CopyKpIdText).c_str())) {
 				// copy ID to clipboard
 				//put your text in source
 				if (OpenClipboard(NULL))
@@ -126,12 +127,12 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
 		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
 
-		const char accountName[] = "Accountname";
-		const char charName[] = "Charactername";
+		std::string accountName = Lang::translate(LangKey::Accountname);
+		std::string charName = Lang::translate(LangKey::Charactername);
 
 		// Header
-		ImGui::TableSetupColumn(accountName, ImGuiTableColumnFlags_NoReorder, 0, accountNameId);
-		ImGui::TableSetupColumn(charName, ImGuiTableColumnFlags_NoReorder, 0, characterNameId);
+		ImGui::TableSetupColumn(accountName.c_str(), ImGuiTableColumnFlags_NoReorder, 0, accountNameId);
+		ImGui::TableSetupColumn(charName.c_str(), ImGuiTableColumnFlags_NoReorder, 0, characterNameId);
 
 		for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 			Killproof kp = static_cast<Killproof>(i);
@@ -141,7 +142,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 				columnFlags |= ImGuiTableColumnFlags_DefaultHide;
 			}
 
-			ImGui::TableSetupColumn(toString(kp), columnFlags, 0.f, static_cast<ImU32>(kp));
+			ImGui::TableSetupColumn(toString(kp).c_str(), columnFlags, 0.f, static_cast<ImU32>(kp));
 		}
 
 		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
@@ -149,18 +150,18 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		// accountname header
 		ImGui::TableNextColumn();
 		ImGui::PushID(0);
-		ImGui::TableHeader(accountName);
+		ImGui::TableHeader(accountName.c_str());
 		if (ImGui::IsItemHovered()) {
-			ImGui::SetTooltip(accountName);
+			ImGui::SetTooltip(accountName.c_str());
 		}
 		ImGui::PopID();
 
 		// charname header
 		ImGui::TableNextColumn();
 		ImGui::PushID(1);
-		ImGui::TableHeader(charName);
+		ImGui::TableHeader(charName.c_str());
 		if (ImGui::IsItemHovered()) {
-			ImGui::SetTooltip(charName);
+			ImGui::SetTooltip(charName.c_str());
 		}
 		ImGui::PopID();
 

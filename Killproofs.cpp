@@ -1,5 +1,7 @@
 #include "Killproofs.h"
 
+#include "Lang.h"
+
 bool defaultHidden(const Killproof& kp) {
 	switch (kp) {
 	case Killproof::li:
@@ -35,36 +37,36 @@ bool defaultHidden(const Killproof& kp) {
 	}
 }
 
-const char* toString(Killproof e) {
+std::string toString(Killproof e) {
 	switch (e) {
-	case Killproof::li: return "LI";
-	case Killproof::ld: return "LD";
-	case Killproof::liLd: return "LI/LD";
-	case Killproof::uce: return "UCE";
-	case Killproof::ufe: return "UFE";
-	case Killproof::vg: return "VG";
-	case Killproof::gorse: return "Gorse";
-	case Killproof::sabetha: return "Sabetha";
-	case Killproof::sloth: return "Sloth";
-	case Killproof::matthias: return "Matthias";
-	case Killproof::escort: return "Escort";
-	case Killproof::kc: return "KC";
-	case Killproof::xera: return "Xera";
-	case Killproof::cairn: return "Cairn";
-	case Killproof::mo: return "MO";
-	case Killproof::samarog: return "Samarog";
-	case Killproof::deimos: return "Deimos";
-	case Killproof::desmina: return "Desmina";
-	case Killproof::river: return "River";
-	case Killproof::statues: return "Statues";
-	case Killproof::dhuum: return "Dhuum";
-	case Killproof::ca: return "CA";
-	case Killproof::twins: return "Twins";
-	case Killproof::qadim: return "Qadim";
-	case Killproof::sabir: return "Sabir";
-	case Killproof::adina: return "Adina";
-	case Killproof::qadim2: return "Qadim2";
-	default: return "Unknown";
+	case Killproof::li: return Lang::translate(LangKey::LI);
+	case Killproof::ld: return Lang::translate(LangKey::Ld);
+	case Killproof::liLd: return Lang::translate(LangKey::LiLd);
+	case Killproof::uce: return Lang::translate(LangKey::Uce);
+	case Killproof::ufe: return Lang::translate(LangKey::Ufe);
+	case Killproof::vg: return Lang::translate(LangKey::Vg);
+	case Killproof::gorse: return Lang::translate(LangKey::Gorse);
+	case Killproof::sabetha: return Lang::translate(LangKey::Sabetha);
+	case Killproof::sloth: return Lang::translate(LangKey::Sloth);
+	case Killproof::matthias: return Lang::translate(LangKey::Matthias);
+	case Killproof::escort: return Lang::translate(LangKey::Escort);
+	case Killproof::kc: return Lang::translate(LangKey::Kc);
+	case Killproof::xera: return Lang::translate(LangKey::Xera);
+	case Killproof::cairn: return Lang::translate(LangKey::Cairn);
+	case Killproof::mo: return Lang::translate(LangKey::Mo);
+	case Killproof::samarog: return Lang::translate(LangKey::Samarog);
+	case Killproof::deimos: return Lang::translate(LangKey::Deimos);
+	case Killproof::desmina: return Lang::translate(LangKey::Desmina);
+	case Killproof::river: return Lang::translate(LangKey::River);
+	case Killproof::statues: return Lang::translate(LangKey::Statues);
+	case Killproof::dhuum: return Lang::translate(LangKey::Dhuum);
+	case Killproof::ca: return Lang::translate(LangKey::Ca);
+	case Killproof::twins: return Lang::translate(LangKey::Twins);
+	case Killproof::qadim: return Lang::translate(LangKey::Qadim);
+	case Killproof::sabir: return Lang::translate(LangKey::Sabir);
+	case Killproof::adina: return Lang::translate(LangKey::Adina);
+	case Killproof::qadim2: return Lang::translate(LangKey::Qadim2);
+	default: return Lang::translate(LangKey::DefaultKp);
 	}
 }
 
