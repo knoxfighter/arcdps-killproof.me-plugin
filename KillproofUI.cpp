@@ -89,9 +89,11 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 	if (playerIt != cachedPlayers.end()) {
 		const Player& player = playerIt->second;
 		if (player.status == LoadingStatus::Loaded) {
+			ImGui::SameLine();
 			static float CopyIdButtonWidth = 100.0f;
-			const float pos = CopyIdButtonWidth + ImGui::GetStyle().ItemSpacing.x;
-			ImGui::SameLine(ImGui::GetWindowWidth() - pos);
+			float pos = CopyIdButtonWidth + ImGui::GetStyle().ItemSpacing.x;
+			pos = ImMax(ImGui::GetCursorPosX(), ImGui::GetWindowWidth() - pos);
+			ImGui::SetCursorPosX(pos);
 			if (ImGui::Button("Copy own KP ID")) {
 				// copy ID to clipboard
 				//put your text in source
