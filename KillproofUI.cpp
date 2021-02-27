@@ -45,7 +45,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		addPlayer = true;
 	}
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Accountname to add to the list (use account names, input without '.' will be ignored)");
+		ImGui::SetTooltip("Accountname, killproof.me ID or Charactername to search and add to the list");
 	ImGui::SameLine();
 	if (ImGui::Button("Add")) {
 		addPlayer = true;
