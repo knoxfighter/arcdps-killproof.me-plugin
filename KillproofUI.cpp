@@ -91,10 +91,10 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 		const Player& player = playerIt->second;
 		if (player.status == LoadingStatus::Loaded) {
 			ImGui::SameLine();
-			static float CopyIdButtonWidth = 100.0f;
-			float pos = CopyIdButtonWidth + ImGui::GetStyle().ItemSpacing.x;
-			pos = ImMax(ImGui::GetCursorPosX(), ImGui::GetWindowWidth() - pos - 1);
-			ImGui::SetCursorPosX(pos);
+			// static float CopyIdButtonWidth = 100.0f;
+			// float pos = CopyIdButtonWidth + ImGui::GetStyle().ItemSpacing.x;
+			// pos = ImMax(ImGui::GetCursorPosX(), ImGui::GetWindowWidth() - pos - 1);
+			// ImGui::SetCursorPosX(pos);
 			if (ImGui::Button(Lang::translate(LangKey::CopyKpIdText).c_str())) {
 				// copy ID to clipboard
 				//put your text in source
@@ -112,7 +112,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 					CloseClipboard();
 				}
 			}
-			CopyIdButtonWidth = ImGui::GetItemRectSize().x;
+			// CopyIdButtonWidth = ImGui::GetItemRectSize().x;
 		}
 	}
 
