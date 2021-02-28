@@ -331,7 +331,7 @@ void readArcExports() {
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	try {
-		ImGui::ShowDemoWindow();
+		// ImGui::ShowDemoWindow();
 		if (!not_charsel_or_loading) return 0;
 		bool& showKillproof = Settings::instance().getShowKillproof();
 		ShowKillproof(&showKillproof);
@@ -389,7 +389,7 @@ arcdps_exports* mod_init() {
 
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "2.1.0-beta1";
+	arc_exports.out_build = "2.1.0-beta2";
 
 	if (loading_successful) {
 		/* for arcdps */
