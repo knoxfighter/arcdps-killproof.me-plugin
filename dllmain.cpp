@@ -265,12 +265,15 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 }
 
 uintptr_t mod_options() {
-	if (ImGui::BeginMenu(Lang::translate(LangKey::MenuName).c_str())) {
-		bool& showKillproof = Settings::instance().getShowKillproof();
-		ImGui::Checkbox(Lang::translate(LangKey::SubMenuKp).c_str(), &showKillproof);
-		ImGui::Checkbox(Lang::translate(LangKey::SubMenuSettings).c_str(), &show_settings);
+	bool& showKillproof = Settings::instance().getShowKillproof();
+	ImGui::Checkbox(Lang::translate(LangKey::SubMenuKp).c_str(), &showKillproof);
+	ImGui::SameLine();
+	ImGui::BeginChild("submenukpid", ImVec2(0, ImGui::GetTextLineHeight()));
+	if (ImGui::BeginMenu("##Killproof.me")) {
+		settingsUi.draw();
 		ImGui::EndMenu();
 	}
+	ImGui::EndChild();
 
 	return 0;
 }
@@ -303,8 +306,7 @@ void ShowSettings(bool* p_open) {
 	if (show_settings) {
 		std::string title = Lang::translate(LangKey::SettingsWindowName);
 		title.append("##Killproof.me Settings");
-		settingsUi.draw(title.c_str(), p_open,
-		                ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
+		settingsUi.draw();
 	}
 }
 
@@ -329,7 +331,7 @@ void readArcExports() {
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	try {
-		// ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 		if (!not_charsel_or_loading) return 0;
 		bool& showKillproof = Settings::instance().getShowKillproof();
 		ShowKillproof(&showKillproof);

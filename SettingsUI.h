@@ -12,7 +12,7 @@ class SettingsUI
 public:
 	SettingsUI();
 
-	void draw(const char* title, bool* p_open, ImGuiWindowFlags flags);
+	void draw();
 	void alignmentSelectable(Alignment select_alignment, Settings& settings);
 };
 

@@ -27,15 +27,7 @@ SettingsUI::SettingsUI() {
 	strcpy_s(blockedDataText, settings.settings.blockedDataText.c_str());
 }
 
-void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
-	ImGui::SetNextWindowSize(ImVec2(windowWidth, 650), ImGuiCond_FirstUseEver);
-	// set min size of the object
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(150, 50));
-	ImGui::Begin(title, p_open, flags);
-
-	// set frame padding smaller (small buttons)
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-
+void SettingsUI::draw() {
 	Settings& settings = Settings::instance();
 
 	// Setting to select, which key is used to open the killproofs menu (will also close it)
@@ -107,10 +99,6 @@ void SettingsUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
 	}
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip(Lang::translate(LangKey::SettingsClearCacheTooltip).c_str());
-
-	ImGui::PopStyleVar();
-	ImGui::End();
-	ImGui::PopStyleVar();
 }
 
 void SettingsUI::alignmentSelectable(Alignment select_alignment, Settings& settings) {
