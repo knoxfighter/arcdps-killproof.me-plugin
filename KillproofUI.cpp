@@ -93,7 +93,7 @@ void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) 
 			ImGui::SameLine();
 			static float CopyIdButtonWidth = 100.0f;
 			float pos = CopyIdButtonWidth + ImGui::GetStyle().ItemSpacing.x;
-			pos = ImMax(ImGui::GetCursorPosX(), ImGui::GetWindowWidth() - pos);
+			pos = ImMax(ImGui::GetCursorPosX(), ImGui::GetWindowWidth() - pos - 1);
 			ImGui::SetCursorPosX(pos);
 			if (ImGui::Button(Lang::translate(LangKey::CopyKpIdText).c_str())) {
 				// copy ID to clipboard
