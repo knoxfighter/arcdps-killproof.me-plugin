@@ -69,7 +69,10 @@ BUILD_ENUM_SERIALIZED(
 	SettingsShowHeaderText,
 	Alignment,
 	SettingsClearCacheText,
-	SettingsClearCacheTooltip
+	SettingsClearCacheTooltip,
+	Left,
+	Center,
+	Right
 )
 
 class Lang {

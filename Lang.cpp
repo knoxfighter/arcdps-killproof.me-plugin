@@ -1,6 +1,7 @@
 #include "Lang.h"
 
 #include <fstream>
+#include <iomanip>
 
 Lang& Lang::instance() {
 	static Lang i;
@@ -16,7 +17,7 @@ Lang::Lang() {
 }
 
 Lang::~Lang() {
-	// saveToFile();
+	saveToFile();
 }
 
 void Lang::saveToFile() {
@@ -27,7 +28,7 @@ void Lang::saveToFile() {
 	std::ofstream jsonFile("addons\\arcdps\\arcdps_lang_killproof.me.json");
 
 	// save json to file
-	jsonFile << json;
+	jsonFile << std::setw(4) << json;
 }
 
 void Lang::readFromFile() {
@@ -101,6 +102,9 @@ void Lang::loadDefaults() {
 		{LangKey::Alignment, "Alignment"},
 		{LangKey::SettingsClearCacheText, "Clear cache"},
 		{LangKey::SettingsClearCacheTooltip, "Clear the cache and reload killproof.me data for all players"},
+		{LangKey::Left, "Left"},
+		{LangKey::Center, "Center"},
+		{LangKey::Right, "Right"},
 	};
 	lang.translations.merge(defaults);
 }

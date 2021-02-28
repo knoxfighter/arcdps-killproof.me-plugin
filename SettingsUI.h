@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Settings.h"
-#include "imgui/imgui.h"
 
 class SettingsUI
 {

@@ -6,6 +6,7 @@
 #include "Settings.h"
 #include "global.h"
 #include "Lang.h"
+#include "imgui/imgui.h"
 
 #define windowWidth 800
 #define leftItemWidth  200
