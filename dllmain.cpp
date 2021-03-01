@@ -389,7 +389,7 @@ arcdps_exports* mod_init() {
 
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "2.1.0-beta2";
+	arc_exports.out_build = "2.1.0";
 
 	if (loading_successful) {
 		/* for arcdps */
