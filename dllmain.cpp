@@ -297,8 +297,7 @@ void ShowKillproof(bool* p_open) {
 		std::string title = Lang::translate(LangKey::KpWindowName);
 		title.append("##Killproof.me");
 		
-		killproofUi.draw(title.c_str(), p_open,
-		                 ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
+		killproofUi.draw(p_open, (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
 	}
 }
 

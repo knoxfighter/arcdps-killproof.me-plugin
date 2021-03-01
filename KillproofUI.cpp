@@ -19,9 +19,14 @@ void KillproofUI::openInBrowser(const char* username) {
 	ShellExecuteA(nullptr, nullptr, buf, nullptr, nullptr, SW_SHOW);
 }
 
-void KillproofUI::draw(const char* title, bool* p_open, ImGuiWindowFlags flags) {
+void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	// ImGui::SetNextWindowSizeConstraints(ImVec2(150, 50), ImVec2(windowWidth, windowsHeight));
-	ImGui::Begin(title, p_open, flags);
+	std::string title = Lang::translate(LangKey::KpWindowName);
+	title.append("##Killproof.me");
+
+	flags |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+	
+	ImGui::Begin(title.c_str(), p_open, flags);
 
 	// lock the mutexes, before we access sensible data
 	std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);

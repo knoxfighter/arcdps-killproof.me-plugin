@@ -9,7 +9,7 @@ class KillproofUI
 public:
 	std::atomic_bool needSort = false;
 	
-	void draw(const char* title, bool* p_open, ImGuiWindowFlags flags);
+	void draw(bool* p_open, ImGuiWindowFlags flags);
 	void AlignedTextColumn(const char* text, ...) const;
 	void TableHeader(const char* label, bool show_text);
 
