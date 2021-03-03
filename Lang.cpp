@@ -17,7 +17,7 @@ Lang::Lang() {
 }
 
 Lang::~Lang() {
-	saveToFile();
+	// saveToFile();
 }
 
 void Lang::saveToFile() {
