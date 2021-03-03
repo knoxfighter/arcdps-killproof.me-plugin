@@ -11,12 +11,13 @@ Download the latest version from [github releases](https://github.com/knoxfighte
 Then put the .dll file into the same folder as arcdps (normally `<Guild Wars 2>/bin64`).  
 To disable, just remove the .dll or move it to a different folder.
 
-Alternative, install it with the [Guild Wars 2 Addon loader](https://github.com/fmmmlee/GW2-Addon-Manager/), like multiple other plugins.
+Alternatively, install it with the [Guild Wars 2 Addon loader](https://github.com/fmmmlee/GW2-Addon-Manager/), like multiple other plugins.
 
-## Problem solving
+## Troubleshooting
 If the DLL is not loaded (options do not show up), make sure, that you have installed the latest C++ 2015-2019 Redistributable.
 You can download the latest Redistributable from [Microsofts download page](https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads).
-Please use the version "Visual Studio 2015, 2017 and 2019".
+Please use the version "Visual Studio 2015, 2017 and 2019".  
+If you have problems, that your settings are reset on each startup, delete the file `<GW2>/addons/arcdps/arcdps_killproof.me.json`. This will reset all your settings.
 
 ## Usage
 Don't be a dick and give people a chance!
