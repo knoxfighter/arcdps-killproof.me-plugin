@@ -11,7 +11,7 @@ Icon::Icon(UINT name) {
 	HRSRC imageResHandle = FindResource(self_dll, MAKEINTRESOURCE(name), L"PNG");
 	if (!imageResHandle) {
 		// not found
-		std::string text = "Error finding Resource: ";
+		std::string text = "Error finding Resource: "; 
 		text.append(nameString);
 		throw std::runtime_error(text);
 	}

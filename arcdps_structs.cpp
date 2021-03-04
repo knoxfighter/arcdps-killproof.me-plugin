@@ -4,9 +4,9 @@
 
 std::string to_string(Alignment alignment) {
 	switch (alignment) {
-	case Alignment::Left: return Lang::translate(LangKey::Left);
-	case Alignment::Center: return Lang::translate(LangKey::Center);
-	case Alignment::Right: return Lang::translate(LangKey::Right);
+	case Alignment::Left: return lang.translate(LangKey::Left);
+	case Alignment::Center: return lang.translate(LangKey::Center);
+	case Alignment::Right: return lang.translate(LangKey::Right);
 	default: return "Unknown";
 	}
 }

@@ -13,8 +13,6 @@
 #define rightItemWidth 600
 
 SettingsUI::SettingsUI() {
-	Settings& settings = Settings::instance();
-
 	// set all buffer to the values from Settings
 
 	int killProofKey = settings.getKillProofKey();
@@ -29,10 +27,9 @@ SettingsUI::SettingsUI() {
 }
 
 void SettingsUI::draw() {
-	Settings& settings = Settings::instance();
 
 	// Setting to select, which key is used to open the killproofs menu (will also close it)
-	ImGui::Text(Lang::translate(LangKey::SettingsShortcutText).c_str());
+	ImGui::Text(lang.translate(LangKey::SettingsShortcutText).c_str());
 	ImGui::SameLine();
 	ImGui::PushItemWidth(30);
 	if (ImGui::InputText("##shortcut", shortcut, 64)) {
@@ -55,21 +52,20 @@ void SettingsUI::draw() {
 
 	// input for data private
 	ImGui::PushItemWidth(50);
-	if (ImGui::InputText(Lang::translate(LangKey::SettingsBlockedText).c_str(), blockedDataText, sizeof blockedDataText)) {
+	if (ImGui::InputText(lang.translate(LangKey::SettingsBlockedText).c_str(), blockedDataText, sizeof blockedDataText)) {
 		if (strlen(blockedDataText) == 0) {
 			settings.settings.blockedDataText = " ";
-		}
-		else {
+		} else {
 			settings.settings.blockedDataText = blockedDataText;
 		}
 	}
 	ImGui::PopItemWidth();
 
-	ImGui::Checkbox(Lang::translate(LangKey::SettingsHidePrivateText).c_str(), &settings.settings.hidePrivateAccount);
-	ImGui::Checkbox(Lang::translate(LangKey::SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
-	ImGui::Checkbox(Lang::translate(LangKey::SettingsShowHeaderText).c_str(), &settings.settings.showHeaderText);
+	ImGui::Checkbox(lang.translate(LangKey::SettingsHidePrivateText).c_str(), &settings.settings.hidePrivateAccount);
+	ImGui::Checkbox(lang.translate(LangKey::SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
+	ImGui::Checkbox(lang.translate(LangKey::SettingsShowHeaderText).c_str(), &settings.settings.showHeaderText);
 
-	if (ImGui::BeginCombo(Lang::translate(LangKey::Alignment).c_str(), to_string(settings.settings.alignment).c_str())) {
+	if (ImGui::BeginCombo(lang.translate(LangKey::Alignment).c_str(), to_string(settings.settings.alignment).c_str())) {
 		alignmentSelectable(Alignment::Left, settings);
 		alignmentSelectable(Alignment::Center, settings);
 		alignmentSelectable(Alignment::Right, settings);
@@ -77,7 +73,7 @@ void SettingsUI::draw() {
 		ImGui::EndCombo();
 	}
 
-	if (ImGui::Button(Lang::translate(LangKey::SettingsClearCacheText).c_str())) {
+	if (ImGui::Button(lang.translate(LangKey::SettingsClearCacheText).c_str())) {
 		std::scoped_lock<std::mutex, std::mutex> guard(cachedPlayersMutex, trackedPlayersMutex);
 
 		// get all accountnames and charnames
@@ -99,7 +95,7 @@ void SettingsUI::draw() {
 		}
 	}
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip(Lang::translate(LangKey::SettingsClearCacheTooltip).c_str());
+		ImGui::SetTooltip(lang.translate(LangKey::SettingsClearCacheTooltip).c_str());
 }
 
 void SettingsUI::alignmentSelectable(Alignment select_alignment, Settings& settings) {

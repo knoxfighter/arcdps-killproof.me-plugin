@@ -3,13 +3,12 @@
 #include <fstream>
 #include <iomanip>
 
-Lang& Lang::instance() {
-	static Lang i;
-	return i;
-}
+#include "global.h"
+
+Lang lang;
 
 std::string Lang::translate(LangKey key) {
-	return instance().lang.translations.at(key);
+	return lang.translations.at(key);
 }
 
 Lang::Lang() {

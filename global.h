@@ -27,3 +27,8 @@ extern e3_func_ptr arc_log;
 
 void loadKillproofsSizeChecked(Player& player);
 void loadKillproofs(Player& player);
+
+inline bool fileExists(const std::string& filename) {
+	struct stat buffer;
+	return (stat(filename.c_str(), &buffer) == 0);
+}

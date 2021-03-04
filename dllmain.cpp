@@ -12,14 +12,11 @@
 #include "imgui/imgui.h"
 #include "KillproofUI.h"
 #include "Player.h"
-#include "resource.h"
 #include "Settings.h"
 #include "SettingsUI.h"
 #include "Icon.h" // this import is needed for the icons map
 #include "Lang.h"
-
-// FIXME remove this call!
-Lang& language = Lang::instance();
+#include "resource.h"
 
 // predefine some functions
 void readArcExports();
@@ -52,8 +49,8 @@ DWORD arc_global_mod_multi = 0;
 e3_func_ptr arc_log;
 
 BOOL APIENTRY DllMain(HMODULE hModule,
-	DWORD ul_reason_for_call,
-	LPVOID lpReserved
+                      DWORD ul_reason_for_call,
+                      LPVOID lpReserved
 ) {
 	switch (ul_reason_for_call) {
 	case DLL_PROCESS_ATTACH:
@@ -92,7 +89,6 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				readArcExports();
 				const int vkey = (int)wParam;
 				// close windows on escape press (return 0, so arc and gw2 are not processing this event)
-				Settings& settings = Settings::instance();
 				bool& show_killproof = settings.getShowKillproof();
 				if (!arc_hide_all && vkey == VK_ESCAPE) {
 					// close settings menu first
@@ -166,7 +162,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 						if (selfAccountName.empty()) {
 							selfAccountName = username;
 						}
-						
+
 						// add to tracking
 						trackedPlayers.emplace_back(username);
 
@@ -184,8 +180,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 								// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
 								loadKillproofsSizeChecked(player);
 							}
-						}
-						else {
+						} else {
 							Player& player = playerIt->second;
 							// update charactername
 							player.characterName = src->name;
@@ -199,7 +194,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 						// Tell the UI to resort, cause we added a player
 						killproofUi.needSort = true;
 					}
-					/* remove */
+						/* remove */
 					else {
 						std::lock_guard<std::mutex> guard(trackedPlayersMutex);
 						trackedPlayers.erase(std::remove(trackedPlayers.begin(), trackedPlayers.end(), username), trackedPlayers.end());
@@ -265,8 +260,8 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 }
 
 uintptr_t mod_options() {
-	bool& showKillproof = Settings::instance().getShowKillproof();
-	ImGui::Checkbox(Lang::translate(LangKey::SubMenuKp).c_str(), &showKillproof);
+	bool& showKillproof = settings.getShowKillproof();
+	ImGui::Checkbox(lang.translate(LangKey::SubMenuKp).c_str(), &showKillproof);
 	ImGui::SameLine();
 	ImGui::BeginChild("submenukpid", ImVec2(0, ImGui::GetTextLineHeight()));
 	if (ImGui::BeginMenu("##Killproof.me")) {
@@ -294,16 +289,16 @@ bool canMoveWindows() {
 
 void ShowKillproof(bool* p_open) {
 	if (*p_open) {
-		std::string title = Lang::translate(LangKey::KpWindowName);
+		std::string title = lang.translate(LangKey::KpWindowName);
 		title.append("##Killproof.me");
-		
+
 		killproofUi.draw(p_open, (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
 	}
 }
 
 void ShowSettings(bool* p_open) {
 	if (show_settings) {
-		std::string title = Lang::translate(LangKey::SettingsWindowName);
+		std::string title = lang.translate(LangKey::SettingsWindowName);
 		title.append("##Killproof.me Settings");
 		settingsUi.draw();
 	}
@@ -332,7 +327,7 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	try {
 		// ImGui::ShowDemoWindow();
 		if (!not_charsel_or_loading) return 0;
-		bool& showKillproof = Settings::instance().getShowKillproof();
+		bool& showKillproof = settings.getShowKillproof();
 		ShowKillproof(&showKillproof);
 		ShowSettings(&show_settings);
 	} catch (const std::exception& e) {
@@ -349,7 +344,7 @@ void load_images() {
 	icons.emplace(Killproof::liLd, ID_LILD);
 	icons.emplace(Killproof::vg, ID_VG);
 	icons.emplace(Killproof::gorse, ID_Gorse);
-	icons.emplace(Killproof::sabetha, ID_Sab);
+	icons.emplace(Killproof::sabetha, ID_Sabetha);
 	icons.emplace(Killproof::sloth, ID_Sloth);
 	icons.emplace(Killproof::matthias, ID_Matt);
 	icons.emplace(Killproof::escort, ID_Escort);
@@ -357,7 +352,7 @@ void load_images() {
 	icons.emplace(Killproof::xera, ID_Xera);
 	icons.emplace(Killproof::cairn, ID_Cairn);
 	icons.emplace(Killproof::mo, ID_MO);
-	icons.emplace(Killproof::samarog, ID_Sam);
+	icons.emplace(Killproof::samarog, ID_Samarog);
 	icons.emplace(Killproof::deimos, ID_Deimos);
 	icons.emplace(Killproof::desmina, ID_Desmina);
 	icons.emplace(Killproof::river, ID_River);
@@ -386,6 +381,13 @@ arcdps_exports* mod_init() {
 		error_message.append(e.what());
 	}
 
+	// create my own directory :)
+	// if (!(CreateDirectoryA("addons\\killproof.me\\", NULL) || ERROR_ALREADY_EXISTS == GetLastError())) {
+	// 	loading_successful = false;
+	// 	error_message = "Error creating my own directory: ";
+	// 	error_message.append(std::to_string(GetLastError()));
+	// }
+
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.out_name = "killproof.me";
 	arc_exports.out_build = "2.1.0";
@@ -401,7 +403,7 @@ arcdps_exports* mod_init() {
 	} else {
 		arc_exports.sig = 0;
 		const std::string::size_type size = error_message.size();
-		char* buffer = new char[size + 1];   //we need extra char for NUL
+		char* buffer = new char[size + 1]; //we need extra char for NUL
 		memcpy(buffer, error_message.c_str(), size + 1);
 		arc_exports.size = (uintptr_t)buffer;
 
@@ -428,6 +430,7 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* 
 
 /* release mod -- return ignored */
 uintptr_t mod_release() {
+	icons.clear();
 	return 0;
 }
 

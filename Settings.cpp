@@ -2,10 +2,9 @@
 
 #include <fstream>
 
-Settings& Settings::instance() {
-    static Settings b;
-    return b;
-}
+#include "global.h"
+
+Settings settings;
 
 int Settings::getKillProofKey() const {
 	return settings.killproofKey;
@@ -33,10 +32,15 @@ Alignment Settings::getAlignment() const {
 
 bool Settings::getShowHeaderText() const {
 	return settings.showHeaderText;
+	// return true;
 }
 
 Settings::~Settings() {
-    saveToFile();
+	try {
+		saveToFile();
+	} catch (const std::exception& e) {
+		// Some exception happened, i cannot do anything against it here :(
+	}
 }
 
 Settings::Settings() {

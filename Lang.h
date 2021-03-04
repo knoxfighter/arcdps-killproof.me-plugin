@@ -83,17 +83,23 @@ public:
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(LangObject, translations)
 	};
 
-	static Lang& instance();
-	static std::string translate(LangKey key);
-
-private:
-	// copy/move etc. will be deleted implicitly
 	Lang();
 	~Lang();
 
+	std::string translate(LangKey key);
+
+	// copy/move delete
+	Lang(const Lang& other) = delete;
+	Lang(Lang&& other) noexcept = delete;
+	Lang& operator=(const Lang& other) = delete;
+	Lang& operator=(Lang&& other) noexcept = delete;
+	
+private:
 	void saveToFile();
 	void readFromFile();
 	void loadDefaults();
 
 	LangObject lang;
 };
+
+extern Lang lang;

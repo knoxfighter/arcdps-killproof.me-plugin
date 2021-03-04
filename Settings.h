@@ -25,8 +25,9 @@ public:
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment, showHeaderText)
     };
 
-    static Settings& instance();
-
+    Settings();
+    ~Settings();
+	
     // getter/setter
     [[nodiscard]] int getKillProofKey() const;
     [[nodiscard]] bool getHidePrivateAccount() const;
@@ -36,10 +37,12 @@ public:
     [[nodiscard]] Alignment getAlignment() const;
     [[nodiscard]] bool getShowHeaderText() const;
 
+	// delete copy/move
+    Settings(const Settings& other) = delete;
+    Settings(Settings&& other) noexcept = delete;
+    Settings& operator=(const Settings& other) = delete;
+    Settings& operator=(Settings&& other) noexcept = delete;
 private:
-    // copy/move etc. will be deleted implicitly
-    ~Settings();
-    Settings();
     void setDefaults();
     void saveToFile();
     void readFromFile();
@@ -47,3 +50,5 @@ private:
     SettingsObject settings;
     bool visibilityPopup = true;
 };
+
+extern Settings settings;

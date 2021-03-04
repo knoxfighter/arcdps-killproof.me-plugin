@@ -21,21 +21,20 @@ void KillproofUI::openInBrowser(const char* username) {
 
 void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	// ImGui::SetNextWindowSizeConstraints(ImVec2(150, 50), ImVec2(windowWidth, windowsHeight));
-	std::string title = Lang::translate(LangKey::KpWindowName);
+	std::string title = lang.translate(LangKey::KpWindowName);
 	title.append("##Killproof.me");
 
 	flags |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
-	
+
 	ImGui::Begin(title.c_str(), p_open, flags);
 
 	// lock the mutexes, before we access sensible data
 	std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);
 
-	Settings& settings = Settings::instance();
 
 	/**
-	 * ERROR MESSAGES
-	 */
+	* ERROR MESSAGES
+	*/
 	for (std::string trackedPlayer : trackedPlayers) {
 		const Player& player = cachedPlayers.at(trackedPlayer);
 		if (player.status == LoadingStatus::KpMeError) {
@@ -44,16 +43,16 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	}
 
 	/**
-	 * Controls
-	 */
+	* Controls
+	*/
 	bool addPlayer = false;
 	if (ImGui::InputText("##useradd", userAddBuf, sizeof userAddBuf, ImGuiInputTextFlags_EnterReturnsTrue)) {
 		addPlayer = true;
 	}
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip(Lang::translate(LangKey::AddPlayerTooltip).c_str());
+		ImGui::SetTooltip(lang.translate(LangKey::AddPlayerTooltip).c_str());
 	ImGui::SameLine();
-	if (ImGui::Button(Lang::translate(LangKey::AddPlayerText).c_str())) {
+	if (ImGui::Button(lang.translate(LangKey::AddPlayerText).c_str())) {
 		addPlayer = true;
 	}
 
@@ -76,7 +75,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	}
 
 	ImGui::SameLine();
-	if (ImGui::Button(Lang::translate(LangKey::ClearText).c_str())) {
+	if (ImGui::Button(lang.translate(LangKey::ClearText).c_str())) {
 		const auto end = std::remove_if(trackedPlayers.begin(), trackedPlayers.end(), [](const std::string& playerName) {
 			const auto& player = cachedPlayers.find(playerName);
 			if (player == cachedPlayers.end()) {
@@ -87,7 +86,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		trackedPlayers.erase(end, trackedPlayers.end());
 	}
 	if (ImGui::IsItemHovered()) {
-		ImGui::SetTooltip(Lang::translate(LangKey::ClearTooltip).c_str());
+		ImGui::SetTooltip(lang.translate(LangKey::ClearTooltip).c_str());
 	}
 
 	// get own player
@@ -100,11 +99,10 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 			// float pos = CopyIdButtonWidth + ImGui::GetStyle().ItemSpacing.x;
 			// pos = ImMax(ImGui::GetCursorPosX(), ImGui::GetWindowWidth() - pos - 1);
 			// ImGui::SetCursorPosX(pos);
-			if (ImGui::Button(Lang::translate(LangKey::CopyKpIdText).c_str())) {
+			if (ImGui::Button(lang.translate(LangKey::CopyKpIdText).c_str())) {
 				// copy ID to clipboard
 				//put your text in source
-				if (OpenClipboard(NULL))
-				{
+				if (OpenClipboard(NULL)) {
 					HGLOBAL clipbuffer;
 					char* buffer;
 					EmptyClipboard();
@@ -122,8 +120,8 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	}
 
 	/**
-	 * TABLE
-	 */
+	* TABLE
+	*/
 	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 2;
 
 	if (ImGui::BeginTable("kp.me", columnCount,
@@ -132,8 +130,8 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
 		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
 
-		std::string accountName = Lang::translate(LangKey::Accountname);
-		std::string charName = Lang::translate(LangKey::Charactername);
+		std::string accountName = lang.translate(LangKey::Accountname);
+		std::string charName = lang.translate(LangKey::Charactername);
 
 		// Header
 		ImGui::TableSetupColumn(accountName.c_str(), ImGuiTableColumnFlags_NoReorder, 0, accountNameId);
@@ -309,7 +307,7 @@ void KillproofUI::AlignedTextColumn(const char* text, ...) const {
 	float textWidth = ImGui::CalcTextSize(buf).x;
 	float columnWidth = ImGui::GetColumnWidth();
 
-	Alignment alignment = Settings::instance().getAlignment();
+	Alignment alignment = settings.getAlignment();
 	switch (alignment) {
 	case Alignment::Left:
 		break;
@@ -460,7 +458,8 @@ void KillproofUI::TableHeader(const char* label, bool show_text) {
 	// be merged into a single draw call.
 	//window->DrawList->AddCircleFilled(ImVec2(ellipsis_max, label_pos.y), 40, IM_COL32_WHITE);
 	if (show_text)
-		ImGui::RenderTextEllipsis(window->DrawList, label_pos, ImVec2(ellipsis_max, label_pos.y + label_height + g.Style.FramePadding.y), ellipsis_max, ellipsis_max, label, label_end, &label_size);
+		ImGui::RenderTextEllipsis(window->DrawList, label_pos, ImVec2(ellipsis_max, label_pos.y + label_height + g.Style.FramePadding.y), ellipsis_max,
+		                          ellipsis_max, label, label_end, &label_size);
 
 	// const bool text_clipped = label_size.x > (ellipsis_max - label_pos.x);
 	// if (text_clipped && hovered && g.HoveredIdNotActiveTimer > g.TooltipSlowDelay)
