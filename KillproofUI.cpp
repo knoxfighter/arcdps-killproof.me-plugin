@@ -95,10 +95,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		const Player& player = playerIt->second;
 		if (player.status == LoadingStatus::Loaded) {
 			ImGui::SameLine();
-			// static float CopyIdButtonWidth = 100.0f;
-			// float pos = CopyIdButtonWidth + ImGui::GetStyle().ItemSpacing.x;
-			// pos = ImMax(ImGui::GetCursorPosX(), ImGui::GetWindowWidth() - pos - 1);
-			// ImGui::SetCursorPosX(pos);
+			
 			if (ImGui::Button(lang.translate(LangKey::CopyKpIdText).c_str())) {
 				// copy ID to clipboard
 				//put your text in source
@@ -115,7 +112,6 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 					CloseClipboard();
 				}
 			}
-			// CopyIdButtonWidth = ImGui::GetItemRectSize().x;
 		}
 	}
 
@@ -133,13 +129,15 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		std::string accountName = lang.translate(LangKey::Accountname);
 		std::string charName = lang.translate(LangKey::Charactername);
 
-		// Header
-		ImGui::TableSetupColumn(accountName.c_str(), ImGuiTableColumnFlags_NoReorder, 0, accountNameId);
-		ImGui::TableSetupColumn(charName.c_str(), ImGuiTableColumnFlags_NoReorder, 0, characterNameId);
+		/**
+		 * HEADER
+		 */
+		ImGui::TableSetupColumn(accountName.c_str(), ImGuiTableColumnFlags_NoReorder | ImGuiTableColumnFlags_PreferSortDescending, 0, accountNameId);
+		ImGui::TableSetupColumn(charName.c_str(), ImGuiTableColumnFlags_NoReorder | ImGuiTableColumnFlags_PreferSortDescending, 0, characterNameId);
 
 		for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 			Killproof kp = static_cast<Killproof>(i);
-			int columnFlags = 0;
+			int columnFlags = ImGuiTableColumnFlags_PreferSortDescending;
 
 			if (defaultHidden(kp)) {
 				columnFlags |= ImGuiTableColumnFlags_DefaultHide;
@@ -191,7 +189,9 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 			}
 		}
 
-
+		/**
+		 * SORTING
+		 */
 		if (ImGuiTableSortSpecs* sorts_specs = ImGui::TableGetSortSpecs()) {
 			// Sort our data if sort specs have been changed!
 			if (sorts_specs->SpecsDirty)
@@ -199,7 +199,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 			bool expected = true;
 			if (needSort.compare_exchange_strong(expected, false)) {
-				const bool descend = sorts_specs->Specs->SortDirection == 2;
+				const bool descend = sorts_specs->Specs->SortDirection == ImGuiSortDirection_Descending;
 
 				if (sorts_specs->Specs->ColumnUserID == accountNameId) {
 					// sort by account name. Account name is the value we used in trackedPlayers, so nothing more to do
@@ -238,10 +238,11 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 						const amountVal amountA = playerA.killproofs.getAmountFromEnum(static_cast<const Killproof>(sorts_specs->Specs->ColumnUserID));
 						const amountVal amountB = playerB.killproofs.getAmountFromEnum(static_cast<const Killproof>(sorts_specs->Specs->ColumnUserID));
 
+						// descending: the more the higher up it gets
 						if (descend) {
-							return amountA < amountB;
-						} else {
 							return amountA > amountB;
+						} else {
+							return amountA < amountB;
 						}
 					});
 				}
