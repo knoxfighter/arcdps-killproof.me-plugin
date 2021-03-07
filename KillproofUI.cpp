@@ -261,7 +261,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				// username
 				if (ImGui::TableNextColumn()) {
 					ImGui::Text(player.username.c_str());
-					if (!(player.status == LoadingStatus::NoDataAvailable) && ImGui::IsItemClicked()) {
+					if (player.status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
 						// Open users kp.me in the browser
 						openInBrowser(player.username.c_str());
 					}
@@ -270,7 +270,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				// charactername
 				if (ImGui::TableNextColumn()) {
 					ImGui::Text(player.characterName.c_str());
-					if (ImGui::IsItemClicked()) {
+					if (player.status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
 						// Open users kp.me in the browser
 						openInBrowser(player.username.c_str());
 					}
