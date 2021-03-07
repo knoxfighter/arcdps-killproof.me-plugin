@@ -6,6 +6,7 @@
 #include <d3d9.h>
 
 #include "Killproofs.h"
+#include "imgui/imgui.h"
 
 class Player;
 class KillproofUI;
@@ -32,3 +33,5 @@ inline bool fileExists(const std::string& filename) {
 	struct stat buffer;
 	return (stat(filename.c_str(), &buffer) == 0);
 }
+
+static inline ImVec2 operator+(const ImVec2& lhs, const float rhs) { return ImVec2(lhs.x + rhs, lhs.y + rhs); }

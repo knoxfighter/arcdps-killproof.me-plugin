@@ -6,9 +6,11 @@
 #include "global.h"
 #include "Player.h"
 #include "Settings.h"
-#include "imgui/imgui_internal.h"
 #include "Icon.h"
 #include "Lang.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui/imgui_internal.h"
 
 #define windowWidth 800
 #define windowsHeight 650
@@ -279,7 +281,9 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 					if (ImGui::TableNextColumn()) {
 						const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
-						if (amount == -1 || player.status != LoadingStatus::Loaded) {
+						if (player.status == LoadingStatus::LoadingById || player.status == LoadingStatus::LoadingByChar) {
+							SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text));
+						} else if (amount == -1 || player.status != LoadingStatus::Loaded) {
 							AlignedTextColumn("%s", settings.getBlockedDataText().c_str());
 						} else {
 							AlignedTextColumn("%i", amount);
@@ -469,4 +473,71 @@ void KillproofUI::TableHeader(const char* label, bool show_text) {
 	// We don't use BeginPopupContextItem() because we want the popup to stay up even after the column is hidden
 	if (ImGui::IsMouseReleased(1) && ImGui::IsItemHovered())
 		ImGui::TableOpenContextMenu(column_n);
+}
+
+bool KillproofUI::SpinnerAligned(const char* label, float radius, float thickness, const ImU32& color) {
+	const float posX = ImGui::GetCursorPosX();
+	float newX = posX;
+	float elementWidth = radius * 2 + thickness * 2;
+	float columnWidth = ImGui::GetColumnWidth();
+
+	Alignment alignment = settings.getAlignment();
+	switch (alignment) {
+	case Alignment::Left:
+		break;
+	case Alignment::Center:
+		newX = posX + columnWidth / 2 - elementWidth / 2;
+		break;
+	case Alignment::Right:
+		newX = posX + columnWidth - elementWidth;
+		break;
+	}
+
+	// Clip to left, if text is bigger than current column
+	if (newX < posX) {
+		newX = posX;
+	}
+
+	ImGui::SetCursorPosX(newX);
+	
+	return Spinner(label, radius, thickness, color);
+}
+
+bool KillproofUI::Spinner(const char* label, float radius, float thickness, const ImU32& color) {
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+	if (window->SkipItems)
+		return false;
+
+	ImGuiContext& g = *GImGui;
+	const ImGuiStyle& style = g.Style;
+	const ImGuiID id = window->GetID(label);
+
+	ImVec2 pos = window->DC.CursorPos;
+	ImVec2 size((radius) * 2, (radius + style.FramePadding.y) * 2);
+
+	const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+	ImGui::ItemSize(bb, style.FramePadding.y);
+	if (!ImGui::ItemAdd(bb, id))
+		return false;
+
+	// Render
+	window->DrawList->PathClear();
+
+	int num_segments = 15;
+	int start = abs(ImSin(g.Time * 1.8f) * (num_segments - 5));
+
+	const float a_min = IM_PI * 2.0f * ((float)start) / (float)num_segments;
+	const float a_max = IM_PI * 2.0f * ((float)num_segments - 3) / (float)num_segments;
+
+	const ImVec2 centre = ImVec2(pos.x + radius, pos.y + radius + style.FramePadding.y);
+
+	for (int i = 0; i < num_segments; i++) {
+		const float a = a_min + ((float)i / (float)num_segments) * (a_max - a_min);
+		window->DrawList->PathLineTo(ImVec2(centre.x + ImCos(a + g.Time * 8) * radius,
+			centre.y + ImSin(a + g.Time * 8) * radius));
+	}
+
+	window->DrawList->PathStroke(color, false, thickness);
+
+	return true;
 }
