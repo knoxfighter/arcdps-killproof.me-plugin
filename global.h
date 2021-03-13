@@ -24,6 +24,7 @@ extern std::map<Killproof, Icon> icons;
 extern std::string selfAccountName;
 
 typedef void(*e3_func_ptr)(const char* str);
+extern e3_func_ptr arc_log_file;
 extern e3_func_ptr arc_log;
 
 void loadKillproofsSizeChecked(Player& player);

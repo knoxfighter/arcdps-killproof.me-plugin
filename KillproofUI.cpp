@@ -124,7 +124,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 	if (ImGui::BeginTable("kp.me", columnCount,
 	                      ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable |
-	                      ImGuiTableFlags_RowBg)) {
+	                      ImGuiTableFlags_Reorderable | ImGuiTableFlags_RowBg)) {
 		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
 		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
 
@@ -151,43 +151,23 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
 
 		// accountname header
-		ImGui::TableNextColumn();
-		ImGui::PushID(0);
-		ImGui::TableHeader(accountName.c_str());
-		if (ImGui::IsItemHovered()) {
-			ImGui::SetTooltip(accountName.c_str());
-		}
-		ImGui::PopID();
+		if (ImGui::TableNextColumn())
+			TableHeader(accountName.c_str(), true, nullptr);
 
 		// charname header
-		ImGui::TableNextColumn();
-		ImGui::PushID(1);
-		ImGui::TableHeader(charName.c_str());
-		if (ImGui::IsItemHovered()) {
-			ImGui::SetTooltip(charName.c_str());
-		}
-		ImGui::PopID();
+		if (ImGui::TableNextColumn())
+			TableHeader(charName.c_str(), true, nullptr);
 
 		// header for killproofs
 		for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 			if (ImGui::TableNextColumn()) {
 				Killproof kp = static_cast<Killproof>(i);
 				std::string columnName = toString(kp);
-				ImGui::PushID(columnName.c_str());
 				if (settings.getShowHeaderText()) {
-					TableHeader(columnName.c_str(), true);
+					TableHeader(columnName.c_str(), true, nullptr);
 				} else {
-					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-					ImGui::Image(icons.at(kp).texture, ImVec2(16, 16));
-					ImGui::PopStyleVar();
-					ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-					TableHeader(columnName.c_str(), false);
+					TableHeader(columnName.c_str(), false, icons.at(kp).texture);
 				}
-
-				if (ImGui::IsItemHovered()) {
-					ImGui::SetTooltip(columnName.c_str());
-				}
-				ImGui::PopID();
 			}
 		}
 
@@ -336,11 +316,15 @@ void KillproofUI::AlignedTextColumn(const char* text, ...) const {
 
 // This is a copy of `ImGui::TableHeader(const char* label)`
 // I removed the line, where the header is printed, so i can use it with image only headers.
+// When "show_label" is true, the label will be printed, as in the default one.
 //
 // Emit a column header (text + optional sort order)
 // We cpu-clip text here so that all columns headers can be merged into a same draw call.
 // Note that because of how we cpu-clip and display sorting indicators, you _cannot_ use SameLine() after a TableHeader()
-void KillproofUI::TableHeader(const char* label, bool show_text) {
+void KillproofUI::TableHeader(const char* label, bool show_label, ImTextureID texture) {
+	// TODO change eventually
+	const float image_size = 16.f;
+	
 	ImGuiContext& g = *GImGui;
 	ImGuiWindow* window = g.CurrentWindow;
 	if (window->SkipItems)
@@ -363,8 +347,11 @@ void KillproofUI::TableHeader(const char* label, bool show_text) {
 	// FIXME-TABLE: Padding problem if the correct outer-padding CellBgRect strays off our ClipRect?
 	ImRect cell_r = ImGui::TableGetCellBgRect(table, column_n);
 	float label_height = table->RowMinHeight - table->CellPaddingY * 2.0f;
-	if (show_text)
+	if (show_label) {
 		label_height = ImMax(label_size.y, label_height);
+	} else {
+		label_height = ImMax(image_size, label_height);
+	}
 
 	// Calculate ideal size for sort order arrow
 	float w_arrow = 0.0f;
@@ -381,8 +368,11 @@ void KillproofUI::TableHeader(const char* label, bool show_text) {
 
 	// We feed our unclipped width to the column without writing on CursorMaxPos, so that column is still considering for merging.
 	float max_pos_x = label_pos.x + w_sort_text + w_arrow;
-	if (show_text)
+	if (show_label) {
 		max_pos_x += label_size.x;
+	} else {
+		max_pos_x += image_size;
+	}
 	column->ContentMaxXHeadersUsed = ImMax(column->ContentMaxXHeadersUsed, column->WorkMaxX);
 	column->ContentMaxXHeadersIdeal = ImMax(column->ContentMaxXHeadersIdeal, max_pos_x);
 
@@ -462,10 +452,46 @@ void KillproofUI::TableHeader(const char* label, bool show_text) {
 	// Render clipped label. Clipping here ensure that in the majority of situations, all our header cells will
 	// be merged into a single draw call.
 	//window->DrawList->AddCircleFilled(ImVec2(ellipsis_max, label_pos.y), 40, IM_COL32_WHITE);
-	if (show_text)
-		ImGui::RenderTextEllipsis(window->DrawList, label_pos, ImVec2(ellipsis_max, label_pos.y + label_height + g.Style.FramePadding.y), ellipsis_max,
-		                          ellipsis_max, label, label_end, &label_size);
+	if (show_label) {
+		// ImGui::RenderTextEllipsis(window->DrawList, label_pos, ImVec2(ellipsis_max, label_pos.y + label_height + g.Style.FramePadding.y), ellipsis_max,
+		// 	ellipsis_max, label, label_end, &label_size);
 
+		float newX = label_pos.x;
+		
+		switch (settings.getAlignment()) {
+		case Alignment::Center:
+			newX = label_pos.x + ((ellipsis_max - label_pos.x) / 2) - (label_size.x / 2);
+			// ImGui::SetCursorPosX(cursorPosX + (textSpace / 2 - contentSize.x / 2));
+			break;
+		case Alignment::Right:
+			newX = ellipsis_max - label_size.x;
+			// ImGui::SetCursorPosX(cursorPosX + textSpace - contentSize.x);
+			break;
+		default: [[fallthrough]];
+		}
+
+		ImGui::RenderTextEllipsis(window->DrawList, ImVec2(newX, label_pos.y), ImVec2(ellipsis_max, label_pos.y + label_height + g.Style.FramePadding.y), ellipsis_max,
+			ellipsis_max, label, label_end, &label_size);
+	} else {
+		float newX = label_pos.x;
+		
+		switch (settings.getAlignment()) {
+		case Alignment::Center:
+			newX = label_pos.x + ((ellipsis_max - label_pos.x) / 2) - (image_size / 2);
+			// ImGui::SetCursorPosX(cursorPosX + (textSpace / 2 - contentSize.x / 2));
+			break;
+		case Alignment::Right:
+			newX = ellipsis_max - image_size;
+			// ImGui::SetCursorPosX(cursorPosX + textSpace - contentSize.x);
+			break;
+		default: [[fallthrough]];
+		}
+
+		ImRect ibb(ImVec2(newX, label_pos.y), ImVec2(newX, label_pos.y) + image_size);
+		
+		window->DrawList->AddImage(texture, ibb.Min, ibb.Max);
+	}
+	
 	// const bool text_clipped = label_size.x > (ellipsis_max - label_pos.x);
 	// if (text_clipped && hovered && g.HoveredIdNotActiveTimer > g.TooltipSlowDelay)
 	// 	ImGui::SetTooltip("%.*s", (int)(label_end - label), label);

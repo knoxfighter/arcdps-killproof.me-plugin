@@ -46,6 +46,7 @@ DWORD arc_global_mod2 = 0;
 DWORD arc_global_mod_multi = 0;
 
 // arc add to log
+e3_func_ptr arc_log_file;
 e3_func_ptr arc_log;
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -129,7 +130,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 		}
 	} catch (const std::exception& e) {
-		arc_log(e.what());
+		arc_log_file(e.what());
 		throw e;
 	}
 
@@ -203,11 +204,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 		}
 	} catch (const std::exception& e) {
-		arc_log(e.what());
+		arc_log_file(e.what());
 
 		// create dump of params
 		if (ev) {
-			arc_log("ev:\n");
+			arc_log_file("ev:\n");
 			char event[sizeof(cbtevent)];
 			memcpy(event, ev, sizeof(cbtevent));
 			std::stringstream evss;
@@ -216,11 +217,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 			evss << "\n";
 			std::string evs = evss.str();
-			arc_log(evs.c_str());
+			arc_log_file(evs.c_str());
 		}
 
 		if (src) {
-			arc_log("src:\n");
+			arc_log_file("src:\n");
 			char srcData[sizeof(ag)];
 			memcpy(srcData, src, sizeof(ag));
 			std::stringstream srcDatass;
@@ -229,16 +230,16 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 			srcDatass << "\n";
 			std::string srcDataS = srcDatass.str();
-			arc_log(srcDataS.c_str());
+			arc_log_file(srcDataS.c_str());
 
 			if (src->name) {
-				arc_log("src->name:\n");
-				arc_log(src->name);
+				arc_log_file("src->name:\n");
+				arc_log_file(src->name);
 			}
 		}
 
 		if (dst) {
-			arc_log("dst:\n");
+			arc_log_file("dst:\n");
 			char dstData[sizeof(ag)];
 			memcpy(dstData, dst, sizeof(ag));
 			std::stringstream dstDatass;
@@ -247,11 +248,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 			}
 			dstDatass << "\n";
 			std::string dstDataS = dstDatass.str();
-			arc_log(dstDataS.c_str());
+			arc_log_file(dstDataS.c_str());
 
 			if (dst->name) {
-				arc_log("dst->name:\n");
-				arc_log(dst->name);
+				arc_log_file("dst->name:\n");
+				arc_log_file(dst->name);
 			}
 		}
 		throw e;
@@ -331,7 +332,7 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 		ShowKillproof(&showKillproof);
 		ShowSettings(&show_settings);
 	} catch (const std::exception& e) {
-		arc_log(e.what());
+		arc_log_file(e.what());
 		throw e;
 	}
 
@@ -421,7 +422,8 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* 
 	arc_dll = new_arcdll;
 	arc_export_e6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
 	arc_export_e7 = (arc_export_func_u64)GetProcAddress(arc_dll, "e7");
-	arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
+	arc_log_file = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
+	arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e8");
 
 	d3d9Device = id3dd9;
 

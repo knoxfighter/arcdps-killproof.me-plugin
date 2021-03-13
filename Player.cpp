@@ -134,7 +134,7 @@ void Player::loadKillproofs() {
 			cs.append(" -- StatusLine: ");
 			cs.append(response.status_line);
 			cs.append("\n");
-			arc_log(cs.c_str());
+			arc_log_file(cs.c_str());
 
 			cs.clear();
 
