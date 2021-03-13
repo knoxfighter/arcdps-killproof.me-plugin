@@ -6,7 +6,7 @@
 #include "global.h"
 #include "Player.h"
 #include "Settings.h"
-#include "Icon.h"
+#include "imguiex/Icon.h"
 #include "Lang.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS

@@ -197,7 +197,7 @@
     <ClCompile Include="arcdps_structs.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="global.cpp" />
-    <ClCompile Include="Icon.cpp" />
+    <ClCompile Include="imguiex\Icon.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -213,7 +213,7 @@
   <ItemGroup>
     <ClInclude Include="arcdps_structs.h" />
     <ClInclude Include="global.h" />
-    <ClInclude Include="Icon.h" />
+    <ClInclude Include="imguiex\Icon.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_internal.h" />

@@ -6,7 +6,7 @@
 class Icon {
 public:
 	IDirect3DTexture9* texture;
-	Icon(UINT name);
+	Icon(UINT name, HMODULE dll, IDirect3DDevice9* d3d9Device);
 	~Icon();
 	
 private:

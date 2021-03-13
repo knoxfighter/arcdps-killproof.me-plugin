@@ -1,14 +1,13 @@
 #include "Icon.h"
 
+#include <stdexcept>
 #include <string>
 #include <wincodec.h>
 
-#include "global.h"
-
-Icon::Icon(UINT name) {
+Icon::Icon(UINT name, HMODULE dll, IDirect3DDevice9* d3d9Device) {
 	std::string nameString(std::to_string(name));
 	
-	HRSRC imageResHandle = FindResource(self_dll, MAKEINTRESOURCE(name), L"PNG");
+	HRSRC imageResHandle = FindResource(dll, MAKEINTRESOURCE(name), L"PNG");
 	if (!imageResHandle) {
 		// not found
 		std::string text = "Error finding Resource: "; 
@@ -17,7 +16,7 @@ Icon::Icon(UINT name) {
 	}
 
 	// does not need to be freed
-	HGLOBAL imageResDataHandle = LoadResource(self_dll, imageResHandle);
+	HGLOBAL imageResDataHandle = LoadResource(dll, imageResHandle);
 	if (!imageResDataHandle) {
 		// loading failed
 		std::string text = "Error loading resource: ";
@@ -33,7 +32,7 @@ Icon::Icon(UINT name) {
 		throw std::runtime_error(text);
 	}
 
-	DWORD imageFileSize = SizeofResource(self_dll, imageResHandle);
+	DWORD imageFileSize = SizeofResource(dll, imageResHandle);
 	if (!imageFileSize) {
 		// error getting size of file
 		std::string text = "Error getting Size of Resource: ";
