@@ -160,7 +160,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 						std::scoped_lock<std::mutex, std::mutex> lock(cachedPlayersMutex, trackedPlayersMutex);
 
 						// if this is the first player, it is me
-						if (selfAccountName.empty()) {
+						if (selfAccountName.empty() && src->id == 2000) {
 							selfAccountName = username;
 						}
 
