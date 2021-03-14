@@ -165,8 +165,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 						}
 
 						// add to tracking
-						trackedPlayers.emplace_back(username);
-
+						// only add to tracking, if not already there
+						if (std::find(trackedPlayers.begin(), trackedPlayers.end(), username) == trackedPlayers.end()) {
+							trackedPlayers.emplace_back(username);
+						}
+							
 						auto playerIt = cachedPlayers.find(username);
 						if (playerIt == cachedPlayers.end()) {
 							// no element found, create it
