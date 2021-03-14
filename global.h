@@ -34,5 +34,3 @@ inline bool fileExists(const std::string& filename) {
 	struct stat buffer;
 	return (stat(filename.c_str(), &buffer) == 0);
 }
-
-static inline ImVec2 operator+(const ImVec2& lhs, const float rhs) { return ImVec2(lhs.x + rhs, lhs.y + rhs); }

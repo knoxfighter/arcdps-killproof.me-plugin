@@ -1,6 +1,6 @@
 #include "arcdps_structs.h"
 
-#include "Lang.h"
+#include "../Lang.h"
 
 std::string to_string(Alignment alignment) {
 	switch (alignment) {

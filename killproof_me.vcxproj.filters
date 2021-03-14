@@ -19,11 +19,11 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{363c521e-e32e-4231-b878-d9fc40a31335}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\imguiex">
-      <UniqueIdentifier>{bf75de67-5211-4418-867c-4d8459d91017}</UniqueIdentifier>
+    <Filter Include="Source Files\extension">
+      <UniqueIdentifier>{05bf4457-c0ef-4229-847b-7e4da65fa3ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\imguiex">
-      <UniqueIdentifier>{8ca92cce-4856-41b3-824a-03997d659c73}</UniqueIdentifier>
+    <Filter Include="Header Files\extension">
+      <UniqueIdentifier>{f2bf6229-6aaf-4cbb-8854-4cf16abed580}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,23 +60,23 @@
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="arcdps_structs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="imgui\imgui_demo.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Lang.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="imguiex\Icon.cpp">
-      <Filter>Source Files\imguiex</Filter>
+    <ClCompile Include="extension\Icon.cpp">
+      <Filter>Source Files\extension</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\Widgets.cpp">
+      <Filter>Source Files\extension</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\arcdps_structs.cpp">
+      <Filter>Source Files\extension</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="arcdps_structs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="KillproofUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -125,8 +125,14 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="imguiex\Icon.h">
-      <Filter>Header Files\imguiex</Filter>
+    <ClInclude Include="extension\Icon.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Widgets.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\arcdps_structs.h">
+      <Filter>Header Files\extension</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "arcdps_structs.h"
+#include "extension/arcdps_structs.h"
 #include "Killproofs.h"
 
 class Player {

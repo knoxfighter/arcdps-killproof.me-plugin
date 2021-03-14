@@ -1,22 +1,22 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
-#include <Windows.h>
-#include <wincodec.h>
-#include <d3d9.h>
 #include <cstdint>
+#include <d3d9.h>
 #include <mutex>
-#include <string>
 #include <sstream>
+#include <string>
+#include <wincodec.h>
+#include <Windows.h>
 
-#include "arcdps_structs.h"
 #include "global.h"
-#include "imgui/imgui.h"
 #include "KillproofUI.h"
+#include "Lang.h"
 #include "Player.h"
+#include "resource.h"
 #include "Settings.h"
 #include "SettingsUI.h"
-#include "imguiex/Icon.h" // this import is needed for the icons map
-#include "Lang.h"
-#include "resource.h"
+#include "extension/arcdps_structs.h"
+#include "extension/Icon.h" // this import is needed for the icons map
+#include "imgui/imgui.h"
 
 // predefine some functions
 void readArcExports();
