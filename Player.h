@@ -2,8 +2,16 @@
 
 #include <string>
 
-#include "extension/arcdps_structs.h"
 #include "Killproofs.h"
+
+enum class LoadingStatus {
+	NotLoaded, // loading was not yet tried
+	KpMeError, // Error returned from kp.me
+	NoDataAvailable, // User has no kp.me account or account is private
+	Loaded, // Successful, all data available to use
+	LoadingById, // Data is currently being loaded by accountname oder kpid
+	LoadingByChar // Data is currently bering loaded by charactername
+};
 
 class Player {
 public:
