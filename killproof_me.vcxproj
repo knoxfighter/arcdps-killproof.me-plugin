@@ -214,6 +214,7 @@
   <ItemGroup>
     <ClInclude Include="extension\arcdps_structs.h" />
     <ClInclude Include="extension\Icon.h" />
+    <ClInclude Include="extension\map.h" />
     <ClInclude Include="extension\Widgets.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -225,7 +226,6 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Killproofs.h" />
     <ClInclude Include="Lang.h" />
-    <ClInclude Include="map.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="KillproofUI.h" />
     <ClInclude Include="resource.h" />

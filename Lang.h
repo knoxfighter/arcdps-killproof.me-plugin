@@ -4,7 +4,7 @@
 #include <string>
 
 #include "json.hpp"
-#include "map.h"
+#include "extension/map.h"
 
 #define BUILD_MAP(val, key) {key::val, #val}
 #define LITERAL(val) val,
