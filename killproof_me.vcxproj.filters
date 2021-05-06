@@ -78,6 +78,12 @@
     <ClCompile Include="WindowSettingsUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="extension\UpdateCheckerBase.cpp">
+      <Filter>Source Files\extension</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdateChecker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KillproofUI.h">
@@ -138,6 +144,12 @@
       <Filter>Header Files\extension</Filter>
     </ClInclude>
     <ClInclude Include="WindowSettingsUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\UpdateCheckerBase.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateChecker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

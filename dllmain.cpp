@@ -14,6 +14,7 @@
 #include "resource.h"
 #include "Settings.h"
 #include "SettingsUI.h"
+#include "UpdateChecker.h"
 #include "extension/arcdps_structs.h"
 #include "extension/Icon.h" // this import is needed for the icons map
 #include "extension/Widgets.h"
@@ -322,6 +323,8 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 		if (!not_charsel_or_loading) return 0;
 		bool& showKillproof = settings.getShowKillproof();
 		ShowKillproof(&showKillproof);
+
+		updateChecker.Draw();
 	} catch (const std::exception& e) {
 		arc_log_file(e.what());
 		throw e;
@@ -366,7 +369,11 @@ arcdps_exports* mod_init() {
 	std::string error_message = "Unknown error";
 	// load images
 	try {
+		// load images to ram
 		load_images();
+
+		// check for new version on github
+		updateChecker.checkForUpdate(self_dll, "knoxfighter/arcdps-killproof.me-plugin");
 	} catch (const std::exception& e) {
 		loading_successful = false;
 		error_message = "Error loading all icons: ";
@@ -382,7 +389,7 @@ arcdps_exports* mod_init() {
 
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.out_name = "killproof.me";
-	arc_exports.out_build = "2.2.0";
+	arc_exports.out_build = UpdateCheckerBase::GetVersionAsString(self_dll);
 
 	if (loading_successful) {
 		/* for arcdps */

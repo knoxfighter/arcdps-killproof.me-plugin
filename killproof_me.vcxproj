@@ -229,7 +229,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Mock|x64'">
@@ -247,7 +247,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -269,16 +269,18 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>powershell -noprofile -command  "(Get-FileHash '$(OutDirFullPath)$(TargetFileName)').Hash  &gt; '$(OutDirFullPath)$(TargetName).sha'"</Command>
+      <Command>powershell -noprofile -command  "(Get-FileHash '$(OutDirFullPath)$(TargetFileName)').Hash  &gt; '$(OutDirFullPath)$(TargetName).sha'"
+powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVersion.ps1' '.\killproof_me.rc'"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="extension\arcdps_structs.cpp" />
     <ClCompile Include="extension\Icon.cpp" />
+    <ClCompile Include="extension\UpdateCheckerBase.cpp" />
     <ClCompile Include="extension\Widgets.cpp" />
     <ClCompile Include="global.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -292,12 +294,14 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsUI.cpp" />
+    <ClCompile Include="UpdateChecker.cpp" />
     <ClCompile Include="WindowSettingsUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="extension\arcdps_structs.h" />
     <ClInclude Include="extension\Icon.h" />
     <ClInclude Include="extension\map.h" />
+    <ClInclude Include="extension\UpdateCheckerBase.h" />
     <ClInclude Include="extension\Widgets.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -314,6 +318,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsUI.h" />
+    <ClInclude Include="UpdateChecker.h" />
     <ClInclude Include="WindowSettingsUI.h" />
   </ItemGroup>
   <ItemGroup>

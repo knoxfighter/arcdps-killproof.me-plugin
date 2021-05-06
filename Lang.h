@@ -8,7 +8,7 @@
 
 #define BUILD_MAP_JSON(val, val2, key) {key::val, #val}
 #define BUILD_MAP_DEFAULTS(val1, val2, key) {key::val1, val2}
-#define LITERAL(val) val,
+#define LITERAL(val1, val2) val1,
 #define BUILD_ENUM_SERIALIZED(key, ...) \
 	enum class key { \
 		MAP2(LITERAL, __VA_ARGS__) \
@@ -93,7 +93,13 @@ BUILD_ENUM_SERIALIZED(
 	Left, "Left",
 	Center, "Center",
 	Right, "Right",
-	Unaligned, ""
+	Unaligned, "",
+
+	UpdateWindowHeader, "Arcdps Killproof.me Plugin Update",
+	UpdateDesc, "A new update for the Kilproof.me plugin is available.",
+	UpdateCurrentVersion, "Current version",
+	UpdateNewVersion, "New version",
+	UpdateOpenPage, "Open download page"
 )
 
 class Lang {
