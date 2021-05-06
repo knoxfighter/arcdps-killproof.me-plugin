@@ -7,10 +7,13 @@
 #include "global.h"
 #include "Lang.h"
 #include "imgui/imgui.h"
+#include "extension/Widgets.h"
 
 #define windowWidth 800
 #define leftItemWidth  200
 #define rightItemWidth 600
+
+SettingsUI settingsUI;
 
 SettingsUI::SettingsUI() {
 	// set all buffer to the values from Settings
@@ -22,12 +25,9 @@ SettingsUI::SettingsUI() {
 	UINT vscKey = MapVirtualKeyA(killProofKey, MAPVK_VK_TO_VSC);
 	// get the name representation of the key
 	GetKeyNameTextA((vscKey << 16), shortCutRealName, 32);
-
-	strcpy_s(blockedDataText, settings.settings.blockedDataText.c_str());
 }
 
 void SettingsUI::draw() {
-
 	// Setting to select, which key is used to open the killproofs menu (will also close it)
 	ImGui::Text(lang.translate(LangKey::SettingsShortcutText).c_str());
 	ImGui::SameLine();
@@ -40,9 +40,11 @@ void SettingsUI::draw() {
 			UINT vscKey = MapVirtualKeyA(keyId, MAPVK_VK_TO_VSC);
 			// get the name representation of the key
 			GetKeyNameTextA((vscKey << 16), shortCutRealName, 32);
-		} catch ([[maybe_unused]] const std::invalid_argument& e) {
+		}
+		catch ([[maybe_unused]] const std::invalid_argument& e) {
 
-		} catch ([[maybe_unused]] const std::out_of_range& e) {
+		}
+		catch ([[maybe_unused]] const std::out_of_range& e) {
 
 		}
 	}
@@ -50,28 +52,7 @@ void SettingsUI::draw() {
 	ImGui::SameLine();
 	ImGui::Text(shortCutRealName);
 
-	// input for data private
-	ImGui::PushItemWidth(50);
-	if (ImGui::InputText(lang.translate(LangKey::SettingsBlockedText).c_str(), blockedDataText, sizeof blockedDataText)) {
-		if (strlen(blockedDataText) == 0) {
-			settings.settings.blockedDataText = " ";
-		} else {
-			settings.settings.blockedDataText = blockedDataText;
-		}
-	}
-	ImGui::PopItemWidth();
-
-	ImGui::Checkbox(lang.translate(LangKey::SettingsHidePrivateText).c_str(), &settings.settings.hidePrivateAccount);
 	ImGui::Checkbox(lang.translate(LangKey::SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
-	ImGui::Checkbox(lang.translate(LangKey::SettingsShowHeaderText).c_str(), &settings.settings.showHeaderText);
-
-	if (ImGui::BeginCombo(lang.translate(LangKey::Alignment).c_str(), to_string(settings.settings.alignment).c_str())) {
-		alignmentSelectable(Alignment::Left, settings);
-		alignmentSelectable(Alignment::Center, settings);
-		alignmentSelectable(Alignment::Right, settings);
-
-		ImGui::EndCombo();
-	}
 
 	if (ImGui::Button(lang.translate(LangKey::SettingsClearCacheText).c_str())) {
 		std::scoped_lock<std::mutex, std::mutex> guard(cachedPlayersMutex, trackedPlayersMutex);
@@ -96,11 +77,4 @@ void SettingsUI::draw() {
 	}
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip(lang.translate(LangKey::SettingsClearCacheTooltip).c_str());
-}
-
-void SettingsUI::alignmentSelectable(Alignment select_alignment, Settings& settings) {
-	std::string new_alignment_text = to_string(select_alignment);
-	if (ImGui::Selectable(new_alignment_text.c_str())) {
-		settings.settings.alignment = select_alignment;
-	}
 }

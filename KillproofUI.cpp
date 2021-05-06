@@ -9,7 +9,8 @@
 #include "extension//Icon.h"
 #include "Lang.h"
 #include "imgui/imgui_internal.h"
-#include "extension//Widgets.h"
+#include "extension/Widgets.h"
+#include "WindowSettingsUI.h"
 
 void KillproofUI::openInBrowser(const char* username) {
 	char buf[128];
@@ -25,6 +26,15 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	flags |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
 
 	ImGui::Begin(title.c_str(), p_open, flags);
+
+	/**
+	 * Settings UI
+	 */
+	if (ImGuiEx::BeginPopupContextWindow(nullptr, 1, ImGuiHoveredFlags_ChildWindows)) {
+		windowSettingsUI.draw(table);
+	
+		ImGui::EndPopup();
+	}
 
 	// lock the mutexes, before we access sensible data
 	std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);
@@ -122,6 +132,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	if (ImGui::BeginTable("kp.me", columnCount,
 	                      ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable |
 	                      ImGuiTableFlags_Reorderable | ImGuiTableFlags_RowBg)) {
+		table = GImGui->CurrentTable;
 		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
 		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
 

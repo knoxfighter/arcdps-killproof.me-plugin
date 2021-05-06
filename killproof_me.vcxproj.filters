@@ -75,6 +75,9 @@
     <ClCompile Include="extension\arcdps_structs.cpp">
       <Filter>Source Files\extension</Filter>
     </ClCompile>
+    <ClCompile Include="WindowSettingsUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KillproofUI.h">
@@ -133,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="extension\map.h">
       <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowSettingsUI.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

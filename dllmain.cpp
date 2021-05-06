@@ -16,6 +16,7 @@
 #include "SettingsUI.h"
 #include "extension/arcdps_structs.h"
 #include "extension/Icon.h" // this import is needed for the icons map
+#include "extension/Widgets.h"
 #include "imgui/imgui.h"
 
 // predefine some functions
@@ -24,11 +25,10 @@ void readArcExports();
 // globals
 char* arcvers;
 arcdps_exports arc_exports = {};
-bool show_settings = false;
-SettingsUI settingsUi;
 HMODULE arc_dll;
 HMODULE self_dll;
 IDirect3DDevice9* d3d9Device;
+bool showSettings = false;
 
 typedef uint64_t (*arc_export_func_u64)();
 // arc options
@@ -92,11 +92,6 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				// close windows on escape press (return 0, so arc and gw2 are not processing this event)
 				bool& show_killproof = settings.getShowKillproof();
 				if (!arc_hide_all && vkey == VK_ESCAPE) {
-					// close settings menu first
-					if (arc_window_fastclose && show_settings) {
-						show_settings = false;
-						return 0;
-					}
 					// close killproof window with escape
 					if (arc_window_fastclose && !settings.getDisableEscClose() && show_killproof) {
 						show_killproof = false;
@@ -139,7 +134,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 /* combat callback -- may be called asynchronously. return ignored */
 /* one participant will be party/squad, or minion of. no spawn statechange events. despawn statechange only on marked boss npcs */
-uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t id, uint64_t revision) {
+uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t id, uint64_t revision) {
 	try {
 		/* ev is null. dst will only be valid on tracking add. skillname will also be null */
 		if (!ev) {
@@ -264,16 +259,18 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, char* skillname, uint64_t i
 }
 
 uintptr_t mod_options() {
-	bool& showKillproof = settings.getShowKillproof();
-	ImGui::Checkbox(lang.translate(LangKey::SubMenuKp).c_str(), &showKillproof);
-	ImGui::SameLine();
-	ImGui::BeginChild("submenukpid", ImVec2(0, ImGui::GetTextLineHeight()));
-	if (ImGui::BeginMenu("##Killproof.me")) {
-		settingsUi.draw();
-		ImGui::EndMenu();
-	}
-	ImGui::EndChild();
+	ImGuiEx::BeginMenu(lang.translate(LangKey::SettingsWindowName).c_str(), []() {
+		settingsUI.draw();
+	});
 
+	return 0;
+}
+
+uintptr_t mod_windows(const char* windowname) {
+	if (!windowname) {
+		bool& showKillproof = settings.getShowKillproof();
+		ImGui::Checkbox(lang.translate(LangKey::SubMenuKp).c_str(), &showKillproof);
+	}
 	return 0;
 }
 
@@ -297,14 +294,6 @@ void ShowKillproof(bool* p_open) {
 		title.append("##Killproof.me");
 
 		killproofUi.draw(p_open, (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
-	}
-}
-
-void ShowSettings(bool* p_open) {
-	if (show_settings) {
-		std::string title = lang.translate(LangKey::SettingsWindowName);
-		title.append("##Killproof.me Settings");
-		settingsUi.draw();
 	}
 }
 
@@ -333,7 +322,6 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 		if (!not_charsel_or_loading) return 0;
 		bool& showKillproof = settings.getShowKillproof();
 		ShowKillproof(&showKillproof);
-		ShowSettings(&show_settings);
 	} catch (const std::exception& e) {
 		arc_log_file(e.what());
 		throw e;
@@ -404,6 +392,7 @@ arcdps_exports* mod_init() {
 		arc_exports.combat = mod_combat;
 		arc_exports.imgui = mod_imgui;
 		arc_exports.options_end = mod_options;
+		arc_exports.options_windows = mod_windows;
 	} else {
 		arc_exports.sig = 0;
 		const std::string::size_type size = error_message.size();

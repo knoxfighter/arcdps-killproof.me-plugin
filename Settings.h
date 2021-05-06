@@ -6,11 +6,13 @@
 #include "json.hpp"
 #include "Killproofs.h"
 
+class WindowSettingsUI;
 class SettingsUI;
 
 class Settings
 {
     friend SettingsUI;
+    friend WindowSettingsUI;
 
 public:
     struct SettingsObject {

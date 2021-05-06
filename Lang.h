@@ -6,73 +6,94 @@
 #include "json.hpp"
 #include "extension/map.h"
 
-#define BUILD_MAP(val, key) {key::val, #val}
+#define BUILD_MAP_JSON(val, val2, key) {key::val, #val}
+#define BUILD_MAP_DEFAULTS(val1, val2, key) {key::val1, val2}
 #define LITERAL(val) val,
 #define BUILD_ENUM_SERIALIZED(key, ...) \
 	enum class key { \
-		MAP(LITERAL, __VA_ARGS__) \
+		MAP2(LITERAL, __VA_ARGS__) \
 	}; \
 	NLOHMANN_JSON_SERIALIZE_ENUM(key, { \
-		MAP_LIST_UD( \
-			BUILD_MAP, \
+		MAP_LIST_UD2( \
+			BUILD_MAP_JSON, \
 			key, \
 			__VA_ARGS__ \
 		) \
-	})
+	}) \
+	static std::map<LangKey, std::string> defaults = { \
+		MAP_LIST_UD2( \
+			BUILD_MAP_DEFAULTS, \
+			key, \
+			__VA_ARGS__ \
+		) \
+	};
 
 BUILD_ENUM_SERIALIZED(
 	LangKey,
-	KpWindowName,
-	SettingsWindowName,
-	MenuName,
-	SubMenuKp,
-	SubMenuSettings,
-	LI,
-	Ld,
-	LiLd,
-	Uce,
-	Ufe,
-	Vg,
-	Gorse,
-	Sabetha,
-	Sloth,
-	Matthias,
-	Escort,
-	Kc,
-	Xera,
-	Cairn,
-	Mo,
-	Samarog,
-	Deimos,
-	Desmina,
-	River,
-	Statues,
-	Dhuum,
-	Ca,
-	Twins,
-	Qadim,
-	Sabir,
-	Adina,
-	Qadim2,
-	DefaultKp,
-	Accountname,
-	Charactername,
-	CopyKpIdText,
-	ClearText,
-	ClearTooltip,
-	AddPlayerTooltip,
-	AddPlayerText,
-	SettingsShortcutText,
-	SettingsBlockedText,
-	SettingsHidePrivateText,
-	SettingsDisableESCText,
-	SettingsShowHeaderText,
-	Alignment,
-	SettingsClearCacheText,
-	SettingsClearCacheTooltip,
-	Left,
-	Center,
-	Right
+	KpWindowName, "Killproof.me",
+	SettingsWindowName, "Killproof Settings",
+	MenuName, "Killproof.me",
+	SubMenuKp, "Killproofs",
+	SubMenuSettings, "Settings",
+	LI, "LI",
+	Ld, "LD",
+	LiLd, "LI/LD",
+	Uce, "UCE",
+	Ufe, "UFE",
+	Vg, "VG",
+	Gorse, "Gorse",
+	Sabetha, "Sabetha",
+	Sloth, "Sloth",
+	Matthias, "Matthias",
+	Escort, "Escort",
+	Kc, "KC",
+	Xera, "Xera",
+	Cairn, "Cairn",
+	Mo, "MO",
+	Samarog, "Samarog",
+	Deimos, "Deimos",
+	Desmina, "Desmina",
+	River, "River",
+	Statues, "Statues",
+	Dhuum, "Dhuum",
+	Ca, "CA",
+	Twins, "Twins",
+	Qadim, "Qadim",
+	Sabir, "Sabir",
+	Adina, "Adina",
+	Qadim2, "Qadim2",
+	DefaultKp, "Unknown",
+	Accountname, "Account",
+	Charactername, "Character",
+	CopyKpIdText, "Copy own KP ID",
+	ClearText, "Clear",
+	ClearTooltip, "Remove all manually added users",
+	AddPlayerTooltip, "Accountname, killproof.me ID or Charactername to search and add to the list",
+	AddPlayerText, "Add",
+
+	SettingsShortcutText, "Shortcut to open killproofs menu:",
+	SettingsBlockedText, "Text to display when data is unavailable/private",
+	SettingsHidePrivateText, "Hide players without killproof.me account",
+	SettingsDisableESCText, "Do NOT close killproof.me window on ESC",
+	SettingsShowHeaderText, "Show header with text instead of images",
+	SettingsClearCacheText, "Clear Cache",
+	SettingsClearCacheTooltip, "Clear the cache and reload killproof.me data for all players",
+	SettingsColumnSetup, "Column Setup",
+	SettingsRaidsGroup, "Raids",
+	SettingsRaidsW1Group, "W1",
+	SettingsRaidsW2Group, "W2",
+	SettingsRaidsW3Group, "W3",
+	SettingsRaidsW4Group, "W4",
+	SettingsRaidsW5Group, "W5",
+	SettingsRaidsW6Group, "W6",
+	SettingsRaidsW7Group, "W7",
+	SettingsFractalsGroup, "Fractals",
+
+	Alignment, "Alignment",
+	Left, "Left",
+	Center, "Center",
+	Right, "Right",
+	Unaligned, ""
 )
 
 class Lang {

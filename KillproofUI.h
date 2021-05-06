@@ -3,6 +3,7 @@
 #include <atomic>
 
 #include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 
 class KillproofUI
 {
@@ -15,6 +16,7 @@ private:
 	static void openInBrowser(const char* username);
 
 	char userAddBuf[1024]{};
+	ImGuiTable* table = nullptr;
 };
 
 
