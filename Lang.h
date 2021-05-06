@@ -78,6 +78,7 @@ BUILD_ENUM_SERIALIZED(
 	SettingsShowHeaderText, "Show header with text instead of images",
 	SettingsClearCacheText, "Clear Cache",
 	SettingsClearCacheTooltip, "Clear the cache and reload killproof.me data for all players",
+	SettingsHideHeaderButtons, "Hide header buttons and search field",
 	SettingsColumnSetup, "Column Setup",
 	SettingsRaidsGroup, "Raids",
 	SettingsRaidsW1Group, "W1",

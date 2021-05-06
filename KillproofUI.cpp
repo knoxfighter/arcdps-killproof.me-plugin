@@ -53,71 +53,73 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	/**
 	* Controls
 	*/
-	bool addPlayer = false;
-	if (ImGui::InputText("##useradd", userAddBuf, sizeof userAddBuf, ImGuiInputTextFlags_EnterReturnsTrue)) {
-		addPlayer = true;
-	}
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip(lang.translate(LangKey::AddPlayerTooltip).c_str());
-	ImGui::SameLine();
-	if (ImGui::Button(lang.translate(LangKey::AddPlayerText).c_str())) {
-		addPlayer = true;
-	}
-
-	if (addPlayer) {
-		std::string username(userAddBuf);
-
-		// only run when username is not empty
-		if (!username.empty()) {
-			// only add to tracking, if not already there
-			if (std::find(trackedPlayers.begin(), trackedPlayers.end(), username) == trackedPlayers.end()) {
-				trackedPlayers.emplace_back(username);
-
-				const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "", true);
-				if (tryEmplace.second) {
-					loadKillproofs(tryEmplace.first->second);
-				}
-			}
-			userAddBuf[0] = '\0';
+	if (!settings.getHideControls()) {
+		bool addPlayer = false;
+		if (ImGui::InputText("##useradd", userAddBuf, sizeof userAddBuf, ImGuiInputTextFlags_EnterReturnsTrue)) {
+			addPlayer = true;
 		}
-	}
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip(lang.translate(LangKey::AddPlayerTooltip).c_str());
+		ImGui::SameLine();
+		if (ImGui::Button(lang.translate(LangKey::AddPlayerText).c_str())) {
+			addPlayer = true;
+		}
 
-	ImGui::SameLine();
-	if (ImGui::Button(lang.translate(LangKey::ClearText).c_str())) {
-		const auto end = std::remove_if(trackedPlayers.begin(), trackedPlayers.end(), [](const std::string& playerName) {
-			const auto& player = cachedPlayers.find(playerName);
-			if (player == cachedPlayers.end()) {
-				return false;
+		if (addPlayer) {
+			std::string username(userAddBuf);
+
+			// only run when username is not empty
+			if (!username.empty()) {
+				// only add to tracking, if not already there
+				if (std::find(trackedPlayers.begin(), trackedPlayers.end(), username) == trackedPlayers.end()) {
+					trackedPlayers.emplace_back(username);
+
+					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "", true);
+					if (tryEmplace.second) {
+						loadKillproofs(tryEmplace.first->second);
+					}
+				}
+				userAddBuf[0] = '\0';
 			}
-			return player->second.manuallyAdded;
-		});
-		trackedPlayers.erase(end, trackedPlayers.end());
-	}
-	if (ImGui::IsItemHovered()) {
-		ImGui::SetTooltip(lang.translate(LangKey::ClearTooltip).c_str());
-	}
+		}
 
-	// get own player
-	const auto& playerIt = cachedPlayers.find(selfAccountName);
-	if (playerIt != cachedPlayers.end()) {
-		const Player& player = playerIt->second;
-		if (player.status == LoadingStatus::Loaded) {
-			ImGui::SameLine();
-			
-			if (ImGui::Button(lang.translate(LangKey::CopyKpIdText).c_str())) {
-				// copy ID to clipboard
-				//put your text in source
-				if (OpenClipboard(NULL)) {
-					HGLOBAL clipbuffer;
-					char* buffer;
-					EmptyClipboard();
-					clipbuffer = GlobalAlloc(GMEM_DDESHARE, player.killproofId.size() + 1);
-					buffer = (char*)GlobalLock(clipbuffer);
-					memset(buffer, 0, player.killproofId.size() + 1);
-					player.killproofId.copy(buffer, player.killproofId.size());
-					GlobalUnlock(clipbuffer);
-					SetClipboardData(CF_TEXT, clipbuffer);
-					CloseClipboard();
+		ImGui::SameLine();
+		if (ImGui::Button(lang.translate(LangKey::ClearText).c_str())) {
+			const auto end = std::remove_if(trackedPlayers.begin(), trackedPlayers.end(), [](const std::string& playerName) {
+				const auto& player = cachedPlayers.find(playerName);
+				if (player == cachedPlayers.end()) {
+					return false;
+				}
+				return player->second.manuallyAdded;
+			});
+			trackedPlayers.erase(end, trackedPlayers.end());
+		}
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetTooltip(lang.translate(LangKey::ClearTooltip).c_str());
+		}
+
+		// get own player
+		const auto& playerIt = cachedPlayers.find(selfAccountName);
+		if (playerIt != cachedPlayers.end()) {
+			const Player& player = playerIt->second;
+			if (player.status == LoadingStatus::Loaded) {
+				ImGui::SameLine();
+
+				if (ImGui::Button(lang.translate(LangKey::CopyKpIdText).c_str())) {
+					// copy ID to clipboard
+					//put your text in source
+					if (OpenClipboard(NULL)) {
+						HGLOBAL clipbuffer;
+						char* buffer;
+						EmptyClipboard();
+						clipbuffer = GlobalAlloc(GMEM_DDESHARE, player.killproofId.size() + 1);
+						buffer = (char*)GlobalLock(clipbuffer);
+						memset(buffer, 0, player.killproofId.size() + 1);
+						player.killproofId.copy(buffer, player.killproofId.size());
+						GlobalUnlock(clipbuffer);
+						SetClipboardData(CF_TEXT, clipbuffer);
+						CloseClipboard();
+					}
 				}
 			}
 		}

@@ -35,6 +35,10 @@ bool Settings::getShowHeaderText() const {
 	// return true;
 }
 
+bool Settings::getHideControls() const {
+	return settings.hideControls;
+}
+
 Settings::~Settings() {
 	try {
 		saveToFile();

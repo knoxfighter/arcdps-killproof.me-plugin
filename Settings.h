@@ -23,8 +23,9 @@ public:
         bool disableEscClose;
         Alignment alignment = Alignment::Left;
         bool showHeaderText;
+        bool hideControls = false;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment, showHeaderText)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment, showHeaderText, hideControls)
     };
 
     Settings();
@@ -38,6 +39,7 @@ public:
     [[nodiscard]] bool getDisableEscClose() const;
     [[nodiscard]] Alignment getAlignment() const;
     [[nodiscard]] bool getShowHeaderText() const;
+    [[nodiscard]] bool getHideControls() const;
 
 	// delete copy/move
     Settings(const Settings& other) = delete;
