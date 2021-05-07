@@ -42,6 +42,9 @@ void Player::loadKillproofs() {
 				node.key() = accountname;
 				const auto inserRes = cachedPlayers.insert(std::move(node));
 
+				// replace the player in tracked players
+				std::replace(trackedPlayers.begin(), trackedPlayers.end(), username, accountname);
+				
 				// When insertion of changed node fails, the key already exists and `this` gets destructed.
 				// Therefore `this` is invalid and going on further results in an UseAfterFree !
 				if (!inserRes.inserted) {
@@ -49,9 +52,6 @@ void Player::loadKillproofs() {
 					trackedPlayers.erase(std::remove(trackedPlayers.begin(), trackedPlayers.end(), username), trackedPlayers.end());
 					return;
 				}
-
-				// replace the player in tracked players
-				std::replace(trackedPlayers.begin(), trackedPlayers.end(), username, accountname);
 
 				// set the username as charactername
 				if (username != killproofId && username != accountname) {
