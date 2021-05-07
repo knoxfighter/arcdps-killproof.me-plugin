@@ -106,8 +106,8 @@ void Player::loadKillproofs() {
 			this->killproofs.setAllKillproofFieldsToBlocked();
 			this->killproofs.setAllTokensFieldsToBlocked();
 
-			// try again as charactername
-			if (status == LoadingStatus::LoadingById) {
+			// try again as charactername (only when manually added)
+			if (status == LoadingStatus::LoadingById && manuallyAdded) {
 				std::string new_link = "https://killproof.me/api/character/";
 				new_link.append(cpr::util::urlEncode(username));
 				new_link.append("/kp?lang=en");
