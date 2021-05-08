@@ -177,7 +177,6 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 								Player& player = tryEmplace.first->second;
 
 								// load killproofs
-								// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
 								loadKillproofsSizeChecked(player);
 							}
 						} else {
@@ -187,7 +186,6 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 							player.manuallyAdded = false;
 
 							// load user data if not yet loaded (check inside function)
-							// Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
 							loadKillproofsSizeChecked(player);
 						}
 
@@ -289,12 +287,15 @@ bool canMoveWindows() {
 	}
 }
 
-void ShowKillproof(bool* p_open) {
-	if (*p_open) {
-		std::string title = lang.translate(LangKey::KpWindowName);
-		title.append("##Killproof.me");
-
-		killproofUi.draw(p_open, (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
+bool lastFrameShow = false;
+void ShowKillproof() {
+	bool& showKillproof = settings.getShowKillproof();
+	if (!lastFrameShow && showKillproof) {
+		loadAllKillproofs();
+	}
+	lastFrameShow = showKillproof;
+	if (showKillproof) {
+		killproofUi.draw(&showKillproof, (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
 	}
 }
 
@@ -321,8 +322,7 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	try {
 		// ImGui::ShowDemoWindow();
 		if (!not_charsel_or_loading) return 0;
-		bool& showKillproof = settings.getShowKillproof();
-		ShowKillproof(&showKillproof);
+		ShowKillproof();
 
 		updateChecker.Draw();
 	} catch (const std::exception& e) {
