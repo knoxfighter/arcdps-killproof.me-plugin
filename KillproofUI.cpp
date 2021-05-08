@@ -1,4 +1,4 @@
-#include "KillproofUI.h"
+﻿#include "KillproofUI.h"
 
 #include <mutex>
 #include <Windows.h>
@@ -32,7 +32,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	 */
 	if (ImGuiEx::BeginPopupContextWindow(nullptr, 1, ImGuiHoveredFlags_ChildWindows)) {
 		windowSettingsUI.draw(table);
-	
+
 		ImGui::EndPopup();
 	}
 
@@ -161,8 +161,10 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
 
 		// accountname header
-		if (ImGui::TableNextColumn())
+		if (ImGui::TableNextColumn()) {
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 3.f);
 			ImGuiEx::TableHeader(accountName.c_str(), true, nullptr);
+		}
 
 		// charname header
 		if (ImGui::TableNextColumn())
@@ -248,43 +250,63 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 			// hide player they have data, when setting is active
 			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
-				ImGui::TableNextRow();
-
-				// username
-				if (ImGui::TableNextColumn()) {
-					ImGui::Text(player.username.c_str());
-					if (player.status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
-						// Open users kp.me in the browser
-						openInBrowser(player.username.c_str());
-					}
-				}
-
-				// charactername
-				if (ImGui::TableNextColumn()) {
-					ImGui::Text(player.characterName.c_str());
-					if (player.status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
-						// Open users kp.me in the browser
-						openInBrowser(player.username.c_str());
-					}
-				}
-
-				for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
-					if (ImGui::TableNextColumn()) {
-						const amountVal amount = player.killproofs.getAmountFromEnum(static_cast<Killproof>(i));
-						if (player.status == LoadingStatus::LoadingById || player.status == LoadingStatus::LoadingByChar) {
-							ImGuiEx::SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), settings.getAlignment());
-						} else if (amount == -1 || player.status != LoadingStatus::Loaded) {
-							ImGuiEx::AlignedTextColumn(alignment, "%s", settings.getBlockedDataText().c_str());
-						} else {
-							ImGuiEx::AlignedTextColumn(alignment, "%i", amount);
-						}
-					}
+				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.status, player.killproofs, player.linkedTotalKillproofs.has_value());
+				if (open) {
+					drawRow(alignment, "Overall", "--->", player.status, player.linkedTotalKillproofs.value(), false);
+					
+					ImGui::TreePop();
 				}
 			}
 		}
 
 		ImGui::EndTable();
 	}
-
+	
 	ImGui::End();
+}
+
+bool KillproofUI::drawRow(const Alignment& alignment, const char* username, const char* characterName, const std::atomic<LoadingStatus>& status,
+                          const Killproofs& killproofs, bool treeNode) {
+	ImGui::TableNextRow();
+
+	bool open = false;
+	// username
+	if (ImGui::TableNextColumn()) {
+		if (treeNode) {
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
+			open = ImGui::TreeNodeEx(username, ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
+			ImGui::PopStyleVar();
+		} else {
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 3.f);
+			ImGui::Text(username);
+			if (status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
+				// Open users kp.me in the browser
+				openInBrowser(username);
+			}
+		}
+	}
+
+	// charactername
+	if (ImGui::TableNextColumn()) {
+		ImGui::Text(characterName);
+		if (status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
+			// Open users kp.me in the browser
+			openInBrowser(username);
+		}
+	}
+
+	for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
+		if (ImGui::TableNextColumn()) {
+			const amountVal amount = killproofs.getAmountFromEnum(static_cast<Killproof>(i));
+			if (status == LoadingStatus::LoadingById || status == LoadingStatus::LoadingByChar) {
+				ImGuiEx::SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), settings.getAlignment());
+			} else if (amount == -1 || status != LoadingStatus::Loaded) {
+				ImGuiEx::AlignedTextColumn(alignment, "%s", settings.getBlockedDataText().c_str());
+			} else {
+				ImGuiEx::AlignedTextColumn(alignment, "%i", amount);
+			}
+		}
+	}
+
+	return open;
 }

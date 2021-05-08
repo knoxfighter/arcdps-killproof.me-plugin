@@ -62,49 +62,21 @@ void Player::loadKillproofs() {
 			// set username AFTER the check, if it the same as the kpid
 			username = accountname;
 
-			auto tokens = json.at("tokens");
-			// when field is null, data is not available
-			if (tokens.type() == nlohmann::json::value_t::null) {
-				// set all tokens fields to -1
-				this->killproofs.setAllTokensFieldsToBlocked();
-			}
-				// else it is an array (can be empty)
-			else if (tokens.type() == nlohmann::json::value_t::array) {
-				for (auto token : tokens) {
-					this->killproofs.setAmountFromId(token.at("id").get<std::string>(), token.at("amount"));
-				}
-			}
+			loadKPs(json, killproofs);
 
-			auto killproofs = json.at("killproofs");
-			// when field is null, data is not available
-			if (killproofs.type() == nlohmann::json::value_t::null) {
-				// set all killproof fields to -1
-				this->killproofs.setAllKillproofFieldsToBlocked();
-			}
-				// else it is an array (can be empty)
-			else if (killproofs.type() == nlohmann::json::value_t::array) {
-				// track all used killproof IDs
-				std::set<int> unUsedKPs = {77302, 81743, 88485, 94020};
-
-				// iterate over all available killproofs
-				for (auto killproof : killproofs) {
-					int kpId = killproof.at("id").get<int>();
-					unUsedKPs.erase(kpId);
-					this->killproofs.setAmountFromId(kpId, killproof.at("amount"));
-				}
-
-				// set rest KPs to blocked
-				for (int unUsedKP : unUsedKPs) {
-					this->killproofs.setBlockedFromId(unUsedKP);
-				}
+			if (json.contains("linked_totals")) {
+				auto linked_totals = json.at("linked_totals");
+				Killproofs& killproofs = linkedTotalKillproofs.emplace();
+				loadKPs(linked_totals, killproofs);
 			}
 
 			this->status = LoadingStatus::Loaded;
 		}
-			// silently set, when user not found
+		// silently set, when user not found
 		else if (response.status_code == 404) {
 			this->killproofs.setAllKillproofFieldsToBlocked();
 			this->killproofs.setAllTokensFieldsToBlocked();
+			this->linkedTotalKillproofs.reset();
 
 			// try again as charactername (only when manually added)
 			if (status == LoadingStatus::LoadingById && manuallyAdded) {
@@ -167,4 +139,48 @@ void Player::loadKillproofs() {
 
 	// we want to run async completely, so just detach
 	cprCall.detach();
+}
+
+void Player::loadKPs(nlohmann::json& json, Killproofs& storage) {
+	auto tokens = json.at("tokens");
+	// when field is null, data is not available
+	if (tokens.is_null()) {
+		// set all tokens fields to -1
+		storage.setAllTokensFieldsToBlocked();
+	}
+	// else it is an array (can be empty)
+	else if (tokens.is_array()) {
+		for (auto token : tokens) {
+			auto id = token.at("id");
+			if (id.is_string()) {
+				storage.setAmountFromId(id.get<std::string>(), token.at("amount"));
+			} else if (id.is_number_integer()) {
+				storage.setAmountFromId(id.get<int>(), token.at("amount"));
+			}
+		}
+	}
+
+	auto killproofs = json.at("killproofs");
+	// when field is null, data is not available
+	if (killproofs.is_null()) {
+		// set all killproof fields to -1
+		storage.setAllKillproofFieldsToBlocked();
+	}
+	// else it is an array (can be empty)
+	else if (killproofs.is_array()) {
+		// track all used killproof IDs
+		std::set<int> unUsedKPs = { 77302, 81743, 88485, 94020 };
+
+		// iterate over all available killproofs
+		for (auto killproof : killproofs) {
+			int kpId = killproof.at("id").get<int>();
+			unUsedKPs.erase(kpId);
+			storage.setAmountFromId(kpId, killproof.at("amount"));
+		}
+
+		// set rest KPs to blocked
+		for (int unUsedKP : unUsedKPs) {
+			storage.setBlockedFromId(unUsedKP);
+		}
+	}
 }

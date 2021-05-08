@@ -1,8 +1,10 @@
 #pragma once
 
+#include <optional>
 #include <string>
 
 #include "Killproofs.h"
+#include "extension/json.hpp"
 
 enum class LoadingStatus {
 	NotLoaded, // loading was not yet tried
@@ -18,7 +20,7 @@ public:
 	Player(std::string username, std::string characterName, bool manuallyAdded = false)
 		: username(std::move(username)),
 		  characterName(std::move(characterName)),
-		  manuallyAdded(std::move(manuallyAdded)) {
+		  manuallyAdded(manuallyAdded) {
 	}
 
 	Player() = default;
@@ -27,9 +29,11 @@ public:
 	std::string characterName;
 	std::string killproofId;
 	Killproofs killproofs;
+	std::optional<Killproofs> linkedTotalKillproofs;
 	std::atomic<LoadingStatus> status{LoadingStatus::NotLoaded};
 	std::string errorMessage;
 	bool manuallyAdded = false;
 
 	void loadKillproofs();
+	void loadKPs(nlohmann::json& json, Killproofs& storage);
 };

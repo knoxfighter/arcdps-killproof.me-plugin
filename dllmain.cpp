@@ -320,7 +320,7 @@ void readArcExports() {
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	try {
-		// ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 		if (!not_charsel_or_loading) return 0;
 		ShowKillproof();
 
