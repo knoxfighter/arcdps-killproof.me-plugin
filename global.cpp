@@ -18,7 +18,7 @@ std::map<Killproof, Icon> icons;
 std::string selfAccountName;
 
 void loadAllKillproofs() {
-	if (trackedPlayers.size() <= 10 && settings.getShowKillproof()) {
+	if (true || trackedPlayers.size() <= 10 && settings.getShowKillproof()) {
 		for (const std::string& trackedPlayer : trackedPlayers) {
 			Player& player = cachedPlayers.at(trackedPlayer);
 			if (player.status == LoadingStatus::NotLoaded) {
@@ -32,7 +32,7 @@ void loadAllKillproofs() {
  * Do not load, when more than 10 players are in your squad, we are not interested in open world stuff
  */
 void loadKillproofsSizeChecked(Player& player) {
-	if (trackedPlayers.size() <= 10) {
+	if (true || trackedPlayers.size() <= 10) {
 		loadKillproofs(player);
 	}
 }
@@ -42,7 +42,7 @@ void loadKillproofsSizeChecked(Player& player) {
  * Also do NOT load if the killproof.me window is hidden. We can skip loading, when the user is not interested what the results are.
  */
 void loadKillproofs(Player& player) {
-	if (player.status == LoadingStatus::NotLoaded && settings.getShowKillproof()) {
+	if (player.status == LoadingStatus::NotLoaded && (true || settings.getShowKillproof())) {
 		player.loadKillproofs();
 	}
 }
