@@ -252,7 +252,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
 				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.status, player.killproofs, player.linkedTotalKillproofs.has_value());
 				if (open) {
-					drawRow(alignment, "Overall", "--->", player.status, player.linkedTotalKillproofs.value(), false);
+					drawRow(alignment, lang.translate(LangKey::Overall).c_str(), "--->", player.status, player.linkedTotalKillproofs.value(), false);
 					
 					ImGui::TreePop();
 				}
@@ -274,7 +274,13 @@ bool KillproofUI::drawRow(const Alignment& alignment, const char* username, cons
 	if (ImGui::TableNextColumn()) {
 		if (treeNode) {
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
-			open = ImGui::TreeNodeEx(username, ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
+
+			ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding;
+			if (settings.getShowOverallByDefault()) {
+				treeNodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
+			}
+			
+			open = ImGui::TreeNodeEx(username, treeNodeFlags);
 			ImGui::PopStyleVar();
 		} else {
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 3.f);

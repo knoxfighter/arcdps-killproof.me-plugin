@@ -70,6 +70,7 @@ BUILD_ENUM_SERIALIZED(
 	ClearTooltip, "Remove all manually added users",
 	AddPlayerTooltip, "Accountname, killproof.me ID or Charactername to search and add to the list",
 	AddPlayerText, "Add",
+	Overall, "Overall",
 
 	SettingsShortcutText, "Shortcut to open killproofs menu:",
 	SettingsBlockedText, "Text to display when data is unavailable/private",
@@ -79,6 +80,7 @@ BUILD_ENUM_SERIALIZED(
 	SettingsClearCacheText, "Clear Cache",
 	SettingsClearCacheTooltip, "Clear the cache and reload killproof.me data for all players",
 	SettingsHideHeaderButtons, "Hide header buttons and search field",
+	SettingsShowOverallByDefault, "Show linked account KPs by default",
 	SettingsColumnSetup, "Column Setup",
 	SettingsRaidsGroup, "Raids",
 	SettingsRaidsW1Group, "W1",

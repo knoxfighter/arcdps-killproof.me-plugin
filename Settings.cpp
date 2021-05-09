@@ -39,6 +39,10 @@ bool Settings::getHideControls() const {
 	return settings.hideControls;
 }
 
+bool Settings::getShowOverallByDefault() const {
+	return settings.showOverallByDefault;
+}
+
 Settings::~Settings() {
 	try {
 		saveToFile();
