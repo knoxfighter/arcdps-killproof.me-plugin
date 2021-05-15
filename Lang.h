@@ -102,7 +102,11 @@ BUILD_ENUM_SERIALIZED(
 	UpdateDesc, "A new update for the Kilproof.me plugin is available.",
 	UpdateCurrentVersion, "Current version",
 	UpdateNewVersion, "New version",
-	UpdateOpenPage, "Open download page"
+	UpdateOpenPage, "Open download page",
+	UpdateAutoButton, "Update autmatically",
+	UpdateInProgress, "Autoupdate in progress",
+	UpdateRestartPending, "Autoupdate finished, restart your game to activate it.",
+	UpdateError, "Autoupdate error, please update manually."
 )
 
 class Lang {

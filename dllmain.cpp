@@ -373,7 +373,9 @@ arcdps_exports* mod_init() {
 		load_images();
 
 		// check for new version on github
-		updateChecker.checkForUpdate(self_dll, "knoxfighter/arcdps-killproof.me-plugin");
+		updateChecker.CheckForUpdate(self_dll, "knoxfighter/arcdps-killproof.me-plugin");
+
+		UpdateCheckerBase::ClearFiles(self_dll);
 	} catch (const std::exception& e) {
 		loading_successful = false;
 		error_message = "Error loading all icons: ";
