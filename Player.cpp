@@ -70,6 +70,19 @@ void Player::loadKillproofs() {
 				loadKPs(linked_totals, killproofs);
 			}
 
+			if (json.contains("linked")) {
+				for (auto linked : json.at("linked")) {
+					std::string accountName = linked.at("account_name").get<std::string>();
+					const auto& playerEmplace = cachedPlayers.try_emplace(accountName, accountName, "");
+					if (playerEmplace.second) {
+						Player& player = playerEmplace.first->second;
+						loadKPs(linked, player.killproofs);
+					}
+
+					linkedAccounts.emplace_back(accountName);
+				}
+			}
+
 			this->status = LoadingStatus::Loaded;
 		}
 		// silently set, when user not found

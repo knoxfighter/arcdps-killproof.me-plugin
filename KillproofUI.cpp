@@ -79,9 +79,10 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 					trackedPlayers.emplace_back(username);
 
 					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "", true);
-					if (tryEmplace.second) {
-						loadKillproofs(tryEmplace.first->second);
+					if (!tryEmplace.second && tryEmplace.first->second.status == LoadingStatus::NotLoaded) {
+						tryEmplace.first->second.manuallyAdded = true;
 					}
+					loadKillproofs(tryEmplace.first->second);
 				}
 				userAddBuf[0] = '\0';
 			}
@@ -256,6 +257,10 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
 				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.status, player.killproofs, player.linkedTotalKillproofs.has_value());
 				if (open) {
+					for (std::string linkedAccount : player.linkedAccounts) {
+						Player& linkedPlayer = cachedPlayers.at(linkedAccount);
+						drawRow(alignment, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), LoadingStatus::Loaded, linkedPlayer.killproofs, false);
+					}
 					drawRow(alignment, lang.translate(LangKey::Overall).c_str(), "--->", player.status, player.linkedTotalKillproofs.value(), false);
 					
 					ImGui::TreePop();

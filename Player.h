@@ -33,7 +33,8 @@ public:
 	std::atomic<LoadingStatus> status{LoadingStatus::NotLoaded};
 	std::string errorMessage;
 	bool manuallyAdded = false;
+	std::vector<std::string> linkedAccounts;
 
 	void loadKillproofs();
-	void loadKPs(nlohmann::json& json, Killproofs& storage);
+	static void loadKPs(nlohmann::json& json, Killproofs& storage);
 };
