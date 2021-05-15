@@ -113,6 +113,7 @@ void WindowSettingsUI::draw(ImGuiTable* table) {
 		ImGui::Checkbox(lang.translate(LangKey::SettingsHidePrivateText).c_str(), &settings.settings.hidePrivateAccount);
 		ImGui::Checkbox(lang.translate(LangKey::SettingsHideHeaderButtons).c_str(), &settings.settings.hideControls);
 		ImGui::Checkbox(lang.translate(LangKey::SettingsShowOverallByDefault).c_str(), &settings.settings.showOverallByDefault);
+		ImGui::Checkbox(lang.translate(LangKey::SettingsShowHeader).c_str(), &settings.settings.showHeader);
 
 		// input for data private
 		ImGui::PushItemWidth(50);

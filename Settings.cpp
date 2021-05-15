@@ -43,6 +43,10 @@ bool Settings::getShowOverallByDefault() const {
 	return settings.showOverallByDefault;
 }
 
+bool Settings::getShowHeader() const {
+	return settings.showHeader;
+}
+
 Settings::~Settings() {
 	try {
 		saveToFile();

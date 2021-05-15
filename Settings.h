@@ -24,9 +24,10 @@ public:
 		bool showHeaderText;
 		bool hideControls = false;
 		bool showOverallByDefault = false;
+		bool showHeader = true;
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment,
-		                               showHeaderText, hideControls, showOverallByDefault)
+		                               showHeaderText, hideControls, showOverallByDefault, showHeader)
 	};
 
 	Settings();
@@ -42,6 +43,7 @@ public:
 	[[nodiscard]] bool getShowHeaderText() const;
 	[[nodiscard]] bool getHideControls() const;
 	[[nodiscard]] bool getShowOverallByDefault() const;
+	[[nodiscard]] bool getShowHeader() const;
 
 	// delete copy/move
 	Settings(const Settings& other) = delete;

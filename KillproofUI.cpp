@@ -25,6 +25,10 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 	flags |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
 
+	if (!settings.getShowHeader()) {
+		flags |= ImGuiWindowFlags_NoTitleBar;
+	}
+
 	ImGui::Begin(title.c_str(), p_open, flags);
 
 	/**

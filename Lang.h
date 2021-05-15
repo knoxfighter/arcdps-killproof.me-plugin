@@ -77,6 +77,7 @@ BUILD_ENUM_SERIALIZED(
 	SettingsHidePrivateText, "Hide players without killproof.me account",
 	SettingsDisableESCText, "Do NOT close killproof.me window on ESC",
 	SettingsShowHeaderText, "Show header with text instead of images",
+	SettingsShowHeader, "Show window header",
 	SettingsClearCacheText, "Clear Cache",
 	SettingsClearCacheTooltip, "Clear the cache and reload killproof.me data for all players",
 	SettingsHideHeaderButtons, "Hide header buttons and search field",
