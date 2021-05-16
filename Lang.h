@@ -83,6 +83,7 @@ BUILD_ENUM_SERIALIZED(
 	SettingsHideHeaderButtons, "Hide header buttons and search field",
 	SettingsShowOverallByDefault, "Show linked account KPs by default",
 	SettingsColumnSetup, "Column Setup",
+	SettingsStyle, "Style",
 	SettingsRaidsGroup, "Raids",
 	SettingsRaidsW1Group, "W1",
 	SettingsRaidsW2Group, "W2",

@@ -108,7 +108,7 @@ void WindowSettingsUI::draw(ImGuiTable* table) {
 		ImGui::EndMenu();
 	}
 
-	if (ImGui::BeginMenu("Style")) {
+	if (ImGui::BeginMenu(lang.translate(LangKey::SettingsStyle).c_str())) {
 		ImGui::Checkbox(lang.translate(LangKey::SettingsShowHeaderText).c_str(), &settings.settings.showHeaderText);
 		ImGui::Checkbox(lang.translate(LangKey::SettingsHidePrivateText).c_str(), &settings.settings.hidePrivateAccount);
 		ImGui::Checkbox(lang.translate(LangKey::SettingsHideHeaderButtons).c_str(), &settings.settings.hideControls);
