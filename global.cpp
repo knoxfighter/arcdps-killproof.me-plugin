@@ -42,7 +42,7 @@ void loadKillproofsSizeChecked(Player& player) {
  * Also do NOT load if the killproof.me window is hidden. We can skip loading, when the user is not interested what the results are.
  */
 void loadKillproofs(Player& player) {
-	if (player.status == LoadingStatus::NotLoaded && (true || settings.getShowKillproof())) {
+	if (player.status == LoadingStatus::NotLoaded && settings.getShowKillproof()) {
 		player.loadKillproofs();
 	}
 }
