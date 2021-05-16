@@ -183,7 +183,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				if (settings.getShowHeaderText()) {
 					ImGuiEx::TableHeader(columnName.c_str(), true, nullptr, alignment);
 				} else {
-					ImGuiEx::TableHeader(columnName.c_str(), false, icons.at(kp).texture, alignment);
+					ImGuiEx::TableHeader(columnName.c_str(), false, iconLoader.getTexture(icons.at(kp)), alignment);
 				}
 			}
 		}

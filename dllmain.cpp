@@ -333,45 +333,15 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	return 0;
 }
 
-void load_images() {
-	icons.try_emplace(Killproof::li, ID_LI, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::ld, ID_LD, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::liLd, ID_LILD, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::vg, ID_VG, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::gorse, ID_Gorse, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::sabetha, ID_Sabetha, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::sloth, ID_Sloth, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::matthias, ID_Matt, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::escort, ID_Escort, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::kc, ID_KC, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::xera, ID_Xera, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::cairn, ID_Cairn, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::mo, ID_MO, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::samarog, ID_Samarog, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::deimos, ID_Deimos, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::desmina, ID_Desmina, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::river, ID_River, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::statues, ID_Statues, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::dhuum, ID_Dhuum, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::ca, ID_CA, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::twins, ID_Twins, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::qadim, ID_Qadim1, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::adina, ID_Adina, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::sabir, ID_Sabir, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::qadim2, ID_Qadim2, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::uce, ID_UFE, self_dll, d3d9Device);
-	icons.try_emplace(Killproof::ufe, ID_UFE, self_dll, d3d9Device);
-}
-
 /* initialize mod -- return table that arcdps will use for callbacks */
 arcdps_exports* mod_init() {
 	bool loading_successful = true;
 	std::string error_message = "Unknown error";
 	// load images
 	try {
-		// load images to ram
-		load_images();
-
+		// Setup iconLoader
+		iconLoader.Setup(self_dll, d3d9Device);
+		
 		// check for new version on github
 		updateChecker.CheckForUpdate(self_dll, "knoxfighter/arcdps-killproof.me-plugin");
 

@@ -6,11 +6,9 @@
 #include <d3d9.h>
 
 #include "Killproofs.h"
-#include "imgui/imgui.h"
 
 class Player;
 class KillproofUI;
-class Icon;
 
 extern KillproofUI killproofUi;
 
@@ -20,7 +18,7 @@ extern std::map<std::string, Player> cachedPlayers;
 extern std::mutex cachedPlayersMutex;
 extern IDirect3DDevice9* d3d9Device;
 extern HMODULE self_dll;
-extern std::map<Killproof, Icon> icons;
+extern std::map<Killproof, UINT> icons;
 extern std::string selfAccountName;
 
 typedef void(*e3_func_ptr)(const char* str);
