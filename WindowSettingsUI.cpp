@@ -107,6 +107,8 @@ void WindowSettingsUI::draw(ImGuiTable* table, ImGuiWindow* currentRootWindow) {
 		// Strikes
 		if (ImGui::BeginMenu(lang.translate(LangKey::SettingsStrikesGruop).c_str())) {
 			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::boneskinnerVial) + 2);
+
+			ImGui::EndMenu();
 		}
 
 		ImGui::PopItemFlag();
