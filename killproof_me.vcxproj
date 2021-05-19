@@ -325,6 +325,7 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
     <ResourceCompile Include="killproof_me.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="icons\Boneskinner_Ritual_Vial.png" />
     <Image Include="icons\Cairn_the_Indomitable_Shard.png" />
     <Image Include="icons\Cardinal_Adina%27s_Token.png" />
     <Image Include="icons\Cardinal_Sabir%27s_Token.png" />

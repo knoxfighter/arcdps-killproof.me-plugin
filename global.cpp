@@ -46,6 +46,7 @@ std::map<Killproof, UINT> icons{
 	{Killproof::qadim2, ID_Qadim2},
 	{Killproof::uce, ID_UFE},
 	{Killproof::ufe, ID_UFE},
+	{Killproof::boneskinnerVial, ID_Boneskinner_Vial},
 };
 
 void loadAllKillproofs() {

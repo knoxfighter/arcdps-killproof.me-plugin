@@ -46,6 +46,9 @@ enum class Killproof : int {
 	adina,
 	qadim2,
 
+	// strikes
+	boneskinnerVial,
+
 	// always last element
 	// ALWAYS UPDATE AFTER CHANGING THE ENUM
 	FINAL_ENTRY,
@@ -84,6 +87,7 @@ class Killproofs {
 		{Killproof::adina, -1},
 		{Killproof::qadim2, -1},
 		{Killproof::liLd, -1},
+		{Killproof::boneskinnerVial, -1},
 	};
 	mutable std::mutex mapMutex;
 

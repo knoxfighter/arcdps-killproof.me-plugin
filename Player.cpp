@@ -182,7 +182,7 @@ void Player::loadKPs(nlohmann::json& json, Killproofs& storage) {
 	// else it is an array (can be empty)
 	else if (killproofs.is_array()) {
 		// track all used killproof IDs
-		std::set<int> unUsedKPs = { 77302, 81743, 88485, 94020 };
+		std::set<int> unUsedKPs = { 77302, 81743, 88485, 94020, 93781 };
 
 		// iterate over all available killproofs
 		for (auto killproof : killproofs) {

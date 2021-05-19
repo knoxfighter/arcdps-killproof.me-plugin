@@ -12,6 +12,7 @@ bool defaultHidden(const Killproof& kp) {
 	case Killproof::dhuum:
 	case Killproof::qadim:
 	case Killproof::qadim2:
+	case Killproof::boneskinnerVial:
 		return false;
 	case Killproof::vg:
 	case Killproof::gorse:
@@ -66,6 +67,7 @@ std::string toString(Killproof e) {
 	case Killproof::sabir: return lang.translate(LangKey::Sabir);
 	case Killproof::adina: return lang.translate(LangKey::Adina);
 	case Killproof::qadim2: return lang.translate(LangKey::Qadim2);
+	case Killproof::boneskinnerVial: return lang.translate(LangKey::BoneskinnerVial);
 	default: return lang.translate(LangKey::DefaultKp);
 	}
 }
@@ -151,6 +153,9 @@ amountVal Killproofs::getAmountFromId(const std::string& id) const {
 	if (id == "91175") {
 		return killproofs.at(Killproof::qadim2);
 	}
+	if (id == "93781") {
+		return killproofs.at(Killproof::boneskinnerVial);
+	}
 	return 0;
 }
 
@@ -223,6 +228,8 @@ void Killproofs::setAmountFromId(const std::string& id, const amountVal& amount)
 		killproofs[Killproof::adina] = amount;
 	} else if (id == "91175") {
 		killproofs[Killproof::qadim2] = amount;
+	} else if (id == "93781") {
+		killproofs[Killproof::boneskinnerVial] = amount;
 	}
 }
 
@@ -288,6 +295,8 @@ void Killproofs::setAmountFromId(const int& id, const amountVal& amount) {
 		break;
 	case 91175: killproofs[Killproof::qadim2] = amount;
 		break;
+	case 93781: killproofs[Killproof::boneskinnerVial] = amount;
+		break;
 	default: break;
 	}
 }
@@ -331,6 +340,7 @@ void Killproofs::setAllTokensFieldsToBlocked() {
 	killproofs[Killproof::sabir] = -1;
 	killproofs[Killproof::adina] = -1;
 	killproofs[Killproof::qadim2] = -1;
+	killproofs[Killproof::boneskinnerVial] = -1;
 }
 
 void Killproofs::setAllKillproofFieldsToBlocked() {
@@ -341,6 +351,7 @@ void Killproofs::setAllKillproofFieldsToBlocked() {
 	killproofs[Killproof::liLd] = -1;
 	killproofs[Killproof::uce] = -1;
 	killproofs[Killproof::ufe] = -1;
+	killproofs[Killproof::boneskinnerVial] = -1;
 }
 
 void Killproofs::setBlockedFromId(const int& id) {
@@ -404,6 +415,8 @@ void Killproofs::setBlockedFromId(const int& id) {
 	case 91246: killproofs[Killproof::adina] = -1;
 		break;
 	case 91175: killproofs[Killproof::qadim2] = -1;
+		break;
+	case 93781: killproofs[Killproof::boneskinnerVial] = -1;
 		break;
 	default: break;
 	}
