@@ -200,12 +200,12 @@ void WindowSettingsUI::draw(ImGuiTable* table, ImGuiWindow* currentRootWindow) {
 					selectedWindowName = selectedWindowName.substr(0, findRes);
 				}
 			}
-			
+
 			if (ImGui::BeginCombo(lang.translate(LangKey::SettingsFromWindowName).c_str(), selectedWindowName.c_str())) {
 				for (ImGuiWindow* window : GImGui->Windows) {
 					if (!window->Hidden) {
 						std::string windowName = window->Name;
-						if (window->ParentWindow || window->ID == currentRootWindow->ID || windowName.find("Tooltip_") != std::string::npos 
+						if (window->ParentWindow || window->ID == currentRootWindow->ID || windowName.find("Tooltip_") != std::string::npos
 							|| windowName.find("Default") != std::string::npos || windowName.find('/') != std::string::npos) {
 							continue;
 						}
@@ -224,9 +224,9 @@ void WindowSettingsUI::draw(ImGuiTable* table, ImGuiWindow* currentRootWindow) {
 			}
 
 			ImGui::Unindent();
-
-			ImGui::EndMenu();
 		}
+
+		ImGui::EndMenu();
 	}
 
 	ImGui::PopStyleVar();
