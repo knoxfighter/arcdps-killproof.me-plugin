@@ -47,6 +47,30 @@ bool Settings::getShowHeader() const {
 	return settings.showHeader;
 }
 
+Position Settings::getPosition() const {
+	return settings.position;
+}
+
+CornerPosition Settings::getCornerPosition() const {
+	return settings.cornerPosition;
+}
+
+const ImVec2& Settings::getCornerVector() const {
+	return settings.cornerVector;
+}
+
+CornerPosition Settings::getAnchorPanelCornerPosition() const {
+	return settings.anchorPanelCornerPosition;
+}
+
+CornerPosition Settings::getSelfPanelCornerPosition() const {
+	return settings.selfPanelCornerPosition;
+}
+
+ImGuiID Settings::getFromWindowID() const {
+	return settings.fromWindowID;
+}
+
 Settings::~Settings() {
 	try {
 		saveToFile();

@@ -93,12 +93,25 @@ BUILD_ENUM_SERIALIZED(
 	SettingsRaidsW6Group, "W6",
 	SettingsRaidsW7Group, "W7",
 	SettingsFractalsGroup, "Fractals",
+	SettingsPosition, "Position",
+	SettingsFromAnchorPanelCorner, "from anchor panel corner",
+	SettingsToThisPanelCorner, "to this panel corner",
+	SettingsFromWindowName, "from window",
 
 	Alignment, "Alignment",
 	Left, "Left",
 	Center, "Center",
 	Right, "Right",
 	Unaligned, "",
+
+	PositionManual, "manual",
+	PositionScreenRelative, "screen relative position",
+	PositionWindowRelative, "window relative position",
+
+	CornerPositionTopLeft, "top-left",
+	CornerPositionTopRight, "top-right",
+	CornerPositionBottomLeft, "bottom-left",
+	CornerPositionBottomRight, "bottom-right",
 
 	UpdateWindowHeader, "Arcdps Killproof.me Plugin Update",
 	UpdateDesc, "A new update for the Kilproof.me plugin is available.",

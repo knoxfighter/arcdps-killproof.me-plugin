@@ -5,9 +5,12 @@
 #include "extension/arcdps_structs.h"
 #include "json.hpp"
 #include "Killproofs.h"
+#include "imgui/imgui.h"
 
 class WindowSettingsUI;
 class SettingsUI;
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ImVec2, x, y)
 
 class Settings {
 	friend SettingsUI;
@@ -25,9 +28,16 @@ public:
 		bool hideControls = false;
 		bool showOverallByDefault = false;
 		bool showHeader = true;
+		Position position = Position::Manual;
+		CornerPosition cornerPosition = CornerPosition::TopLeft;
+		ImVec2 cornerVector;
+		CornerPosition anchorPanelCornerPosition = CornerPosition::TopLeft;
+		CornerPosition selfPanelCornerPosition = CornerPosition::TopLeft;
+		ImGuiID fromWindowID;
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment,
-		                               showHeaderText, hideControls, showOverallByDefault, showHeader)
+		                               showHeaderText, hideControls, showOverallByDefault, showHeader, position, cornerPosition, cornerVector,
+		                               anchorPanelCornerPosition, selfPanelCornerPosition, fromWindowID)
 	};
 
 	Settings();
@@ -44,6 +54,12 @@ public:
 	[[nodiscard]] bool getHideControls() const;
 	[[nodiscard]] bool getShowOverallByDefault() const;
 	[[nodiscard]] bool getShowHeader() const;
+	[[nodiscard]] Position getPosition() const;
+	[[nodiscard]] CornerPosition getCornerPosition() const;
+	[[nodiscard]] const ImVec2& getCornerVector() const;
+	[[nodiscard]] CornerPosition getAnchorPanelCornerPosition() const;
+	[[nodiscard]] CornerPosition getSelfPanelCornerPosition() const;
+	[[nodiscard]] ImGuiID getFromWindowID() const;
 
 	// delete copy/move
 	Settings(const Settings& other) = delete;

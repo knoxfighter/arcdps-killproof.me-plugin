@@ -29,13 +29,18 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		flags |= ImGuiWindowFlags_NoTitleBar;
 	}
 
+	if (settings.getPosition() != Position::Manual) {
+		flags |= ImGuiWindowFlags_NoMove;
+	}
+
 	ImGui::Begin(title.c_str(), p_open, flags);
 
 	/**
 	 * Settings UI
 	 */
+	ImGuiWindow* currentWindow = ImGui::GetCurrentWindow();
 	if (ImGuiEx::BeginPopupContextWindow(nullptr, 1, ImGuiHoveredFlags_ChildWindows)) {
-		windowSettingsUI.draw(table);
+		windowSettingsUI.draw(table, currentWindow);
 
 		ImGui::EndPopup();
 	}
@@ -255,14 +260,16 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 			// hide player they have data, when setting is active
 			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
-				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.status, player.killproofs, player.linkedTotalKillproofs.has_value());
+				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.status, player.killproofs,
+				                    player.linkedTotalKillproofs.has_value());
 				if (open) {
 					for (std::string linkedAccount : player.linkedAccounts) {
 						Player& linkedPlayer = cachedPlayers.at(linkedAccount);
-						drawRow(alignment, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), LoadingStatus::Loaded, linkedPlayer.killproofs, false);
+						drawRow(alignment, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), LoadingStatus::Loaded, linkedPlayer.killproofs,
+						        false);
 					}
 					drawRow(alignment, lang.translate(LangKey::Overall).c_str(), "--->", player.status, player.linkedTotalKillproofs.value(), false);
-					
+
 					ImGui::TreePop();
 				}
 			}
@@ -270,7 +277,13 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 		ImGui::EndTable();
 	}
-	
+
+	/**
+	 * Reposition Window
+	 */
+	ImGuiEx::WindowReposition(settings.getPosition(), settings.getCornerVector(), settings.getCornerPosition(), settings.getFromWindowID(),
+	                          settings.getAnchorPanelCornerPosition(), settings.getSelfPanelCornerPosition());
+
 	ImGui::End();
 }
 
@@ -288,7 +301,7 @@ bool KillproofUI::drawRow(const Alignment& alignment, const char* username, cons
 			if (settings.getShowOverallByDefault()) {
 				treeNodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 			}
-			
+
 			open = ImGui::TreeNodeEx(username, treeNodeFlags);
 			ImGui::PopStyleVar();
 		} else {
