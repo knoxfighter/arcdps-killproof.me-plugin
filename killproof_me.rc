@@ -111,8 +111,8 @@ ID_Boneskinner_Vial     PNG                     "icons\\Boneskinner_Ritual_Vial.
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,3,0,7
- PRODUCTVERSION 2,3,0,7
+ FILEVERSION 2,3,0,8
+ PRODUCTVERSION 2,3,0,8
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -129,12 +129,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "TODO: <Company name>"
             VALUE "FileDescription", "TODO: <File description>"
-            VALUE "FileVersion", "2.3.0.7"
+            VALUE "FileVersion", "2.3.0.8"
             VALUE "InternalName", "killproo.dll"
             VALUE "LegalCopyright", "Copyright (C) 2021"
             VALUE "OriginalFilename", "killproo.dll"
             VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "2.3.0.7"
+            VALUE "ProductVersion", "2.3.0.8"
         END
     END
     BLOCK "VarFileInfo"
