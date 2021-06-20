@@ -116,16 +116,21 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				ImGui::SameLine();
 
 				if (ImGui::Button(lang.translate(LangKey::CopyKpIdText).c_str())) {
+					// create string to copy
+					std::string str;
+					str.append("Killproof.me: ");
+					str.append(player.killproofId);
+					
 					// copy ID to clipboard
 					//put your text in source
 					if (OpenClipboard(NULL)) {
 						HGLOBAL clipbuffer;
 						char* buffer;
 						EmptyClipboard();
-						clipbuffer = GlobalAlloc(GMEM_DDESHARE, player.killproofId.size() + 1);
+						clipbuffer = GlobalAlloc(GMEM_DDESHARE, str.size() + 1);
 						buffer = (char*)GlobalLock(clipbuffer);
-						memset(buffer, 0, player.killproofId.size() + 1);
-						player.killproofId.copy(buffer, player.killproofId.size());
+						memset(buffer, 0, str.size() + 1);
+						str.copy(buffer, str.size());
 						GlobalUnlock(clipbuffer);
 						SetClipboardData(CF_TEXT, clipbuffer);
 						CloseClipboard();
