@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <Windows.h>
+#include <future>
 
 #include "global.h"
 #include "Player.h"
@@ -15,7 +16,9 @@
 void KillproofUI::openInBrowser(const char* username) {
 	char buf[128];
 	snprintf(buf, 128, "https://killproof.me/proof/%s", username);
-	ShellExecuteA(nullptr, nullptr, buf, nullptr, nullptr, SW_SHOW);
+	std::async(std::launch::async, [&buf]() {
+		ShellExecuteA(nullptr, nullptr, buf, nullptr, nullptr, SW_SHOW);
+	});
 }
 
 void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
