@@ -156,7 +156,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						std::scoped_lock<std::mutex, std::mutex> lock(cachedPlayersMutex, trackedPlayersMutex);
 
 						// if this is the first player, it is me
-						if (selfAccountName.empty() && src->id == 2000) {
+						if (selfAccountName.empty() && dst->self) {
 							selfAccountName = username;
 						}
 
@@ -165,7 +165,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						if (std::find(trackedPlayers.begin(), trackedPlayers.end(), username) == trackedPlayers.end()) {
 							trackedPlayers.emplace_back(username);
 						}
-							
+
 						auto playerIt = cachedPlayers.find(username);
 						if (playerIt == cachedPlayers.end()) {
 							// no element found, create it
