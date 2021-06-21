@@ -34,6 +34,7 @@ public:
 		CornerPosition anchorPanelCornerPosition = CornerPosition::TopLeft;
 		CornerPosition selfPanelCornerPosition = CornerPosition::TopLeft;
 		ImGuiID fromWindowID;
+		bool showCommander = false;
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment,
 		                               showHeaderText, hideControls, showOverallByDefault, showHeader, position, cornerPosition, cornerVector,
@@ -60,6 +61,7 @@ public:
 	[[nodiscard]] CornerPosition getAnchorPanelCornerPosition() const;
 	[[nodiscard]] CornerPosition getSelfPanelCornerPosition() const;
 	[[nodiscard]] ImGuiID getFromWindowID() const;
+	[[nodiscard]] bool getShowCommander() const;
 
 	// delete copy/move
 	Settings(const Settings& other) = delete;

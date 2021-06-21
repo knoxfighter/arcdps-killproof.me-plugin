@@ -77,7 +77,7 @@ void Player::loadKillproofs() {
 			if (json.contains("linked")) {
 				for (auto linked : json.at("linked")) {
 					std::string accountName = linked.at("account_name").get<std::string>();
-					const auto& playerEmplace = cachedPlayers.try_emplace(accountName, accountName, "");
+					const auto& playerEmplace = cachedPlayers.try_emplace(accountName, accountName);
 					if (playerEmplace.second) {
 						Player& player = playerEmplace.first->second;
 						loadKPs(linked, player.killproofs);

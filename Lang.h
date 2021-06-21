@@ -83,6 +83,7 @@ BUILD_ENUM_SERIALIZED(
 	SettingsClearCacheTooltip, "Clear the cache and reload killproof.me data for all players",
 	SettingsHideHeaderButtons, "Hide header buttons and search field",
 	SettingsShowOverallByDefault, "Show linked account KPs by default",
+	SettingsShowCommander, "Show commander Tag next to accountname",
 	SettingsColumnSetup, "Column Setup",
 	SettingsStyle, "Style",
 	SettingsRaidsGroup, "Raids",

@@ -55,12 +55,12 @@ BOOL APIENTRY DllMain(HMODULE hModule,
                       LPVOID lpReserved
 ) {
 	switch (ul_reason_for_call) {
-	case DLL_PROCESS_ATTACH:
-		self_dll = hModule;
-	case DLL_THREAD_ATTACH:
-	case DLL_THREAD_DETACH:
-	case DLL_PROCESS_DETACH:
-		break;
+		case DLL_PROCESS_ATTACH:
+			self_dll = hModule;
+		case DLL_THREAD_ATTACH:
+		case DLL_THREAD_DETACH:
+		case DLL_PROCESS_DETACH:
+			break;
 	}
 	return TRUE;
 }
@@ -71,9 +71,8 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		auto const io = &ImGui::GetIO();
 
 		switch (uMsg) {
-		case WM_KEYUP:
-		case WM_SYSKEYUP:
-			{
+			case WM_KEYUP:
+			case WM_SYSKEYUP: {
 				const int vkey = (int)wParam;
 				io->KeysDown[vkey] = false;
 				if (vkey == VK_CONTROL) {
@@ -85,9 +84,8 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				}
 				break;
 			}
-		case WM_KEYDOWN:
-		case WM_SYSKEYDOWN:
-			{
+			case WM_KEYDOWN:
+			case WM_SYSKEYDOWN: {
 				readArcExports();
 				const int vkey = (int)wParam;
 				// close windows on escape press (return 0, so arc and gw2 are not processing this event)
@@ -114,16 +112,15 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				io->KeysDown[vkey] = true;
 				break;
 			}
-		case WM_ACTIVATEAPP:
-			{
+			case WM_ACTIVATEAPP: {
 				if (!wParam) {
 					io->KeysDown[arc_global_mod1] = false;
 					io->KeysDown[arc_global_mod2] = false;
 				}
 				break;
 			}
-		default:
-			break;
+			default:
+				break;
 		}
 	} catch (const std::exception& e) {
 		arc_log_file(e.what());
@@ -169,7 +166,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						auto playerIt = cachedPlayers.find(username);
 						if (playerIt == cachedPlayers.end()) {
 							// no element found, create it
-							const auto& tryEmplace = cachedPlayers.try_emplace(username, username, src->name);
+							const auto& tryEmplace = cachedPlayers.try_emplace(username, username, src->name, src->id);
 
 							// check if emplacing successful, if yes, load the kp.me page
 							if (tryEmplace.second) {
@@ -184,6 +181,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 							// update charactername
 							player.characterName = src->name;
 							player.manuallyAdded = false;
+							player.id = src->id;
 
 							// load user data if not yet loaded (check inside function)
 							loadKillproofsSizeChecked(player);
@@ -196,6 +194,20 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 					else {
 						std::lock_guard<std::mutex> guard(trackedPlayersMutex);
 						trackedPlayers.erase(std::remove(trackedPlayers.begin(), trackedPlayers.end(), username), trackedPlayers.end());
+					}
+				}
+			}
+		} else {
+			if (ev->is_statechange != CBTS_NONE) {
+				if (ev->is_statechange == CBTS_TAG) {
+					// some other person is tag now!
+					uintptr_t id = src->id;
+					for (auto& cachedPlayer : cachedPlayers) {
+						if (cachedPlayer.second.id == id) {
+							cachedPlayer.second.commander = true;
+						} else {
+							cachedPlayer.second.commander = false;
+						}
 					}
 				}
 			}
@@ -288,6 +300,7 @@ bool canMoveWindows() {
 }
 
 bool lastFrameShow = false;
+
 void ShowKillproof() {
 	bool& showKillproof = settings.getShowKillproof();
 	if (!lastFrameShow && showKillproof) {
@@ -341,7 +354,7 @@ arcdps_exports* mod_init() {
 	try {
 		// Setup iconLoader
 		iconLoader.Setup(self_dll, d3d9Device);
-		
+
 		// check for new version on github
 		updateChecker.CheckForUpdate(self_dll, "knoxfighter/arcdps-killproof.me-plugin");
 
@@ -385,7 +398,8 @@ arcdps_exports* mod_init() {
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, IDirect3DDevice9* id3dd9, HMODULE new_arcdll, void* mallocfn, void* freefn) {
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, IDirect3DDevice9* id3dd9, HMODULE new_arcdll, void* mallocfn,
+                                                     void* freefn) {
 	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(static_cast<ImGuiContext*>(imguicontext));
 	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);

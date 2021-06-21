@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <future>
 
+#include "resource.h"
 #include "global.h"
 #include "Player.h"
 #include "Settings.h"
@@ -86,7 +87,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				if (std::find(trackedPlayers.begin(), trackedPlayers.end(), username) == trackedPlayers.end()) {
 					trackedPlayers.emplace_back(username);
 
-					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "", true);
+					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "", 0, true);
 					if (!tryEmplace.second && tryEmplace.first->second.status == LoadingStatus::NotLoaded) {
 						tryEmplace.first->second.manuallyAdded = true;
 					}
@@ -266,17 +267,17 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		for (const std::string& trackedPlayer : trackedPlayers) {
 			const Player& player = cachedPlayers.at(trackedPlayer);
 
-			// hide player they have data, when setting is active
+			// hide player without data, when setting is active
 			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
 				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.status, player.killproofs,
-				                    player.linkedTotalKillproofs.has_value());
+				                    player.linkedTotalKillproofs.has_value(), player.commander);
 				if (open) {
 					for (std::string linkedAccount : player.linkedAccounts) {
 						Player& linkedPlayer = cachedPlayers.at(linkedAccount);
 						drawRow(alignment, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), LoadingStatus::Loaded, linkedPlayer.killproofs,
-						        false);
+						        false, false);
 					}
-					drawRow(alignment, lang.translate(LangKey::Overall).c_str(), "--->", player.status, player.linkedTotalKillproofs.value(), false);
+					drawRow(alignment, lang.translate(LangKey::Overall).c_str(), "--->", player.status, player.linkedTotalKillproofs.value(), false, false);
 
 					ImGui::TreePop();
 				}
@@ -296,12 +297,21 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 }
 
 bool KillproofUI::drawRow(const Alignment& alignment, const char* username, const char* characterName, const std::atomic<LoadingStatus>& status,
-                          const Killproofs& killproofs, bool treeNode) {
+                          const Killproofs& killproofs, bool treeNode, bool isCommander) {
 	ImGui::TableNextRow();
 
 	bool open = false;
 	// username
 	if (ImGui::TableNextColumn()) {
+		if (isCommander && settings.getShowCommander()) {
+			auto* icon = iconLoader.getTexture(ID_Commander_White);
+			if (icon) {
+				float size = ImGui::GetFontSize();
+				ImGui::Image(icon, ImVec2(size, size));
+				ImGui::SameLine();
+			}
+		}
+		
 		if (treeNode) {
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
 
@@ -314,7 +324,7 @@ bool KillproofUI::drawRow(const Alignment& alignment, const char* username, cons
 			ImGui::PopStyleVar();
 		} else {
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 3.f);
-			ImGui::Text(username);
+			ImGui::TextUnformatted(username);
 			if (status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
 				// Open users kp.me in the browser
 				openInBrowser(username);

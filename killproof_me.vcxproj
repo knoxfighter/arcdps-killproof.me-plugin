@@ -299,6 +299,7 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="extension\arcdps_structs.h" />
+    <ClInclude Include="extension\arcdps_structs_slim.h" />
     <ClInclude Include="extension\Icon.h" />
     <ClInclude Include="extension\map.h" />
     <ClInclude Include="extension\UpdateCheckerBase.h" />
@@ -329,6 +330,7 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
     <Image Include="icons\Cairn_the_Indomitable_Shard.png" />
     <Image Include="icons\Cardinal_Adina%27s_Token.png" />
     <Image Include="icons\Cardinal_Sabir%27s_Token.png" />
+    <Image Include="icons\Commander_tag_(white).png" />
     <Image Include="icons\Conjured_Amalgamate_Token.png" />
     <Image Include="icons\Desmina%27s_Token.png" />
     <Image Include="icons\Dhuum%27s_Token.png" />

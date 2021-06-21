@@ -71,6 +71,10 @@ ImGuiID Settings::getFromWindowID() const {
 	return settings.fromWindowID;
 }
 
+bool Settings::getShowCommander() const {
+	return settings.showCommander;
+}
+
 Settings::~Settings() {
 	try {
 		saveToFile();

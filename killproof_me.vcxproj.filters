@@ -152,6 +152,9 @@
     <ClInclude Include="UpdateChecker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="extension\arcdps_structs_slim.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="killproof_me.rc">
@@ -238,6 +241,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="icons\Boneskinner_Ritual_Vial.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Commander_tag_(white).png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

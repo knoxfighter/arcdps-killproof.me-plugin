@@ -58,18 +58,18 @@ void SettingsUI::draw() {
 		std::scoped_lock<std::mutex, std::mutex> guard(cachedPlayersMutex, trackedPlayersMutex);
 
 		// get all accountnames and charnames
-		std::map<std::string, std::string> userToCharNames;
+		std::list<Player> usersToKeep;
 		for (std::string trackedPlayer : trackedPlayers) {
 			const Player& player = cachedPlayers.at(trackedPlayer);
-			userToCharNames[trackedPlayer] = player.characterName;
+			usersToKeep.emplace_back(player.username, player.characterName, player.id);
 		}
 
 		// clear the cache
 		cachedPlayers.clear();
 
 		// refill the cache with only tracked players
-		for (const auto& userToCharName : userToCharNames) {
-			const auto& tryEmplace = cachedPlayers.try_emplace(userToCharName.first, userToCharName.first, userToCharName.second);
+		for (const Player& player : usersToKeep) {
+			const auto& tryEmplace = cachedPlayers.try_emplace(player.username, player.username, player.characterName, player.id);
 
 			// load kp.me data if less than 10 people tracked
 			loadKillproofsSizeChecked(tryEmplace.first->second);

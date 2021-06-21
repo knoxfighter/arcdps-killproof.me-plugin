@@ -17,14 +17,16 @@ enum class LoadingStatus {
 
 class Player {
 public:
-	Player(std::string username, std::string characterName, bool manuallyAdded = false)
+	Player(std::string username, std::string characterName = "", uintptr_t id = 0, bool manuallyAdded = false)
 		: username(std::move(username)),
 		  characterName(std::move(characterName)),
+		  id(id),
 		  manuallyAdded(manuallyAdded) {
 	}
 
 	Player() = default;
 
+	uintptr_t id;
 	std::string username;
 	std::string characterName;
 	std::string killproofId;
@@ -34,6 +36,7 @@ public:
 	std::string errorMessage;
 	bool manuallyAdded = false;
 	std::vector<std::string> linkedAccounts;
+	bool commander = false;
 
 	void loadKillproofs();
 	static void loadKPs(nlohmann::json& json, Killproofs& storage);
