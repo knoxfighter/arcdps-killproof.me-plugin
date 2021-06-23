@@ -272,7 +272,7 @@
       <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>powershell -noprofile -command  "(Get-FileHash '$(OutDirFullPath)$(TargetFileName)').Hash  &gt; '$(OutDirFullPath)$(TargetName).sha'"
+      <Command>
 powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVersion.ps1' '.\killproof_me.rc'"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
