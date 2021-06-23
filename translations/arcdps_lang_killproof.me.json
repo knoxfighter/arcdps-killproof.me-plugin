@@ -42,6 +42,8 @@
     [ "AddPlayerTooltip", "Accountname, killproof.me ID or Charactername to search and add to the list" ],
     [ "AddPlayerText", "Add" ],
     [ "Overall", "Overall" ],
+    [ "Killproofs", "Killproofs" ],
+    [ "Coffers", "Coffers" ],
     [ "SettingsShortcutText", "Shortcut to open killproofs menu:" ],
     [ "SettingsBlockedText", "Text to display when data is unavailable/private" ],
     [ "SettingsHidePrivateText", "Hide players without killproof.me account" ],
@@ -52,6 +54,7 @@
     [ "SettingsClearCacheTooltip", "Clear the cache and reload killproof.me data for all players" ],
     [ "SettingsHideHeaderButtons", "Hide header buttons and search field" ],
     [ "SettingsShowOverallByDefault", "Show linked account KPs by default" ],
+    [ "SettingsShowCommander", "Show commander Tag next to accountname" ],
     [ "SettingsColumnSetup", "Column Setup" ],
     [ "SettingsStyle", "Style" ],
     [ "SettingsRaidsGroup", "Raids" ],
@@ -68,6 +71,7 @@
     [ "SettingsFromAnchorPanelCorner", "from anchor panel corner" ],
     [ "SettingsToThisPanelCorner", "to this panel corner" ],
     [ "SettingsFromWindowName", "from window" ],
+    [ "SettingsCofferValue", "Killproofs per coffer" ],
     [ "Alignment", "Alignment" ],
     [ "Left", "Left" ],
     [ "Center", "Center" ],
@@ -88,6 +92,6 @@
     [ "UpdateAutoButton", "Update autmatically" ],
     [ "UpdateInProgress", "Autoupdate in progress" ],
     [ "UpdateRestartPending", "Autoupdate finished, restart your game to activate it." ],
-    [ "UpdateError", "Autoupdate error, please update manually." ]
+    [ "UpdateError", "Autoupdate error, please update manually. " ]
   ]
 }
