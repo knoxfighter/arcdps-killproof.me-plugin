@@ -113,8 +113,8 @@ ID_Commander_White      PNG                     "icons\\Commander_tag_(white).pn
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,4,0,3
- PRODUCTVERSION 2,4,0,3
+ FILEVERSION 2,5,0,5
+ PRODUCTVERSION 2,5,0,5
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -131,12 +131,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "TODO: <Company name>"
             VALUE "FileDescription", "TODO: <File description>"
-            VALUE "FileVersion", "2.4.0.3"
+            VALUE "FileVersion", "2.5.0.5"
             VALUE "InternalName", "killproo.dll"
             VALUE "LegalCopyright", "Copyright (C) 2021"
             VALUE "OriginalFilename", "killproo.dll"
             VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "2.4.0.3"
+            VALUE "ProductVersion", "2.5.0.5"
         END
     END
     BLOCK "VarFileInfo"
