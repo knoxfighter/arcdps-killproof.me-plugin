@@ -72,6 +72,8 @@ BUILD_ENUM_SERIALIZED(
 	AddPlayerTooltip, "Accountname, killproof.me ID or Charactername to search and add to the list",
 	AddPlayerText, "Add",
 	Overall, "Overall",
+	Killproofs, "Killproofs",
+	Coffers, "Coffers",
 
 	SettingsShortcutText, "Shortcut to open killproofs menu:",
 	SettingsBlockedText, "Text to display when data is unavailable/private",
@@ -100,6 +102,7 @@ BUILD_ENUM_SERIALIZED(
 	SettingsFromAnchorPanelCorner, "from anchor panel corner",
 	SettingsToThisPanelCorner, "to this panel corner",
 	SettingsFromWindowName, "from window",
+	SettingsCofferValue, "Killproofs per coffer",
 
 	Alignment, "Alignment",
 	Left, "Left",

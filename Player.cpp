@@ -66,12 +66,13 @@ void Player::loadKillproofs() {
 			// set username AFTER the check, if it the same as the kpid
 			username = accountname;
 
-			loadKPs(json, killproofs);
+			loadKPs(json, killproofs, coffers);
 
 			if (json.contains("linked_totals")) {
 				auto linked_totals = json.at("linked_totals");
 				Killproofs& killproofs = linkedTotalKillproofs.emplace();
-				loadKPs(linked_totals, killproofs);
+				Coffers& coffers = linkedTotalCoffers.emplace();
+				loadKPs(linked_totals, killproofs, coffers);
 			}
 
 			if (json.contains("linked")) {
@@ -80,7 +81,7 @@ void Player::loadKillproofs() {
 					const auto& playerEmplace = cachedPlayers.try_emplace(accountName, accountName);
 					if (playerEmplace.second) {
 						Player& player = playerEmplace.first->second;
-						loadKPs(linked, player.killproofs);
+						loadKPs(linked, player.killproofs, player.coffers);
 					}
 
 					linkedAccounts.emplace_back(accountName);
@@ -158,21 +159,21 @@ void Player::loadKillproofs() {
 	cprCall.detach();
 }
 
-void Player::loadKPs(nlohmann::json& json, Killproofs& storage) {
+void Player::loadKPs(nlohmann::json& json, Killproofs& killproofStorage, Coffers& cofferStorage) {
 	auto tokens = json.at("tokens");
 	// when field is null, data is not available
 	if (tokens.is_null()) {
 		// set all tokens fields to -1
-		storage.setAllTokensFieldsToBlocked();
+		killproofStorage.setAllTokensFieldsToBlocked();
 	}
 	// else it is an array (can be empty)
 	else if (tokens.is_array()) {
 		for (auto token : tokens) {
 			auto id = token.at("id");
 			if (id.is_string()) {
-				storage.setAmountFromId(id.get<std::string>(), token.at("amount"));
+				killproofStorage.setAmountFromId(id.get<std::string>(), token.at("amount"));
 			} else if (id.is_number_integer()) {
-				storage.setAmountFromId(id.get<int>(), token.at("amount"));
+				killproofStorage.setAmountFromId(id.get<int>(), token.at("amount"));
 			}
 		}
 	}
@@ -181,7 +182,7 @@ void Player::loadKPs(nlohmann::json& json, Killproofs& storage) {
 	// when field is null, data is not available
 	if (killproofs.is_null()) {
 		// set all killproof fields to -1
-		storage.setAllKillproofFieldsToBlocked();
+		killproofStorage.setAllKillproofFieldsToBlocked();
 	}
 	// else it is an array (can be empty)
 	else if (killproofs.is_array()) {
@@ -192,12 +193,23 @@ void Player::loadKPs(nlohmann::json& json, Killproofs& storage) {
 		for (auto killproof : killproofs) {
 			int kpId = killproof.at("id").get<int>();
 			unUsedKPs.erase(kpId);
-			storage.setAmountFromId(kpId, killproof.at("amount"));
+			killproofStorage.setAmountFromId(kpId, killproof.at("amount"));
 		}
 
 		// set rest KPs to blocked
 		for (int unUsedKP : unUsedKPs) {
-			storage.setBlockedFromId(unUsedKP);
+			killproofStorage.setBlockedFromId(unUsedKP);
+		}
+	}
+
+	auto coffers = json.at("coffers");
+	if (coffers.is_null()) {
+		cofferStorage.setAllTokensFieldsToBlocked();
+	} else if (coffers.is_array()) {
+		for (auto coffer : coffers) {
+			int cofferId = coffer.at("id").get<int>();
+
+			cofferStorage.setAmount(cofferId, coffer.at("amount"));
 		}
 	}
 }

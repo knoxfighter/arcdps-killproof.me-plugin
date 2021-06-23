@@ -45,10 +45,11 @@ public:
 		CornerPosition selfPanelCornerPosition = CornerPosition::TopLeft;
 		ImGuiID fromWindowID;
 		bool showCommander = false;
+		uint8_t cofferValue = 3;
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE_NON_THROWING(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose, alignment,
 		                               showHeaderText, hideControls, showOverallByDefault, showHeader, position, cornerPosition, cornerVector,
-		                               anchorPanelCornerPosition, selfPanelCornerPosition, fromWindowID)
+		                               anchorPanelCornerPosition, selfPanelCornerPosition, fromWindowID, showCommander, cofferValue)
 	};
 
 	Settings();
@@ -72,6 +73,7 @@ public:
 	[[nodiscard]] CornerPosition getSelfPanelCornerPosition() const;
 	[[nodiscard]] ImGuiID getFromWindowID() const;
 	[[nodiscard]] bool getShowCommander() const;
+	[[nodiscard]] uint8_t getCofferValue() const;
 
 	// delete copy/move
 	Settings(const Settings& other) = delete;

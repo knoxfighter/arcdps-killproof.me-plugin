@@ -277,6 +277,7 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Coffers.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="extension\arcdps_structs.cpp" />
     <ClCompile Include="extension\Icon.cpp" />
@@ -298,6 +299,7 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
     <ClCompile Include="WindowSettingsUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Coffers.h" />
     <ClInclude Include="extension\arcdps_structs.h" />
     <ClInclude Include="extension\arcdps_structs_slim.h" />
     <ClInclude Include="extension\Icon.h" />

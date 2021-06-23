@@ -75,6 +75,10 @@ bool Settings::getShowCommander() const {
 	return settings.showCommander;
 }
 
+uint8_t Settings::getCofferValue() const {
+	return settings.cofferValue;
+}
+
 Settings::~Settings() {
 	try {
 		saveToFile();

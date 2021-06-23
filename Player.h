@@ -3,6 +3,7 @@
 #include <optional>
 #include <string>
 
+#include "Coffers.h"
 #include "Killproofs.h"
 #include "extension/json.hpp"
 
@@ -31,7 +32,9 @@ public:
 	std::string characterName;
 	std::string killproofId;
 	Killproofs killproofs;
+	Coffers coffers;
 	std::optional<Killproofs> linkedTotalKillproofs;
+	std::optional<Coffers> linkedTotalCoffers;
 	std::atomic<LoadingStatus> status{LoadingStatus::NotLoaded};
 	std::string errorMessage;
 	bool manuallyAdded = false;
@@ -39,5 +42,5 @@ public:
 	bool commander = false;
 
 	void loadKillproofs();
-	static void loadKPs(nlohmann::json& json, Killproofs& storage);
+	static void loadKPs(nlohmann::json& json, Killproofs& killproofStorage, Coffers& cofferStorage);
 };

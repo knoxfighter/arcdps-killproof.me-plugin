@@ -84,6 +84,9 @@
     <ClCompile Include="UpdateChecker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Coffers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KillproofUI.h">
@@ -154,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="extension\arcdps_structs_slim.h">
       <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="Coffers.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -124,7 +124,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 					std::string str;
 					str.append("Killproof.me: ");
 					str.append(player.killproofId);
-					
+
 					// copy ID to clipboard
 					//put your text in source
 					if (OpenClipboard(NULL)) {
@@ -269,15 +269,15 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 			// hide player without data, when setting is active
 			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
-				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.status, player.killproofs,
+				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.status, player.killproofs, player.coffers,
 				                    player.linkedTotalKillproofs.has_value(), player.commander);
 				if (open) {
 					for (std::string linkedAccount : player.linkedAccounts) {
 						Player& linkedPlayer = cachedPlayers.at(linkedAccount);
 						drawRow(alignment, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), LoadingStatus::Loaded, linkedPlayer.killproofs,
-						        false, false);
+						        linkedPlayer.coffers, false, false);
 					}
-					drawRow(alignment, lang.translate(LangKey::Overall).c_str(), "--->", player.status, player.linkedTotalKillproofs.value(), false, false);
+					drawRow(alignment, lang.translate(LangKey::Overall).c_str(), "--->", player.status, player.linkedTotalKillproofs.value(), player.linkedTotalCoffers.value(), false, false);
 
 					ImGui::TreePop();
 				}
@@ -297,7 +297,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 }
 
 bool KillproofUI::drawRow(const Alignment& alignment, const char* username, const char* characterName, const std::atomic<LoadingStatus>& status,
-                          const Killproofs& killproofs, bool treeNode, bool isCommander) {
+                          const Killproofs& killproofs, const Coffers& coffers, bool treeNode, bool isCommander) {
 	ImGui::TableNextRow();
 
 	bool open = false;
@@ -311,7 +311,7 @@ bool KillproofUI::drawRow(const Alignment& alignment, const char* username, cons
 				ImGui::SameLine();
 			}
 		}
-		
+
 		if (treeNode) {
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
 
@@ -343,13 +343,30 @@ bool KillproofUI::drawRow(const Alignment& alignment, const char* username, cons
 
 	for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 		if (ImGui::TableNextColumn()) {
-			const amountVal amount = killproofs.getAmountFromEnum(static_cast<Killproof>(i));
+			Killproof kp = static_cast<Killproof>(i);
+			amountVal killproofAmount = killproofs.getAmountFromEnum(kp);
+			amountVal cofferAmount = coffers.getAmount(kp);
+			amountVal totalAmount = killproofAmount;
+			if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
+				totalAmount += cofferAmount;
+			} else {
+				totalAmount += cofferAmount * settings.getCofferValue();
+			}
 			if (status == LoadingStatus::LoadingById || status == LoadingStatus::LoadingByChar) {
 				ImGuiEx::SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), settings.getAlignment());
-			} else if (amount == -1 || status != LoadingStatus::Loaded) {
+			} else if (totalAmount == -1 || status != LoadingStatus::Loaded) {
 				ImGuiEx::AlignedTextColumn(alignment, "%s", settings.getBlockedDataText().c_str());
 			} else {
-				ImGuiEx::AlignedTextColumn(alignment, "%i", amount);
+				ImGuiEx::AlignedTextColumn(alignment, "%i", totalAmount);
+
+				if (ImGui::IsItemHovered()) {
+					ImGui::BeginTooltip();
+					std::string kpText = std::format("{}: {}", lang.translate(LangKey::Killproofs), killproofAmount);
+					ImGui::TextUnformatted(kpText.c_str());
+					std::string cofferText = std::format("{}: {}", lang.translate(LangKey::Coffers), cofferAmount);
+					ImGui::TextUnformatted(cofferText.c_str());
+					ImGui::EndTooltip();
+				}
 			}
 		}
 	}

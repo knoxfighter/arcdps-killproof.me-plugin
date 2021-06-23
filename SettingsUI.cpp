@@ -9,10 +9,6 @@
 #include "imgui/imgui.h"
 #include "extension/Widgets.h"
 
-#define windowWidth 800
-#define leftItemWidth  200
-#define rightItemWidth 600
-
 SettingsUI settingsUI;
 
 SettingsUI::SettingsUI() {
@@ -53,6 +49,16 @@ void SettingsUI::draw() {
 	ImGui::Text(shortCutRealName);
 
 	ImGui::Checkbox(lang.translate(LangKey::SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
+	if (ImGui::InputInt(lang.translate(LangKey::SettingsCofferValue).c_str(), &cofferValue)) {
+		if (cofferValue < 0) {
+			cofferValue = 0;
+		}
+		if (cofferValue > 5) {
+			cofferValue = 5;
+		}
+
+		settings.settings.cofferValue = cofferValue;
+	}
 
 	if (ImGui::Button(lang.translate(LangKey::SettingsClearCacheText).c_str())) {
 		std::scoped_lock<std::mutex, std::mutex> guard(cachedPlayersMutex, trackedPlayersMutex);
