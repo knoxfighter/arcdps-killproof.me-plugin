@@ -124,7 +124,7 @@ BUILD_ENUM_SERIALIZED(
 	UpdateCurrentVersion, "Current version",
 	UpdateNewVersion, "New version",
 	UpdateOpenPage, "Open download page",
-	UpdateAutoButton, "Update autmatically",
+	UpdateAutoButton, "Update automatically",
 	UpdateInProgress, "Autoupdate in progress",
 	UpdateRestartPending, "Autoupdate finished, restart your game to activate it.",
 	UpdateError, "Autoupdate error, please update manually."
