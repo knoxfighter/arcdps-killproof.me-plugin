@@ -497,3 +497,7 @@ MigrationBackup/
 .ionide/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,intellij,c++
+
+
+# ignore vcpkg stuff
+vcpkg_installed/

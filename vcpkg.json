@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "arcdps-killproof-me-plugin",
+  "version-string": "2.5.0",
+  "dependencies": [
+    "cpr"
+  ]
+}
