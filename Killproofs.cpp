@@ -72,7 +72,7 @@ std::string toString(Killproof e) {
 	}
 }
 
-amountVal Killproofs::getAmountFromId(const std::string& id) const {
+amountVal Killproofs::getAmount(const std::string& id) const {
 	std::lock_guard<std::mutex> guard(mapMutex);
 
 	if (id == "77302") {
@@ -159,7 +159,7 @@ amountVal Killproofs::getAmountFromId(const std::string& id) const {
 	return 0;
 }
 
-amountVal Killproofs::getAmountFromEnum(const Killproof& id) const {
+amountVal Killproofs::getAmount(const Killproof& id) const {
 	std::lock_guard<std::mutex> guard(mapMutex);
 	const auto killproofIt = killproofs.find(id);
 	if (killproofIt == killproofs.end()) {

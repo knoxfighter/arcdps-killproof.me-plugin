@@ -95,8 +95,8 @@ public:
 	/**
 	 * GETTER
 	 */
-	amountVal getAmountFromId(const std::string& id) const;
-	amountVal getAmountFromEnum(const Killproof& id) const;
+	amountVal getAmount(const std::string& id) const;
+	amountVal getAmount(const Killproof& id) const;
 
 	/**
 	 * SETTER

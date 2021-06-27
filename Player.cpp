@@ -159,6 +159,46 @@ void Player::loadKillproofs() {
 	cprCall.detach();
 }
 
+amountVal Player::getKpOverall(const Killproof& kp) const {
+	amountVal killproofAmount = killproofs.getAmount(kp);
+	amountVal cofferAmount = coffers.getAmount(kp);
+	amountVal totalAmount = killproofAmount;
+	if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
+		totalAmount += cofferAmount;
+	}
+	else {
+		totalAmount += cofferAmount * settings.getCofferValue();
+	}
+	return totalAmount;
+}
+
+amountVal Player::getKillproofsTotal(const Killproof& kp) const {
+	if (linkedTotalKillproofs) {
+		return linkedTotalKillproofs->getAmount(kp);
+	}
+	return 0;
+}
+
+amountVal Player::getCoffersTotal(const Killproof& kp) const {
+	if (linkedTotalCoffers) {
+		return linkedTotalCoffers->getAmount(kp);
+	}
+	return 0;
+}
+
+amountVal Player::getKpOverallTotal(const Killproof& kp) const {
+	amountVal killproofAmount = getKillproofsTotal(kp);
+	amountVal cofferAmount = getCoffersTotal(kp);
+	amountVal totalAmount = killproofAmount;
+	if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
+		totalAmount += cofferAmount;
+	}
+	else {
+		totalAmount += cofferAmount * settings.getCofferValue();
+	}
+	return totalAmount;
+}
+
 void Player::loadKPs(nlohmann::json& json, Killproofs& killproofStorage, Coffers& cofferStorage) {
 	auto tokens = json.at("tokens");
 	// when field is null, data is not available
