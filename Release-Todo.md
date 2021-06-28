@@ -1,5 +1,6 @@
 - [ ] update translation
+- [ ] update json format to be like the normal one used
 - [ ] change version in VS_VERSION_INFO
 - [ ] change version in vcpkg.json
-- [ ] rebuild soluction
+- [ ] rebuild soluction in release
 - [ ] backup dll and pdb files
