@@ -99,14 +99,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 		ImGui::SameLine();
 		if (ImGui::Button(lang.translate(LangKey::ClearText).c_str())) {
-			const auto end = std::remove_if(trackedPlayers.begin(), trackedPlayers.end(), [](const std::string& playerName) {
-				const auto& player = cachedPlayers.find(playerName);
-				if (player == cachedPlayers.end()) {
-					return false;
-				}
-				return player->second.manuallyAdded;
-			});
-			trackedPlayers.erase(end, trackedPlayers.end());
+			trackedPlayers = instancePlayers;
 		}
 		if (ImGui::IsItemHovered()) {
 			ImGui::SetTooltip(lang.translate(LangKey::ClearTooltip).c_str());

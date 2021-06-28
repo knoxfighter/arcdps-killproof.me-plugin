@@ -14,6 +14,8 @@ std::vector<std::string> trackedPlayers;
 std::mutex trackedPlayersMutex;
 std::map<std::string, Player> cachedPlayers;
 std::mutex cachedPlayersMutex;
+std::vector<std::string> instancePlayers;
+std::mutex instancePlayersMutex;
 KillproofUI killproofUi;
 std::string selfAccountName;
 

@@ -150,7 +150,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 
 					/* add */
 					if (src->prof) {
-						std::scoped_lock<std::mutex, std::mutex> lock(cachedPlayersMutex, trackedPlayersMutex);
+						std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(cachedPlayersMutex, trackedPlayersMutex, instancePlayersMutex);
 
 						// if this is the first player, it is me
 						if (selfAccountName.empty() && dst->self) {
@@ -159,8 +159,14 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 
 						// add to tracking
 						// only add to tracking, if not already there
-						if (std::find(trackedPlayers.begin(), trackedPlayers.end(), username) == trackedPlayers.end()) {
+						if (std::ranges::find(trackedPlayers, username) == trackedPlayers.end()) {
 							trackedPlayers.emplace_back(username);
+						}
+
+						// add to this-instance players
+						// only add to tracking, if not already there
+						if (std::ranges::find(instancePlayers, username) == instancePlayers.end()) {
+							instancePlayers.emplace_back(username);
 						}
 
 						auto playerIt = cachedPlayers.find(username);
@@ -192,8 +198,9 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 					}
 						/* remove */
 					else {
-						std::lock_guard<std::mutex> guard(trackedPlayersMutex);
-						trackedPlayers.erase(std::remove(trackedPlayers.begin(), trackedPlayers.end(), username), trackedPlayers.end());
+						std::scoped_lock<std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex);
+						trackedPlayers.erase(std::ranges::remove(trackedPlayers, username).begin(), trackedPlayers.end());
+						instancePlayers.erase(std::ranges::remove(instancePlayers, username).begin(), instancePlayers.end());
 					}
 				}
 			}
