@@ -32,9 +32,6 @@ class Coffers {
 	};
 	mutable std::mutex mapMutex;
 
-	void addLi(int32_t amount);
-	void addLd(int32_t amount);
-
 public:
 	/**
 	 * GETTER
