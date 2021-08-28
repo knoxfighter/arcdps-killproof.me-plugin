@@ -80,3 +80,61 @@ void loadKillproofs(Player& player) {
 		player.loadKillproofs();
 	}
 }
+
+/**
+ * lock `trackedPlayersMutex` and `instancePlayersMutex` before calling this
+ */
+void removePlayerAll(const std::string& username) {
+	removePlayerInstance(username);
+	removePlayerTracking(username);
+}
+
+/**
+ * lock `instancePlayersMutex` before calling this
+ */
+void removePlayerInstance(const std::string& username) {
+	instancePlayers.erase(std::ranges::remove(instancePlayers, username).begin(), instancePlayers.end());
+}
+
+/**
+ * lock `trackedPlayersMutex` before calling this
+ */
+void removePlayerTracking(const std::string& username) {
+	trackedPlayers.erase(std::ranges::remove(trackedPlayers, username).begin(), trackedPlayers.end());
+}
+
+/**
+ * lock `trackedPlayersMutex` and `instancePlayersMutex` before calling this
+ */
+bool addPlayerAll(const std::string& username) {
+	addPlayerInstance(username);
+	return addPlayerTracking(username);
+}
+
+/**
+ * add to this-instance players
+ * only add to tracking, if not already there
+ *
+ * lock `instancePlayersMutex` before calling this
+ */
+bool addPlayerInstance(const std::string& username) {
+	if (std::ranges::find(instancePlayers, username) == instancePlayers.end()) {
+		instancePlayers.emplace_back(username);
+		return true;
+	}
+	return false;
+}
+
+/**
+ * add to tracking
+ * only add to tracking, if not already there
+ * 
+ * lock `trackedPlayersMutex` before calling this
+ */
+bool addPlayerTracking(const std::string& username) {
+	if (std::ranges::find(trackedPlayers, username) == trackedPlayers.end()) {
+		trackedPlayers.emplace_back(username);
+		return true;
+	}
+	return false;
+}

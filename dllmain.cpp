@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <d3d9.h>
 #include <mutex>
+#include <ranges>
 #include <sstream>
 #include <string>
 #include <wincodec.h>
@@ -15,6 +16,7 @@
 #include "Settings.h"
 #include "SettingsUI.h"
 #include "UpdateChecker.h"
+#include "extension/arcdps_extras_structs.h"
 #include "extension/arcdps_structs.h"
 #include "extension/Icon.h" // this import is needed for the icons map
 #include "extension/Widgets.h"
@@ -30,6 +32,7 @@ HMODULE arc_dll;
 HMODULE self_dll;
 IDirect3DDevice9* d3d9Device;
 bool showSettings = false;
+bool initFailed = false;
 
 typedef uint64_t (*arc_export_func_u64)();
 // arc options
@@ -152,22 +155,13 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 					if (src->prof) {
 						std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(cachedPlayersMutex, trackedPlayersMutex, instancePlayersMutex);
 
-						// if this is the first player, it is me
+						// this is self
 						if (selfAccountName.empty() && dst->self) {
 							selfAccountName = username;
 						}
 
-						// add to tracking
-						// only add to tracking, if not already there
-						if (std::ranges::find(trackedPlayers, username) == trackedPlayers.end()) {
-							trackedPlayers.emplace_back(username);
-						}
-
-						// add to this-instance players
-						// only add to tracking, if not already there
-						if (std::ranges::find(instancePlayers, username) == instancePlayers.end()) {
-							instancePlayers.emplace_back(username);
-						}
+						// add to tracking and instance
+						addPlayerAll(username);
 
 						auto playerIt = cachedPlayers.find(username);
 						if (playerIt == cachedPlayers.end()) {
@@ -199,8 +193,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						/* remove */
 					else {
 						std::scoped_lock<std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex);
-						trackedPlayers.erase(std::ranges::remove(trackedPlayers, username).begin(), trackedPlayers.end());
-						instancePlayers.erase(std::ranges::remove(instancePlayers, username).begin(), instancePlayers.end());
+						removePlayerAll(username);
 					}
 				}
 			}
@@ -209,11 +202,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 				if (ev->is_statechange == CBTS_TAG) {
 					// some other person is tag now!
 					uintptr_t id = src->id;
-					for (auto& cachedPlayer : cachedPlayers) {
-						if (cachedPlayer.second.id == id) {
-							cachedPlayer.second.commander = true;
+					for (auto& cachedPlayer : cachedPlayers | std::views::values) {
+						if (cachedPlayer.id == id) {
+							cachedPlayer.commander = true;
 						} else {
-							cachedPlayer.second.commander = false;
+							cachedPlayer.commander = false;
 						}
 					}
 				}
@@ -393,6 +386,7 @@ arcdps_exports* mod_init() {
 		arc_exports.options_end = mod_options;
 		arc_exports.options_windows = mod_windows;
 	} else {
+		initFailed = true;
 		arc_exports.sig = 0;
 		const std::string::size_type size = error_message.size();
 		char* buffer = new char[size + 1]; //we need extra char for NUL
@@ -432,4 +426,56 @@ uintptr_t mod_release() {
 extern "C" __declspec(dllexport) void* get_release_addr() {
 	arcvers = nullptr;
 	return mod_release;
+}
+
+void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCount) {
+	for (size_t i = 0; i < updatedUsersCount; i++) {
+		std::string username = updatedUsers[i].Name;
+
+		// remove ':' at the beginning of the name.
+		if (username.at(0) == ':') {
+			username.erase(0, 1);
+		}
+		
+		if (updatedUsers[i].Role != UserRole::None) // User added/updated
+		{
+			std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(cachedPlayersMutex, trackedPlayersMutex, instancePlayersMutex);
+
+			// add to tracking
+			addPlayerTracking(username);
+
+			auto playerIt = cachedPlayers.find(username);
+			if (playerIt == cachedPlayers.end()) {
+				// no element found, create it
+				const auto& tryEmplace = cachedPlayers.try_emplace(username, username);
+
+				// check if emplacing successful, if yes, load the kp.me page
+				if (tryEmplace.second) {
+					// save player object to work on
+					Player& player = tryEmplace.first->second;
+
+					// load killproofs
+					loadKillproofsSizeChecked(player);
+				}
+			} else {
+				// load user data if not yet loaded (check inside function)
+				loadKillproofsSizeChecked(playerIt->second);
+			}
+
+			// Tell the UI to resort, cause we added a player
+			killproofUi.needSort = true;
+		} else // User removed
+		{
+			std::scoped_lock<std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex);
+			removePlayerAll(username);
+		}
+	}
+}
+
+extern "C" __declspec(dllexport) void arcdps_unofficial_extras_subscriber_init(const ExtrasAddonInfo* pExtrasInfo, ExtrasSubscriberInfo* pSubscriberInfo) {
+	if (initFailed) {
+		pSubscriberInfo->SquadUpdateCallback = nullptr;
+	} else {
+		pSubscriberInfo->SquadUpdateCallback = squad_update_callback;
+	}
 }

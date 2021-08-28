@@ -300,6 +300,7 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coffers.h" />
+    <ClInclude Include="extension\arcdps_extras_structs.h" />
     <ClInclude Include="extension\arcdps_structs.h" />
     <ClInclude Include="extension\arcdps_structs_slim.h" />
     <ClInclude Include="extension\Icon.h" />

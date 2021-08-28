@@ -35,3 +35,10 @@ inline bool fileExists(const std::string& filename) {
 	struct stat buffer;
 	return (stat(filename.c_str(), &buffer) == 0);
 }
+
+void removePlayerAll(const std::string& username);
+void removePlayerInstance(const std::string& username);
+void removePlayerTracking(const std::string& username);
+bool addPlayerAll(const std::string& username);
+bool addPlayerInstance(const std::string& username);
+bool addPlayerTracking(const std::string& username);

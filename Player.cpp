@@ -50,7 +50,7 @@ void Player::loadKillproofs() {
 				// Therefore `this` is invalid and going on further results in an UseAfterFree !
 				if (!inserRes.inserted) {
 					// last action to do: remove the wrong username from the list of tracked players
-					trackedPlayers.erase(std::ranges::remove(trackedPlayers, username).begin(), trackedPlayers.end());
+					removePlayerTracking(username);
 					return;
 				}
 

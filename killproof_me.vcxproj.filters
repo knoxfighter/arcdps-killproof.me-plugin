@@ -161,6 +161,9 @@
     <ClInclude Include="Coffers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="extension\arcdps_extras_structs.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="killproof_me.rc">
