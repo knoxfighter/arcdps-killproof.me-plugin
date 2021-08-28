@@ -141,7 +141,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	* TABLE
 	*/
 	Alignment alignment = settings.getAlignment();
-	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 2;
+	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 3;
 
 	if (ImGui::BeginTable("kp.me", columnCount,
 	                      ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable |
@@ -149,16 +149,19 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		table = GImGui->CurrentTable;
 		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
 		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
+		ImU32 killproofId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
 
 		std::string accountName = lang.translate(LangKey::Accountname);
 		std::string charName = lang.translate(LangKey::Charactername);
+		std::string killproofName = lang.translate(LangKey::KillproodId);
 
 		/**
 		 * HEADER
 		 */
 		ImGui::TableSetupColumn(accountName.c_str(), ImGuiTableColumnFlags_NoReorder | ImGuiTableColumnFlags_PreferSortDescending, 0, accountNameId);
 		ImGui::TableSetupColumn(charName.c_str(), ImGuiTableColumnFlags_NoReorder | ImGuiTableColumnFlags_PreferSortDescending, 0, characterNameId);
-
+		ImGui::TableSetupColumn(killproofName.c_str(), ImGuiTableColumnFlags_NoReorder | ImGuiTableColumnFlags_PreferSortDescending, 0, killproofId);
+		
 		for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 			Killproof kp = static_cast<Killproof>(i);
 			int columnFlags = ImGuiTableColumnFlags_PreferSortDescending;
@@ -181,6 +184,11 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		// charname header
 		if (ImGui::TableNextColumn())
 			ImGuiEx::TableHeader(charName.c_str(), true, nullptr);
+
+		// killproof ID
+		if (ImGui::TableNextColumn()) {
+			ImGuiEx::TableHeader(killproofName.c_str(), true, nullptr);
+		}
 
 		// header for killproofs
 		for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
@@ -263,7 +271,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 			// hide player without data, when setting is active
 			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
-				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.status,
+				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.killproofId.c_str(), player.status,
 					[&player](const Killproof& kp) { return player.getKillproofs(kp); },
 					[&player](const Killproof& kp) { return player.getCoffers(kp); },
 					[&player](const Killproof& kp) { return player.getKpOverall(kp); },
@@ -271,13 +279,13 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				if (open) {
 					for (std::string linkedAccount : player.linkedAccounts) {
 						Player& linkedPlayer = cachedPlayers.at(linkedAccount);
-						drawRow(alignment, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), LoadingStatus::Loaded,
+						drawRow(alignment, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), linkedPlayer.killproofId.c_str(), LoadingStatus::Loaded,
 						        [&linkedPlayer](const Killproof& kp) { return linkedPlayer.getKillproofs(kp); },
 						        [&linkedPlayer](const Killproof& kp) { return linkedPlayer.getCoffers(kp); },
 						        [&linkedPlayer](const Killproof& kp) { return linkedPlayer.getKpOverall(kp); },
 								false, false);
 					}
-					drawRow(alignment, lang.translate(LangKey::Overall).c_str(), "--->", player.status,
+					drawRow(alignment, lang.translate(LangKey::Overall).c_str(), "--->", "", player.status,
 						[&player](const Killproof& kp) { return player.getKillproofsTotal(kp); },
 						[&player](const Killproof& kp) { return player.getCoffersTotal(kp); },
 						[&player](const Killproof& kp) { return player.getKpOverallTotal(kp); },
@@ -300,7 +308,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::End();
 }
 
-bool KillproofUI::drawRow(const Alignment& alignment, const char* username, const char* characterName, const std::atomic<LoadingStatus>& status,
+bool KillproofUI::drawRow(const Alignment& alignment, const char* username, const char* characterName, const char* killproofId, const std::atomic<LoadingStatus>& status,
                           kpFunction killproofsFun, kpFunction coffersFun, kpFunction kpOverallFun, bool treeNode, bool isCommander) {
 	ImGui::TableNextRow();
 
@@ -338,7 +346,16 @@ bool KillproofUI::drawRow(const Alignment& alignment, const char* username, cons
 
 	// charactername
 	if (ImGui::TableNextColumn()) {
-		ImGui::Text(characterName);
+		ImGui::TextUnformatted(characterName);
+		if (status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
+			// Open users kp.me in the browser
+			openInBrowser(username);
+		}
+	}
+
+	// killproofID
+	if (ImGui::TableNextColumn()) {
+		ImGui::TextUnformatted(killproofId);
 		if (status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
 			// Open users kp.me in the browser
 			openInBrowser(username);

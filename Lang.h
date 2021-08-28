@@ -66,6 +66,7 @@ BUILD_ENUM_SERIALIZED(
 	DefaultKp, "Unknown",
 	Accountname, "Account",
 	Charactername, "Character",
+	KillproodId, "Killproof ID",
 	CopyKpIdText, "Copy own KP ID",
 	ClearText, "Clear",
 	ClearTooltip, "Remove all manually added users",
