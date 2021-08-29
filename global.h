@@ -7,6 +7,8 @@
 
 #include "Killproofs.h"
 
+#define KILLPROOF_ME_PLUGIN_NAME "killproof.me"
+
 class Player;
 class KillproofUI;
 
@@ -39,6 +41,6 @@ inline bool fileExists(const std::string& filename) {
 void removePlayerAll(const std::string& username);
 void removePlayerInstance(const std::string& username);
 void removePlayerTracking(const std::string& username);
+bool addPlayerTracking(const std::string& username);
 bool addPlayerAll(const std::string& username);
 bool addPlayerInstance(const std::string& username);
-bool addPlayerTracking(const std::string& username);

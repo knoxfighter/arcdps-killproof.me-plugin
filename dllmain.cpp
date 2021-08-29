@@ -192,8 +192,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 					}
 						/* remove */
 					else {
-						std::scoped_lock<std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex);
-						removePlayerAll(username);
+						// do NOT remove yourself
+						if (username != selfAccountName) {
+							std::scoped_lock<std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex);
+							removePlayerAll(username);
+						}
 					}
 				}
 			}
@@ -373,7 +376,7 @@ arcdps_exports* mod_init() {
 	// }
 
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
-	arc_exports.out_name = "killproof.me";
+	arc_exports.out_name = KILLPROOF_ME_PLUGIN_NAME;
 	arc_exports.out_build = UpdateCheckerBase::GetVersionAsString(self_dll);
 
 	if (loading_successful) {
@@ -429,18 +432,18 @@ extern "C" __declspec(dllexport) void* get_release_addr() {
 }
 
 void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCount) {
+	std::scoped_lock<std::mutex, std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex, cachedPlayersMutex);
+	
 	for (size_t i = 0; i < updatedUsersCount; i++) {
-		std::string username = updatedUsers[i].Name;
+		std::string username = updatedUsers[i].AccountName;
 
 		// remove ':' at the beginning of the name.
 		if (username.at(0) == ':') {
 			username.erase(0, 1);
 		}
-		
+
 		if (updatedUsers[i].Role != UserRole::None) // User added/updated
 		{
-			std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(cachedPlayersMutex, trackedPlayersMutex, instancePlayersMutex);
-
 			// add to tracking
 			addPlayerTracking(username);
 
@@ -454,28 +457,73 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 					// save player object to work on
 					Player& player = tryEmplace.first->second;
 
+					// This player was added automatically
+					player.manuallyAdded = false;
+
 					// load killproofs
 					loadKillproofsSizeChecked(player);
 				}
 			} else {
 				// load user data if not yet loaded (check inside function)
 				loadKillproofsSizeChecked(playerIt->second);
+
+				// This player was added automatically
+				playerIt->second.manuallyAdded = false;
 			}
 
 			// Tell the UI to resort, cause we added a player
 			killproofUi.needSort = true;
 		} else // User removed
 		{
-			std::scoped_lock<std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex);
-			removePlayerAll(username);
+			if (username == selfAccountName) {
+				// Yourself got removed, you have left the squad/group
+				// remove all other players, except yourself
+				const auto& trackedSub = std::ranges::remove_if(trackedPlayers, [](const std::string& player) {
+					if (player == selfAccountName) return false;
+					const auto& cachedIt = cachedPlayers.find(player);
+					if (cachedIt != cachedPlayers.end()) {
+						return !cachedIt->second.manuallyAdded;
+					}
+
+					return false;
+				});
+				trackedPlayers.erase(trackedSub.begin(), trackedSub.end());
+
+				const auto& instanceSub = std::ranges::remove_if(instancePlayers, [](const std::string& player) {
+					if (player == selfAccountName) return false;
+					const auto& cachedIt = cachedPlayers.find(player);
+					if (cachedIt != cachedPlayers.end()) {
+						return !cachedIt->second.manuallyAdded;
+					}
+
+					return false;
+				});
+				instancePlayers.erase(instanceSub.begin(), instanceSub.end());
+			} else {
+				removePlayerAll(username);
+			}
 		}
 	}
 }
 
 extern "C" __declspec(dllexport) void arcdps_unofficial_extras_subscriber_init(const ExtrasAddonInfo* pExtrasInfo, ExtrasSubscriberInfo* pSubscriberInfo) {
-	if (initFailed) {
-		pSubscriberInfo->SquadUpdateCallback = nullptr;
-	} else {
-		pSubscriberInfo->SquadUpdateCallback = squad_update_callback;
+	if (pExtrasInfo->ApiVersion != 1) {
+		// incompatible extra API version, do not subscribe and show error
+
+		return;
 	}
+
+	// do not subscribe, if initialization called from arcdps failed.
+	if (initFailed) {
+		return;
+	}
+
+	if (selfAccountName.empty()) {
+		selfAccountName = pExtrasInfo->SelfAccountName;
+		if (selfAccountName.at(0) == ':')
+			selfAccountName.erase(0, 1);
+	}
+
+	pSubscriberInfo->SubscriberName = KILLPROOF_ME_PLUGIN_NAME;
+	pSubscriberInfo->SquadUpdateCallback = squad_update_callback;
 }
