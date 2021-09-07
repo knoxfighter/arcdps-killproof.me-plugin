@@ -362,6 +362,10 @@ arcdps_exports* mod_init() {
 		updateChecker.CheckForUpdate(self_dll, "knoxfighter/arcdps-killproof.me-plugin");
 
 		UpdateCheckerBase::ClearFiles(self_dll);
+
+		settings.load();
+
+		lang.readFromFile();
 	} catch (const std::exception& e) {
 		loading_successful = false;
 		error_message = "Error loading all icons: ";
@@ -422,6 +426,12 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* 
 /* release mod -- return ignored */
 uintptr_t mod_release() {
 	icons.clear();
+
+	settings.unload();
+
+#if _DEBUG
+	lang.saveToFile();
+#endif
 	return 0;
 }
 

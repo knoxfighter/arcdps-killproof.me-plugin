@@ -52,8 +52,11 @@ public:
 		                               anchorPanelCornerPosition, selfPanelCornerPosition, fromWindowID, showCommander, cofferValue)
 	};
 
-	Settings();
-	~Settings();
+	Settings() = default;
+	~Settings() = default;
+
+	void load();
+	void unload();
 
 	// getter/setter
 	[[nodiscard]] int getKillProofKey() const;

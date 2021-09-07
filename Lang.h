@@ -139,10 +139,13 @@ public:
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(LangObject, translations)
 	};
 
-	Lang();
-	~Lang();
+	Lang() = default;
+	~Lang() = default;
 
 	std::string translate(LangKey key);
+
+	void saveToFile();
+	void readFromFile();
 
 	// copy/move delete
 	Lang(const Lang& other) = delete;
@@ -151,8 +154,6 @@ public:
 	Lang& operator=(Lang&& other) noexcept = delete;
 	
 private:
-	void saveToFile();
-	void readFromFile();
 	void loadDefaults();
 
 	LangObject lang;

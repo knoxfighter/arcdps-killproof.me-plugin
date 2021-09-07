@@ -11,16 +11,6 @@ std::string Lang::translate(LangKey key) {
 	return lang.translations.at(key);
 }
 
-Lang::Lang() {
-	readFromFile();
-}
-
-Lang::~Lang() {
-#if _DEBUG
-	saveToFile();
-#endif
-}
-
 void Lang::saveToFile() {
 	// create json object
 	auto json = nlohmann::json(lang);

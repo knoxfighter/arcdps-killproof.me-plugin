@@ -79,18 +79,18 @@ uint8_t Settings::getCofferValue() const {
 	return settings.cofferValue;
 }
 
-Settings::~Settings() {
+void Settings::load() {
+	// according to standard, this constructor is completely thread-safe
+	// read settings from file
+	readFromFile();
+}
+
+void Settings::unload() {
 	try {
 		saveToFile();
 	} catch (const std::exception& e) {
 		// Some exception happened, i cannot do anything against it here :(
 	}
-}
-
-Settings::Settings() {
-	// according to standard, this constructor is completely thread-safe
-	// read settings from file
-	readFromFile();
 }
 
 void Settings::setDefaults() {
