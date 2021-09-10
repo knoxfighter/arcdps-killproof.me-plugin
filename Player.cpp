@@ -27,7 +27,7 @@ void Player::loadKillproofs() {
 		std::string version = UpdateCheckerBase::GetVersionAsString(self_dll);
 		std::string userAgent = "arcdps-killproof.me-plugin/";
 		userAgent.append(version);
-		cpr::Response response = cpr::Get(cpr::Url{link}, cpr::Header{{"User-Agent", userAgent }});
+		cpr::Response response = cpr::Get(cpr::Url{link}, cpr::Header{{"User-Agent", userAgent }}, cpr::Ssl(cpr::ssl::TLSv1_2{}));
 
 		if (response.status_code == 200) {
 			auto json = nlohmann::json::parse(response.text);
@@ -107,7 +107,7 @@ void Player::loadKillproofs() {
 				status = LoadingStatus::NoDataAvailable;
 			}
 		}
-			// on any other error, print verbose output into the arcdps.log file
+		// on any other error, print verbose output into the arcdps.log file
 		else {
 			this->status = LoadingStatus::KpMeError;
 
