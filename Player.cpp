@@ -126,15 +126,6 @@ void Player::loadKillproofs() {
 			cs.append("\n");
 			arc_log_file(cs.c_str());
 
-			cs.clear();
-
-			cs.append(this->username);
-			cs.append(": ");
-			cs.append(" -- ");
-			cs.append(std::to_string(response.status_code));
-			cs.append(" -- ");
-			cs.append(response.text);
-
 			this->errorMessage = cs;
 
 			// start 1 minute timeout until reloading
