@@ -24,7 +24,7 @@ void Player::loadKillproofs() {
 
 	// download it in a new thread (fire and forget)
 	const auto call = [this](const auto& self, const std::string& link) -> void {
-		char* version = UpdateCheckerBase::GetVersionAsString(self_dll);
+		std::string version = UpdateCheckerBase::GetVersionAsString(self_dll);
 		std::string userAgent = "arcdps-killproof.me-plugin/";
 		userAgent.append(version);
 		cpr::Response response = cpr::Get(cpr::Url{link}, cpr::Header{{"User-Agent", userAgent }});

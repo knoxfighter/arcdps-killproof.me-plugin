@@ -5,6 +5,7 @@
 
 #include "Lang.h"
 #include "global.h"
+#include "imgui/imgui.h"
 
 UpdateChecker updateChecker;
 
@@ -14,10 +15,10 @@ void UpdateChecker::Draw() {
 		headerName.append("##Killproof.me Update");
 		ImGui::Begin(headerName.c_str(), &shown, ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), lang.translate(LangKey::UpdateDesc).c_str());
-		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "%s: %.0f.%.0f.%.0f", lang.translate(LangKey::UpdateCurrentVersion).c_str(), version.x, version.y,
-		                   version.z);
-		ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), "%s: %.0f.%.0f.%.0f", lang.translate(LangKey::UpdateNewVersion).c_str(), newVersion.x, newVersion.y,
-		                   newVersion.z);
+		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "%s: %i.%i.%i", lang.translate(LangKey::UpdateCurrentVersion).c_str(), version[0], version[1],
+		                   version[3]);
+		ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), "%s: %i.%i.%i", lang.translate(LangKey::UpdateNewVersion).c_str(), newVersion[0], newVersion[1],
+		                   newVersion[3]);
 		if (ImGui::Button(lang.translate(LangKey::UpdateOpenPage).c_str())) {
 			std::thread([](){
 				ShellExecuteA(nullptr, nullptr, "https://github.com/knoxfighter/arcdps-killproof.me-plugin/releases/latest", nullptr, nullptr, SW_SHOW);

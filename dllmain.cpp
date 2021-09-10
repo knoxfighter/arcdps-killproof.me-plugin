@@ -1,6 +1,7 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include <cstdint>
 #include <d3d9.h>
+#include <d3d11.h>
 #include <mutex>
 #include <ranges>
 #include <sstream>
@@ -12,7 +13,6 @@
 #include "KillproofUI.h"
 #include "Lang.h"
 #include "Player.h"
-#include "resource.h"
 #include "Settings.h"
 #include "SettingsUI.h"
 #include "UpdateChecker.h"
@@ -31,6 +31,8 @@ arcdps_exports arc_exports = {};
 HMODULE arc_dll;
 HMODULE self_dll;
 IDirect3DDevice9* d3d9Device;
+ID3D11Device* d3d11Device;
+UINT directxVersion;
 bool showSettings = false;
 bool initFailed = false;
 
@@ -54,8 +56,8 @@ e3_func_ptr arc_log_file;
 e3_func_ptr arc_log;
 
 BOOL APIENTRY DllMain(HMODULE hModule,
-                      DWORD ul_reason_for_call,
-                      LPVOID lpReserved
+					  DWORD ul_reason_for_call,
+					  LPVOID lpReserved
 ) {
 	switch (ul_reason_for_call) {
 		case DLL_PROCESS_ATTACH:
@@ -356,10 +358,13 @@ arcdps_exports* mod_init() {
 	// load images
 	try {
 		// Setup iconLoader
-		iconLoader.Setup(self_dll, d3d9Device);
+		iconLoader.Setup(self_dll, d3d9Device, d3d11Device);
 
 		// check for new version on github
-		updateChecker.CheckForUpdate(self_dll, "knoxfighter/arcdps-killproof.me-plugin");
+		const auto& currentVersion = UpdateCheckerBase::GetCurrentVersion(self_dll);
+		if (currentVersion) {
+			updateChecker.CheckForUpdate(currentVersion.value(), "knoxfighter/arcdps-killproof.me-plugin", false);
+		}
 
 		UpdateCheckerBase::ClearFiles(self_dll);
 
@@ -372,16 +377,12 @@ arcdps_exports* mod_init() {
 		error_message.append(e.what());
 	}
 
-	// create my own directory :)
-	// if (!(CreateDirectoryA("addons\\killproof.me\\", NULL) || ERROR_ALREADY_EXISTS == GetLastError())) {
-	// 	loading_successful = false;
-	// 	error_message = "Error creating my own directory: ";
-	// 	error_message.append(std::to_string(GetLastError()));
-	// }
-
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.out_name = KILLPROOF_ME_PLUGIN_NAME;
-	arc_exports.out_build = UpdateCheckerBase::GetVersionAsString(self_dll);
+	const std::string& version = UpdateCheckerBase::GetVersionAsString(self_dll);
+	char* version_c_str = new char[version.length() + 1];
+	strcpy_s(version_c_str, version.length() + 1, version.c_str());
+	arc_exports.out_build = version_c_str;
 
 	if (loading_successful) {
 		/* for arcdps */
@@ -406,8 +407,8 @@ arcdps_exports* mod_init() {
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, IDirect3DDevice9* id3dd9, HMODULE new_arcdll, void* mallocfn,
-                                                     void* freefn) {
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, void* dxptr, HMODULE new_arcdll, void* mallocfn,
+													 void* freefn, UINT dxver) {
 	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(static_cast<ImGuiContext*>(imguicontext));
 	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);
@@ -418,7 +419,19 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* 
 	arc_log_file = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
 	arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e8");
 
-	d3d9Device = id3dd9;
+	// dx11 not available in older arcdps versions
+	std::string arcVersion = arcversionstr;
+	auto firstDot = arcVersion.find_first_of(".");
+	arcVersion = arcVersion.substr(0, firstDot);
+	int arcVersionNum = std::stoi(arcVersion);
+	if (arcVersionNum > 20210828 && dxver == 11) {
+		auto swapChain = static_cast<IDXGISwapChain*>(dxptr);
+		swapChain->GetDevice(__uuidof(d3d11Device), reinterpret_cast<void**>(&d3d11Device));
+		directxVersion = 11;
+	} else {
+		d3d9Device = static_cast<IDirect3DDevice9*>(dxptr);
+		directxVersion = 9;
+	} 
 
 	return mod_init;
 }
