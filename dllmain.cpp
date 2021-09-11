@@ -35,6 +35,7 @@ ID3D11Device* d3d11Device;
 UINT directxVersion;
 bool showSettings = false;
 bool initFailed = false;
+bool extrasLoaded = false;
 
 typedef uint64_t (*arc_export_func_u64)();
 // arc options
@@ -56,8 +57,8 @@ e3_func_ptr arc_log_file;
 e3_func_ptr arc_log;
 
 BOOL APIENTRY DllMain(HMODULE hModule,
-					  DWORD ul_reason_for_call,
-					  LPVOID lpReserved
+                      DWORD ul_reason_for_call,
+                      LPVOID lpReserved
 ) {
 	switch (ul_reason_for_call) {
 		case DLL_PROCESS_ATTACH:
@@ -168,7 +169,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						auto playerIt = cachedPlayers.find(username);
 						if (playerIt == cachedPlayers.end()) {
 							// no element found, create it
-							const auto& tryEmplace = cachedPlayers.try_emplace(username, username, src->name, src->id);
+							const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Arcdps, src->name, src->id);
 
 							// check if emplacing successful, if yes, load the kp.me page
 							if (tryEmplace.second) {
@@ -182,7 +183,9 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 							Player& player = playerIt->second;
 							// update charactername
 							player.characterName = src->name;
-							player.manuallyAdded = false;
+							if (player.addedBy == AddedBy::Manually) {
+								player.addedBy = AddedBy::Arcdps;
+							}
 							player.id = src->id;
 
 							// load user data if not yet loaded (check inside function)
@@ -197,7 +200,22 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						// do NOT remove yourself
 						if (username != selfAccountName) {
 							std::scoped_lock<std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex);
-							removePlayerAll(username);
+							auto pred = [](const std::string& player) {
+								if (player == selfAccountName) return false;
+								const auto& cachedIt = cachedPlayers.find(player);
+								if (cachedIt != cachedPlayers.end()) {
+									return cachedIt->second.addedBy == AddedBy::Arcdps;
+								}
+
+								return false;
+							};
+							// Yourself got removed, you have left the squad/group
+							// remove all other players, except yourself
+							const auto& trackedSub = std::ranges::remove_if(trackedPlayers, pred);
+							trackedPlayers.erase(trackedSub.begin(), trackedSub.end());
+
+							const auto& instanceSub = std::ranges::remove_if(instancePlayers, pred);
+							instancePlayers.erase(instanceSub.begin(), instanceSub.end());
 						}
 					}
 				}
@@ -408,7 +426,7 @@ arcdps_exports* mod_init() {
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
 extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, void* dxptr, HMODULE new_arcdll, void* mallocfn,
-													 void* freefn, UINT dxver) {
+                                                     void* freefn, UINT dxver) {
 	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(static_cast<ImGuiContext*>(imguicontext));
 	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);
@@ -431,7 +449,7 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* 
 	} else {
 		d3d9Device = static_cast<IDirect3DDevice9*>(dxptr);
 		directxVersion = 9;
-	} 
+	}
 
 	return mod_init;
 }
@@ -456,7 +474,7 @@ extern "C" __declspec(dllexport) void* get_release_addr() {
 
 void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCount) {
 	std::scoped_lock<std::mutex, std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex, cachedPlayersMutex);
-	
+
 	for (size_t i = 0; i < updatedUsersCount; i++) {
 		std::string username = updatedUsers[i].AccountName;
 
@@ -473,15 +491,12 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 			auto playerIt = cachedPlayers.find(username);
 			if (playerIt == cachedPlayers.end()) {
 				// no element found, create it
-				const auto& tryEmplace = cachedPlayers.try_emplace(username, username);
+				const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Extras);
 
 				// check if emplacing successful, if yes, load the kp.me page
 				if (tryEmplace.second) {
 					// save player object to work on
 					Player& player = tryEmplace.first->second;
-
-					// This player was added automatically
-					player.manuallyAdded = false;
 
 					// load killproofs
 					loadKillproofsSizeChecked(player);
@@ -491,7 +506,7 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 				loadKillproofsSizeChecked(playerIt->second);
 
 				// This player was added automatically
-				playerIt->second.manuallyAdded = false;
+				playerIt->second.addedBy = AddedBy::Extras;
 			}
 
 			// Tell the UI to resort, cause we added a player
@@ -499,28 +514,21 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 		} else // User removed
 		{
 			if (username == selfAccountName) {
+				auto pred = [](const std::string& player) {
+					if (player == selfAccountName) return false;
+					const auto& cachedIt = cachedPlayers.find(player);
+					if (cachedIt != cachedPlayers.end()) {
+						return cachedIt->second.addedBy != AddedBy::Manually;
+					}
+
+					return false;
+				};
 				// Yourself got removed, you have left the squad/group
 				// remove all other players, except yourself
-				const auto& trackedSub = std::ranges::remove_if(trackedPlayers, [](const std::string& player) {
-					if (player == selfAccountName) return false;
-					const auto& cachedIt = cachedPlayers.find(player);
-					if (cachedIt != cachedPlayers.end()) {
-						return !cachedIt->second.manuallyAdded;
-					}
-
-					return false;
-				});
+				const auto& trackedSub = std::ranges::remove_if(trackedPlayers, pred);
 				trackedPlayers.erase(trackedSub.begin(), trackedSub.end());
 
-				const auto& instanceSub = std::ranges::remove_if(instancePlayers, [](const std::string& player) {
-					if (player == selfAccountName) return false;
-					const auto& cachedIt = cachedPlayers.find(player);
-					if (cachedIt != cachedPlayers.end()) {
-						return !cachedIt->second.manuallyAdded;
-					}
-
-					return false;
-				});
+				const auto& instanceSub = std::ranges::remove_if(instancePlayers, pred);
 				instancePlayers.erase(instanceSub.begin(), instanceSub.end());
 			} else {
 				removePlayerAll(username);
@@ -530,9 +538,10 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 }
 
 extern "C" __declspec(dllexport) void arcdps_unofficial_extras_subscriber_init(const ExtrasAddonInfo* pExtrasInfo, ExtrasSubscriberInfo* pSubscriberInfo) {
+	extrasLoaded = true;
+
 	if (pExtrasInfo->ApiVersion != 1) {
 		// incompatible extra API version, do not subscribe and show error
-
 		return;
 	}
 

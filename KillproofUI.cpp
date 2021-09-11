@@ -15,11 +15,10 @@
 #include "WindowSettingsUI.h"
 
 void KillproofUI::openInBrowser(const char* username) {
-	char buf[128];
-	snprintf(buf, 128, "https://killproof.me/proof/%s", username);
-	std::async(std::launch::async, [&buf]() {
-		ShellExecuteA(nullptr, nullptr, buf, nullptr, nullptr, SW_SHOW);
-	});
+	const auto& string = std::format("https://killproof.me/proof/{}", username);
+	std::thread([string] {
+		ShellExecuteA(nullptr, nullptr, string.c_str(), nullptr, nullptr, SW_SHOW);
+	}).detach();
 }
 
 void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
@@ -52,7 +51,6 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	// lock the mutexes, before we access sensible data
 	std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);
 
-
 	/**
 	* ERROR MESSAGES
 	*/
@@ -60,6 +58,25 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		const Player& player = cachedPlayers.at(trackedPlayer);
 		if (player.status == LoadingStatus::KpMeError) {
 			ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s", player.errorMessage.c_str());
+		}
+	}
+
+	/**
+	 * Unofficial Extras message
+	 */
+	if (!extrasLoaded) {
+		ImGui::TextUnformatted(lang.translate(LangKey::UnofficialExtrasNotInstalled).c_str());
+
+		ImGui::SameLine();
+		if (ImGui::Button(lang.translate(LangKey::UpdateOpenPage).c_str())) {
+			std::thread([] {
+				ShellExecuteA(nullptr, nullptr, "https://github.com/Krappa322/arcdps_unofficial_extras_releases/releases/latest", nullptr, nullptr, SW_SHOW);
+			}).detach();
+		}
+		
+		ImGui::SameLine();
+		if (ImGui::Button("X")) {
+			extrasLoaded = true;
 		}
 	}
 
@@ -84,12 +101,13 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 			// only run when username is not empty
 			if (!username.empty()) {
 				// only add to tracking, if not already there
-				if (std::find(trackedPlayers.begin(), trackedPlayers.end(), username) == trackedPlayers.end()) {
+				if (std::ranges::find(trackedPlayers, username) == trackedPlayers.end()) {
 					trackedPlayers.emplace_back(username);
 
-					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, "", 0, true);
+					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Manually, "", 0);
 					if (!tryEmplace.second && tryEmplace.first->second.status == LoadingStatus::NotLoaded) {
-						tryEmplace.first->second.manuallyAdded = true;
+						// update to manually if already created
+						tryEmplace.first->second.addedBy = AddedBy::Manually;
 					}
 					loadKillproofs(tryEmplace.first->second);
 				}

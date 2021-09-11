@@ -22,13 +22,20 @@ enum class LoadingStatus {
 	LoadingByChar // Data is currently bering loaded by charactername
 };
 
+enum class AddedBy {
+	Manually,
+	Arcdps,
+	Extras,
+	Miscellaneous,
+};
+
 class Player {
 public:
-	Player(std::string username, std::string characterName = "", uintptr_t id = 0, bool manuallyAdded = false)
+	Player(std::string username, AddedBy addedBy, std::string characterName = "", uintptr_t id = 0)
 		: username(std::move(username)),
 		  characterName(std::move(characterName)),
 		  id(id),
-		  manuallyAdded(manuallyAdded) {
+		  addedBy(addedBy) {
 	}
 
 	Player() = default;
@@ -39,7 +46,7 @@ public:
 	std::string killproofId;
 	std::atomic<LoadingStatus> status{LoadingStatus::NotLoaded};
 	std::string errorMessage;
-	bool manuallyAdded = false;
+	AddedBy addedBy;
 	std::vector<std::string> linkedAccounts;
 	bool commander = false;
 	std::optional<Killproofs> linkedTotalKillproofs;

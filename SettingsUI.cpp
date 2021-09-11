@@ -46,7 +46,7 @@ void SettingsUI::draw() {
 	}
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
-	ImGui::Text(shortCutRealName);
+	ImGui::TextUnformatted(shortCutRealName);
 
 	ImGui::Checkbox(lang.translate(LangKey::SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
 	if (ImGui::InputInt(lang.translate(LangKey::SettingsCofferValue).c_str(), &cofferValue)) {
@@ -67,7 +67,7 @@ void SettingsUI::draw() {
 		std::list<Player> usersToKeep;
 		for (std::string trackedPlayer : trackedPlayers) {
 			const Player& player = cachedPlayers.at(trackedPlayer);
-			usersToKeep.emplace_back(player.username, player.characterName, player.id);
+			usersToKeep.emplace_back(player.username, player.addedBy, player.characterName, player.id);
 		}
 
 		// clear the cache
@@ -75,7 +75,7 @@ void SettingsUI::draw() {
 
 		// refill the cache with only tracked players
 		for (const Player& player : usersToKeep) {
-			const auto& tryEmplace = cachedPlayers.try_emplace(player.username, player.username, player.characterName, player.id);
+			const auto& tryEmplace = cachedPlayers.try_emplace(player.username, player.username, player.addedBy, player.characterName, player.id);
 
 			// load kp.me data if less than 10 people tracked
 			loadKillproofsSizeChecked(tryEmplace.first->second);

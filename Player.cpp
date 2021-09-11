@@ -78,7 +78,7 @@ void Player::loadKillproofs() {
 			if (json.contains("linked")) {
 				for (auto linked : json.at("linked")) {
 					std::string accountName = linked.at("account_name").get<std::string>();
-					const auto& playerEmplace = cachedPlayers.try_emplace(accountName, accountName);
+					const auto& playerEmplace = cachedPlayers.try_emplace(accountName, accountName, AddedBy::Miscellaneous);
 					if (playerEmplace.second) {
 						Player& player = playerEmplace.first->second;
 						loadKPs(linked, player.killproofs, player.coffers);
@@ -97,7 +97,7 @@ void Player::loadKillproofs() {
 			this->linkedTotalKillproofs.reset();
 
 			// try again as charactername (only when manually added)
-			if (status == LoadingStatus::LoadingById && manuallyAdded) {
+			if (status == LoadingStatus::LoadingById && addedBy == AddedBy::Manually) {
 				std::string new_link = "https://killproof.me/api/character/";
 				new_link.append(cpr::util::urlEncode(username));
 				new_link.append("/kp?lang=en");

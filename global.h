@@ -20,10 +20,10 @@ extern std::map<std::string, Player> cachedPlayers;
 extern std::mutex cachedPlayersMutex;
 extern std::vector<std::string> instancePlayers;
 extern std::mutex instancePlayersMutex;
-extern IDirect3DDevice9* d3d9Device;
 extern HMODULE self_dll;
 extern std::map<Killproof, UINT> icons;
 extern std::string selfAccountName;
+extern bool extrasLoaded;
 
 typedef void(*e3_func_ptr)(const char* str);
 extern e3_func_ptr arc_log_file;

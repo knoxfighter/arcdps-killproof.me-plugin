@@ -128,7 +128,13 @@ BUILD_ENUM_SERIALIZED(
 	UpdateAutoButton, "Update automatically",
 	UpdateInProgress, "Autoupdate in progress",
 	UpdateRestartPending, "Autoupdate finished, restart your game to activate it.",
-	UpdateError, "Autoupdate error, please update manually."
+	UpdateError, "Autoupdate error, please update manually.",
+
+	UnofficialExtrasNotInstalled, "Unofficial extras plugin is not installed.\nInstall it to enable tracking of players on other instances.",
+	UnofficialExtrasInProgress, "Download in progress",
+	UnofficialExtrasAutoButton, "Download automatically",
+	UnofficialExtrasError, "Automatic installation failed, please install manually.",
+	UnofficialExtrasRestartPending, "Installation complete, restart your game to activate it."
 )
 
 class Lang {
