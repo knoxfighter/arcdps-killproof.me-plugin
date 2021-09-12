@@ -159,6 +159,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	* TABLE
 	*/
 	Alignment alignment = settings.getAlignment();
+	Alignment headerAlignment = settings.getHeaderAlignment();
 	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 3;
 
 	if (ImGui::BeginTable("kp.me", columnCount,
@@ -214,9 +215,9 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				Killproof kp = static_cast<Killproof>(i);
 				std::string columnName = toString(kp);
 				if (settings.getShowHeaderText()) {
-					ImGuiEx::TableHeader(columnName.c_str(), true, nullptr, alignment);
+					ImGuiEx::TableHeader(columnName.c_str(), true, nullptr, headerAlignment);
 				} else {
-					ImGuiEx::TableHeader(columnName.c_str(), false, iconLoader.getTexture(icons.at(kp)), alignment);
+					ImGuiEx::TableHeader(columnName.c_str(), false, iconLoader.getTexture(icons.at(kp)), headerAlignment);
 				}
 			}
 		}

@@ -106,6 +106,7 @@ BUILD_ENUM_SERIALIZED(
 	SettingsCofferValue, "Killproofs per coffer",
 
 	Alignment, "Alignment",
+	HeaderAlignment, "Header alignment",
 	Left, "Left",
 	Center, "Center",
 	Right, "Right",

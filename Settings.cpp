@@ -30,6 +30,10 @@ Alignment Settings::getAlignment() const {
 	return settings.alignment;
 }
 
+Alignment Settings::getHeaderAlignment() const {
+	return settings.headerAlignment;
+}
+
 bool Settings::getShowHeaderText() const {
 	return settings.showHeaderText;
 	// return true;
@@ -126,8 +130,13 @@ void Settings::readFromFile() {
 			// push stream into json object (this also parses it)
 			jsonFile >> json;
 
-			// get the objet into the settings object
+			// get the object into the settings object
 			json.get_to(settings);
+
+			// set headerAlignment to normal alignment, when not found
+			if (!json.contains("headerAlignment") && json.contains("alignment")) {
+				settings.headerAlignment = json.at("alignment");
+			}
 		}
 	} catch (const std::exception& e) {
 		// some exception was thrown, all settings are reset!
