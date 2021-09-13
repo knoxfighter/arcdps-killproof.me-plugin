@@ -20,32 +20,28 @@ void UpdateChecker::Draw() {
 		ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), "%s: %i.%i.%i", lang.translate(LangKey::UpdateNewVersion).c_str(), newVersion[0], newVersion[1],
 		                   newVersion[3]);
 		if (ImGui::Button(lang.translate(LangKey::UpdateOpenPage).c_str())) {
-			std::thread([](){
+			std::thread([]() {
 				ShellExecuteA(nullptr, nullptr, "https://github.com/knoxfighter/arcdps-killproof.me-plugin/releases/latest", nullptr, nullptr, SW_SHOW);
 			}).detach();
 		}
 
 		switch (update_status) {
-		case Status::UpdateAvailable:
-			{
+			case Status::UpdateAvailable: {
 				if (ImGui::Button(lang.translate(LangKey::UpdateAutoButton).c_str())) {
 					UpdateAutomatically(self_dll);
 				}
 				break;
 			}
-		case Status::UpdatingInProgress:
-			{
+			case Status::UpdatingInProgress: {
 				ImGui::TextUnformatted(lang.translate(LangKey::UpdateInProgress).c_str());
 				break;
 			}
-		case Status::RestartPending:
-			{
+			case Status::RestartPending: {
 				ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), lang.translate(LangKey::UpdateRestartPending).c_str());
 				break;
 			}
-		case Status::UpdateError:
-			{
-			ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), lang.translate(LangKey::UpdateError).c_str());
+			case Status::UpdateError: {
+				ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), lang.translate(LangKey::UpdateError).c_str());
 			}
 		}
 
