@@ -135,13 +135,16 @@ void WindowSettingsUI::draw(ImGuiTable* table, ImGuiWindow* currentRootWindow) {
 		}
 		ImGui::PopItemWidth();
 
-		if (ImGui::BeginCombo(lang.translate(LangKey::Alignment).c_str(), to_string(settings.settings.alignment).c_str())) {
-			ImGuiEx::Selectable(settings.settings.alignment, Alignment::Left);
-			ImGuiEx::Selectable(settings.settings.alignment, Alignment::Center);
-			ImGuiEx::Selectable(settings.settings.alignment, Alignment::Right);
+		ImGuiEx::EnumCombo(lang.translate(LangKey::Alignment).c_str(), settings.settings.alignment, Alignment::Unaligned);
+		ImGuiEx::EnumCombo(lang.translate(LangKey::HeaderAlignment).c_str(), settings.settings.headerAlignment, Alignment::Unaligned);
 
-			ImGui::EndCombo();
-		}
+		// if (ImGui::BeginCombo(lang.translate(LangKey::Alignment).c_str(), to_string(settings.settings.alignment).c_str())) {
+		// 	ImGuiEx::Selectable(settings.settings.alignment, Alignment::Left);
+		// 	ImGuiEx::Selectable(settings.settings.alignment, Alignment::Center);
+		// 	ImGuiEx::Selectable(settings.settings.alignment, Alignment::Right);
+		//
+		// 	ImGui::EndCombo();
+		// }
 
 		ImGui::EndMenu();
 	}
