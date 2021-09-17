@@ -190,6 +190,10 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 
 							// load user data if not yet loaded (check inside function)
 							loadKillproofsSizeChecked(player);
+
+							if (player.addedBy == AddedBy::Arcdps) {
+								player.resetJoinedTime();
+							}
 						}
 
 						// Tell the UI to resort, cause we added a player
@@ -486,7 +490,11 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 		if (updatedUsers[i].Role != UserRole::None) // User added/updated
 		{
 			// add to tracking
-			addPlayerTracking(username);
+			// addPlayerTracking(username);
+			if (!addPlayerAll(username)) {
+				// player already tracked, do nothing
+				continue;
+			}
 
 			auto playerIt = cachedPlayers.find(username);
 			if (playerIt == cachedPlayers.end()) {
@@ -507,6 +515,9 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 
 				// This player was added automatically
 				playerIt->second.addedBy = AddedBy::Extras;
+
+				// update joined data
+				playerIt->second.resetJoinedTime();
 			}
 
 			// Tell the UI to resort, cause we added a player

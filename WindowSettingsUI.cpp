@@ -18,77 +18,84 @@ void WindowSettingsUI::draw(ImGuiTable* table, ImGuiWindow* currentRootWindow) {
 	if (ImGui::BeginMenu(lang.translate(LangKey::SettingsColumnSetup).c_str())) {
 		ImGui::PushItemFlag(ImGuiItemFlags_SelectableDontClosePopup, true);
 
-		// username
+		// #
 		ImGuiEx::MenuItemTableColumnVisibility(table, 0);
-		// charname
+		// username
 		ImGuiEx::MenuItemTableColumnVisibility(table, 1);
+		// charname
+		ImGuiEx::MenuItemTableColumnVisibility(table, 2);
+		// id
+		ImGuiEx::MenuItemTableColumnVisibility(table, 3);
+
+		constexpr int beginCol = 4;
+
 
 		// Raids
 		if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsGroup).c_str())) {
-			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::li) + 2);
-			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::ld) + 2);
-			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::liLd) + 2);
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::li) + beginCol);
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::ld) + beginCol);
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::liLd) + beginCol);
 
 			// W1
 			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW1Group).c_str())) {
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::vg) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::gorse) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::sabetha) + 2);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::vg) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::gorse) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::sabetha) + beginCol);
 
 				ImGui::EndMenu();
 			}
 
 			// W2
 			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW2Group).c_str())) {
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::sloth) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::matthias) + 2);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::sloth) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::matthias) + beginCol);
 
 				ImGui::EndMenu();
 			}
 
 			// W3
 			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW3Group).c_str())) {
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::escort) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::kc) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::xera) + 2);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::escort) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::kc) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::xera) + beginCol);
 
 				ImGui::EndMenu();
 			}
 
 			// W4
 			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW4Group).c_str())) {
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::cairn) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::mo) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::samarog) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::deimos) + 2);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::cairn) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::mo) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::samarog) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::deimos) + beginCol);
 
 				ImGui::EndMenu();
 			}
 
 			// W5
 			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW5Group).c_str())) {
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::desmina) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::river) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::statues) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::dhuum) + 2);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::desmina) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::river) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::statues) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::dhuum) + beginCol);
 
 				ImGui::EndMenu();
 			}
 
 			// W6
 			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW6Group).c_str())) {
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::ca) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::twins) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::qadim) + 2);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::ca) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::twins) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::qadim) + beginCol);
 
 				ImGui::EndMenu();
 			}
 
 			// W7
 			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW7Group).c_str())) {
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::sabir) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::adina) + 2);
-				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::qadim2) + 2);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::sabir) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::adina) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::qadim2) + beginCol);
 
 				ImGui::EndMenu();
 			}
@@ -98,15 +105,15 @@ void WindowSettingsUI::draw(ImGuiTable* table, ImGuiWindow* currentRootWindow) {
 
 		// Fractals
 		if (ImGui::BeginMenu(lang.translate(LangKey::SettingsFractalsGroup).c_str())) {
-			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::uce) + 2);
-			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::ufe) + 2);
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::uce) + beginCol);
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::ufe) + beginCol);
 
 			ImGui::EndMenu();
 		}
 
 		// Strikes
 		if (ImGui::BeginMenu(lang.translate(LangKey::SettingsStrikesGruop).c_str())) {
-			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::boneskinnerVial) + 2);
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::boneskinnerVial) + beginCol);
 
 			ImGui::EndMenu();
 		}

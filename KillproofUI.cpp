@@ -160,15 +160,16 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	*/
 	Alignment alignment = settings.getAlignment();
 	Alignment headerAlignment = settings.getHeaderAlignment();
-	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 3;
+	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 4;
 
 	if (ImGui::BeginTable("kp.me", columnCount,
 	                      ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable |
-	                      ImGuiTableFlags_Reorderable | ImGuiTableFlags_RowBg)) {
+	                      ImGuiTableFlags_Reorderable | ImGuiTableFlags_RowBg | ImGuiTableFlags_PadOuterX)) {
 		table = GImGui->CurrentTable;
 		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
 		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
-		ImU32 killproofId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
+		ImU32 killproofId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 3;
+		ImU32 joinTimeId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 4;
 
 		std::string accountName = lang.translate(LangKey::Accountname);
 		std::string charName = lang.translate(LangKey::Charactername);
@@ -177,6 +178,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		/**
 		 * HEADER
 		 */
+		ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_NoReorder | ImGuiTableColumnFlags_PreferSortDescending, 0, joinTimeId);
 		ImGui::TableSetupColumn(accountName.c_str(), ImGuiTableColumnFlags_NoReorder | ImGuiTableColumnFlags_PreferSortDescending, 0, accountNameId);
 		ImGui::TableSetupColumn(charName.c_str(), ImGuiTableColumnFlags_NoReorder | ImGuiTableColumnFlags_PreferSortDescending, 0, characterNameId);
 		ImGui::TableSetupColumn(killproofName.c_str(), ImGuiTableColumnFlags_NoReorder | ImGuiTableColumnFlags_PreferSortDescending, 0, killproofId);
@@ -194,11 +196,13 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
 
+		// join time
+		if (ImGui::TableNextColumn())
+			ImGuiEx::TableHeader("#", true, nullptr);
+
 		// accountname header
-		if (ImGui::TableNextColumn()) {
-			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 3.f);
+		if (ImGui::TableNextColumn())
 			ImGuiEx::TableHeader(accountName.c_str(), true, nullptr);
-		}
 
 		// charname header
 		if (ImGui::TableNextColumn())
@@ -234,11 +238,22 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 			if (needSort.compare_exchange_strong(expected, false)) {
 				const bool descend = sorts_specs->Specs->SortDirection == ImGuiSortDirection_Descending;
 
-				if (sorts_specs->Specs->ColumnUserID == accountNameId) {
+				if (sorts_specs->Specs->ColumnUserID == joinTimeId) {
+					std::ranges::sort(trackedPlayers, [descend](std::string playerAName, std::string playerBName) -> bool {
+						__time64_t joinedTimeA = cachedPlayers.at(playerAName).joinedTime;
+						__time64_t joinedTimeB = cachedPlayers.at(playerBName).joinedTime;
+
+						if (descend) {
+							return joinedTimeA < joinedTimeB;
+						} else {
+							return joinedTimeA > joinedTimeB;
+						}
+					});
+				} else if (sorts_specs->Specs->ColumnUserID == accountNameId) {
 					// sort by account name. Account name is the value we used in trackedPlayers, so nothing more to do
-					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [descend](std::string playerAName, std::string playerBName) {
-						std::transform(playerAName.begin(), playerAName.end(), playerAName.begin(), [](unsigned char c) { return std::tolower(c); });
-						std::transform(playerBName.begin(), playerBName.end(), playerBName.begin(), [](unsigned char c) { return std::tolower(c); });
+					std::ranges::sort(trackedPlayers, [descend](std::string playerAName, std::string playerBName) {
+						std::ranges::transform(playerAName, playerAName.begin(), [](unsigned char c) { return std::tolower(c); });
+						std::ranges::transform(playerBName, playerBName.begin(), [](unsigned char c) { return std::tolower(c); });
 
 						if (descend) {
 							return playerAName < playerBName;
@@ -248,12 +263,12 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 					});
 				} else if (sorts_specs->Specs->ColumnUserID == characterNameId) {
 					// sort by character name
-					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [descend](std::string playerAName, std::string playerBName) {
+					std::ranges::sort(trackedPlayers, [descend](const std::string& playerAName, const std::string& playerBName) {
 						std::string playerAChar = cachedPlayers.at(playerAName).characterName;
 						std::string playerBChar = cachedPlayers.at(playerBName).characterName;
 
-						std::transform(playerAChar.begin(), playerAChar.end(), playerAChar.begin(), [](unsigned char c) { return std::tolower(c); });
-						std::transform(playerBChar.begin(), playerBChar.end(), playerBChar.begin(), [](unsigned char c) { return std::tolower(c); });
+						std::ranges::transform(playerAChar, playerAChar.begin(), [](unsigned char c) { return std::tolower(c); });
+						std::ranges::transform(playerBChar, playerBChar.begin(), [](unsigned char c) { return std::tolower(c); });
 
 						if (descend) {
 							return playerAChar < playerBChar;
@@ -263,7 +278,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 					});
 				} else {
 					// sort by any amount of KP
-					std::sort(trackedPlayers.begin(), trackedPlayers.end(), [sorts_specs, descend](std::string playerAName, std::string playerBName) {
+					std::ranges::sort(trackedPlayers, [sorts_specs, descend](const std::string& playerAName, const std::string& playerBName) {
 						// get player object of name
 						const Player& playerA = cachedPlayers.at(playerAName);
 						const Player& playerB = cachedPlayers.at(playerBName);
@@ -290,7 +305,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 			// hide player without data, when setting is active
 			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
-				bool open = drawRow(alignment, player.username.c_str(), player.characterName.c_str(), player.killproofId.c_str(), player.status,
+				bool open = drawRow(alignment, player.joinedTime, player.username.c_str(), player.characterName.c_str(), player.killproofId.c_str(), player.status,
 					[&player](const Killproof& kp) { return player.getKillproofs(kp); },
 					[&player](const Killproof& kp) { return player.getCoffers(kp); },
 					[&player](const Killproof& kp) { return player.getKpOverall(kp); },
@@ -298,13 +313,13 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				if (open) {
 					for (std::string linkedAccount : player.linkedAccounts) {
 						Player& linkedPlayer = cachedPlayers.at(linkedAccount);
-						drawRow(alignment, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), linkedPlayer.killproofId.c_str(), LoadingStatus::Loaded,
+						drawRow(alignment, 0, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), linkedPlayer.killproofId.c_str(), LoadingStatus::Loaded,
 						        [&linkedPlayer](const Killproof& kp) { return linkedPlayer.getKillproofs(kp); },
 						        [&linkedPlayer](const Killproof& kp) { return linkedPlayer.getCoffers(kp); },
 						        [&linkedPlayer](const Killproof& kp) { return linkedPlayer.getKpOverall(kp); },
 								false, false);
 					}
-					drawRow(alignment, lang.translate(LangKey::Overall).c_str(), "--->", "", player.status,
+					drawRow(alignment, 0, lang.translate(LangKey::Overall).c_str(), "--->", "", player.status,
 						[&player](const Killproof& kp) { return player.getKillproofsTotal(kp); },
 						[&player](const Killproof& kp) { return player.getCoffersTotal(kp); },
 						[&player](const Killproof& kp) { return player.getKpOverallTotal(kp); },
@@ -327,11 +342,19 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::End();
 }
 
-bool KillproofUI::drawRow(const Alignment& alignment, const char* username, const char* characterName, const char* killproofId, const std::atomic<LoadingStatus>& status,
+bool KillproofUI::drawRow(const Alignment& alignment, __time64_t joinTime, const char* username, const char* characterName, const char* killproofId, const std::atomic<LoadingStatus>& status,
                           kpFunction killproofsFun, kpFunction coffersFun, kpFunction kpOverallFun, bool treeNode, bool isCommander) {
 	ImGui::TableNextRow();
 
 	bool open = false;
+
+	if (ImGui::TableNextColumn() && joinTime > 0) {
+		const auto& timePoint = std::chrono::system_clock::from_time_t(joinTime);
+		const auto& localTime = std::chrono::current_zone()->to_local(timePoint);
+		const auto& timePointCast = std::chrono::time_point_cast<std::chrono::seconds>(localTime);
+		ImGui::TextUnformatted(std::format("{:%T}", timePointCast).c_str());
+	}
+
 	// username
 	if (ImGui::TableNextColumn()) {
 		if (isCommander && settings.getShowCommander()) {

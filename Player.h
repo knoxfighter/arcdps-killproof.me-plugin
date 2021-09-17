@@ -36,6 +36,7 @@ public:
 		  characterName(std::move(characterName)),
 		  id(id),
 		  addedBy(addedBy) {
+		resetJoinedTime();
 	}
 
 	Player() = default;
@@ -50,6 +51,12 @@ public:
 	std::vector<std::string> linkedAccounts;
 	bool commander = false;
 	std::optional<Killproofs> linkedTotalKillproofs;
+	__time64_t joinedTime;
+
+	void resetJoinedTime() {
+		const auto& systime = std::chrono::system_clock::now();
+		joinedTime = std::chrono::system_clock::to_time_t(systime);
+	}
 
 	void loadKillproofs();
 	amountVal getKillproofs(const Killproof& kp) const {
