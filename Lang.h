@@ -104,6 +104,7 @@ BUILD_ENUM_SERIALIZED(
 	SettingsToThisPanelCorner, "to this panel corner",
 	SettingsFromWindowName, "from window",
 	SettingsCofferValue, "Killproofs per coffer",
+	SettingsHideExtrasMessage, "Hide Unofficial Extras Message",
 
 	Alignment, "Alignment",
 	HeaderAlignment, "Header alignment",

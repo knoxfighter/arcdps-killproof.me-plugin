@@ -64,7 +64,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	/**
 	 * Unofficial Extras message
 	 */
-	if (!extrasLoaded) {
+	if (!extrasLoaded && !settings.getHideExtrasMessage()) {
 		ImGui::TextUnformatted(lang.translate(LangKey::UnofficialExtrasNotInstalled).c_str());
 
 		ImGui::SameLine();

@@ -83,6 +83,10 @@ uint8_t Settings::getCofferValue() const {
 	return settings.cofferValue;
 }
 
+bool Settings::getHideExtrasMessage() const {
+	return settings.hideExtrasMessage;
+}
+
 void Settings::load() {
 	// according to standard, this constructor is completely thread-safe
 	// read settings from file

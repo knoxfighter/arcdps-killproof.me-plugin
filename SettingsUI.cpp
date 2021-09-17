@@ -60,6 +60,8 @@ void SettingsUI::draw() {
 		settings.settings.cofferValue = cofferValue;
 	}
 
+	ImGui::Checkbox(lang.translate(LangKey::SettingsHideExtrasMessage).c_str(), &settings.settings.hideExtrasMessage);
+
 	if (ImGui::Button(lang.translate(LangKey::SettingsClearCacheText).c_str())) {
 		std::scoped_lock<std::mutex, std::mutex> guard(cachedPlayersMutex, trackedPlayersMutex);
 

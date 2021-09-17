@@ -47,11 +47,12 @@ public:
 		ImGuiID fromWindowID;
 		bool showCommander = false;
 		uint8_t cofferValue = 3;
+		bool hideExtrasMessage = false;
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE_NON_THROWING(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose,
 		                                            alignment, headerAlignment, showHeaderText, hideControls, showOverallByDefault, showHeader, position,
 		                                            cornerPosition, cornerVector, anchorPanelCornerPosition, selfPanelCornerPosition, fromWindowID,
-		                                            showCommander, cofferValue)
+		                                            showCommander, cofferValue, hideExtrasMessage)
 	};
 
 	Settings() = default;
@@ -80,6 +81,7 @@ public:
 	[[nodiscard]] ImGuiID getFromWindowID() const;
 	[[nodiscard]] bool getShowCommander() const;
 	[[nodiscard]] uint8_t getCofferValue() const;
+	[[nodiscard]] bool getHideExtrasMessage() const;
 
 	// delete copy/move
 	Settings(const Settings& other) = delete;
