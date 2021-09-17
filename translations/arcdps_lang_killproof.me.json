@@ -36,6 +36,7 @@
     [ "DefaultKp", "Unknown" ],
     [ "Accountname", "Account" ],
     [ "Charactername", "Character" ],
+    [ "KillproodId", "ID" ],
     [ "CopyKpIdText", "Copy own KP ID" ],
     [ "ClearText", "Clear" ],
     [ "ClearTooltip", "Remove all manually added users" ],
@@ -72,7 +73,9 @@
     [ "SettingsToThisPanelCorner", "to this panel corner" ],
     [ "SettingsFromWindowName", "from window" ],
     [ "SettingsCofferValue", "Killproofs per coffer" ],
+    [ "SettingsHideExtrasMessage", "Hide Unofficial Extras Message" ],
     [ "Alignment", "Alignment" ],
+    [ "HeaderAlignment", "Header alignment" ],
     [ "Left", "Left" ],
     [ "Center", "Center" ],
     [ "Right", "Right" ],
@@ -92,6 +95,11 @@
     [ "UpdateAutoButton", "Update automatically" ],
     [ "UpdateInProgress", "Autoupdate in progress" ],
     [ "UpdateRestartPending", "Autoupdate finished, restart your game to activate it." ],
-    [ "UpdateError", "Autoupdate error, please update manually. " ]
+    [ "UpdateError", "Autoupdate error, please update manually." ],
+    [ "UnofficialExtrasNotInstalled", "Unofficial extras plugin is not installed.\nInstall it to enable tracking of players on other instances." ],
+    [ "UnofficialExtrasInProgress", "Download in progress" ],
+    [ "UnofficialExtrasAutoButton", "Download automatically" ],
+    [ "UnofficialExtrasError", "Automatic installation failed, please install manually." ],
+    [ "UnofficialExtrasRestartPending", "Installation complete, restart your game to activate it." ]
   ]
 }

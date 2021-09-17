@@ -113,8 +113,8 @@ ID_Commander_White      PNG                     "icons\\Commander_tag_(white).pn
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,5,2,5
- PRODUCTVERSION 2,5,2,5
+ FILEVERSION 2,6,0,3
+ PRODUCTVERSION 2,6,0,3
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -127,19 +127,19 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "040704b0"
+        BLOCK "000004b0"
         BEGIN
-            VALUE "FileVersion", "2.5.2.5"
+            VALUE "FileVersion", "2.6.0.3"
             VALUE "InternalName", "d3d9_arcdps_killproof_me.dll"
             VALUE "LegalCopyright", "Copyright (C) 2021"
             VALUE "OriginalFilename", "d3d9_arcdps_killproof_me.dll"
             VALUE "ProductName", "killproof.me-plugin"
-            VALUE "ProductVersion", "2.5.2.5"
+            VALUE "ProductVersion", "2.6.0.3"
         END
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x407, 1200
+        VALUE "Translation", 0x0, 1200
     END
 END
 
