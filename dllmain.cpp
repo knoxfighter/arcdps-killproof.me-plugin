@@ -169,7 +169,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						auto playerIt = cachedPlayers.find(username);
 						if (playerIt == cachedPlayers.end()) {
 							// no element found, create it
-							const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Arcdps, src->name, src->id);
+							const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Arcdps, dst->self, src->name, src->id);
 
 							// check if emplacing successful, if yes, load the kp.me page
 							if (tryEmplace.second) {
@@ -191,7 +191,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 							// load user data if not yet loaded (check inside function)
 							loadKillproofsSizeChecked(player);
 
-							if (player.addedBy == AddedBy::Arcdps) {
+							if (player.addedBy == AddedBy::Arcdps && !player.self) {
 								player.resetJoinedTime();
 							}
 						}
@@ -499,7 +499,7 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 			auto playerIt = cachedPlayers.find(username);
 			if (playerIt == cachedPlayers.end()) {
 				// no element found, create it
-				const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Extras);
+				const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Extras, username == selfAccountName);
 
 				// check if emplacing successful, if yes, load the kp.me page
 				if (tryEmplace.second) {
@@ -517,7 +517,9 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 				playerIt->second.addedBy = AddedBy::Extras;
 
 				// update joined data
-				playerIt->second.resetJoinedTime();
+				if (!playerIt->second.self) {
+					playerIt->second.resetJoinedTime();
+				}
 			}
 
 			// Tell the UI to resort, cause we added a player

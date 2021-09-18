@@ -31,11 +31,12 @@ enum class AddedBy {
 
 class Player {
 public:
-	Player(std::string username, AddedBy addedBy, std::string characterName = "", uintptr_t id = 0)
+	Player(std::string username, AddedBy addedBy, bool self = false, std::string characterName = "", uintptr_t id = 0)
 		: username(std::move(username)),
 		  characterName(std::move(characterName)),
 		  id(id),
-		  addedBy(addedBy) {
+		  addedBy(addedBy),
+		  self(self) {
 		resetJoinedTime();
 	}
 
@@ -52,6 +53,7 @@ public:
 	bool commander = false;
 	std::optional<Killproofs> linkedTotalKillproofs;
 	__time64_t joinedTime;
+	bool self = false;
 
 	void resetJoinedTime() {
 		const auto& systime = std::chrono::system_clock::now();

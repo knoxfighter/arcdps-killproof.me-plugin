@@ -69,7 +69,7 @@ void SettingsUI::draw() {
 		std::list<Player> usersToKeep;
 		for (std::string trackedPlayer : trackedPlayers) {
 			const Player& player = cachedPlayers.at(trackedPlayer);
-			usersToKeep.emplace_back(player.username, player.addedBy, player.characterName, player.id);
+			usersToKeep.emplace_back(player.username, player.addedBy, player.self, player.characterName, player.id);
 		}
 
 		// clear the cache
@@ -77,7 +77,7 @@ void SettingsUI::draw() {
 
 		// refill the cache with only tracked players
 		for (const Player& player : usersToKeep) {
-			const auto& tryEmplace = cachedPlayers.try_emplace(player.username, player.username, player.addedBy, player.characterName, player.id);
+			const auto& tryEmplace = cachedPlayers.try_emplace(player.username, player.username, player.addedBy, player.self, player.characterName, player.id);
 
 			// load kp.me data if less than 10 people tracked
 			loadKillproofsSizeChecked(tryEmplace.first->second);

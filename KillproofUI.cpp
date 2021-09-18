@@ -104,7 +104,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				if (std::ranges::find(trackedPlayers, username) == trackedPlayers.end()) {
 					trackedPlayers.emplace_back(username);
 
-					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Manually, "", 0);
+					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Manually);
 					if (!tryEmplace.second && tryEmplace.first->second.status == LoadingStatus::NotLoaded) {
 						// update to manually if already created
 						tryEmplace.first->second.addedBy = AddedBy::Manually;
