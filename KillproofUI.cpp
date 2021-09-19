@@ -244,9 +244,9 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 						const SYSTEMTIME& joinedTimeB = cachedPlayers.at(playerBName).joinedTime;
 
 						if (descend) {
-							return joinedTimeA.wHour < joinedTimeB.wHour || joinedTimeA.wMinute < joinedTimeB.wMinute || joinedTimeA.wSecond < joinedTimeB.wSecond;
+							return joinedTimeA.wHour < joinedTimeB.wHour || (joinedTimeA.wHour == joinedTimeB.wHour && (joinedTimeA.wMinute < joinedTimeB.wMinute || (joinedTimeA.wMinute == joinedTimeB.wMinute && joinedTimeA.wSecond < joinedTimeB.wSecond)));
 						} else {
-							return joinedTimeA.wHour > joinedTimeB.wHour || joinedTimeA.wMinute > joinedTimeB.wMinute || joinedTimeA.wSecond > joinedTimeB.wSecond;
+							return joinedTimeA.wHour > joinedTimeB.wHour || (joinedTimeA.wHour == joinedTimeB.wHour && (joinedTimeA.wMinute > joinedTimeB.wMinute || (joinedTimeA.wMinute == joinedTimeB.wMinute && joinedTimeA.wSecond > joinedTimeB.wSecond)));
 						}
 					});
 				} else if (sorts_specs->Specs->ColumnUserID == accountNameId) {
