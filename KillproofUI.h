@@ -19,6 +19,7 @@ private:
 	static void openInBrowser(const char* username);
 	bool drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime, const char* username, const char* characterName, const char* killproofId, const std::atomic<LoadingStatus>& status,
 		kpFunction killproofsFun, kpFunction coffersFun, kpFunction kpOverallFun, bool treeNode, bool isCommander);
+	void drawTextRow(bool* open, const char* text, const char* usernameLink, const std::atomic<LoadingStatus>& status, bool treeNode);
 
 	char userAddBuf[1024]{};
 	ImGuiTable* table = nullptr;
