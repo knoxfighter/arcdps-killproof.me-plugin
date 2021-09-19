@@ -359,16 +359,16 @@ void readArcExports() {
 }
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
-	try {
+	// try {
 		// ImGui::ShowDemoWindow();
 		if (!not_charsel_or_loading) return 0;
 		ShowKillproof();
 
 		updateChecker.Draw();
-	} catch (const std::exception& e) {
-		arc_log_file(e.what());
-		throw e;
-	}
+	// } catch (const std::exception& e) {
+	// 	arc_log_file(e.what());
+	// 	throw e;
+	// }
 
 	return 0;
 }

@@ -239,14 +239,14 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				const bool descend = sorts_specs->Specs->SortDirection == ImGuiSortDirection_Descending;
 
 				if (sorts_specs->Specs->ColumnUserID == joinTimeId) {
-					std::ranges::sort(trackedPlayers, [descend](std::string playerAName, std::string playerBName) -> bool {
-						__time64_t joinedTimeA = cachedPlayers.at(playerAName).joinedTime;
-						__time64_t joinedTimeB = cachedPlayers.at(playerBName).joinedTime;
+					std::ranges::sort(trackedPlayers, [descend](const std::string& playerAName, const std::string& playerBName) -> bool {
+						const SYSTEMTIME& joinedTimeA = cachedPlayers.at(playerAName).joinedTime;
+						const SYSTEMTIME& joinedTimeB = cachedPlayers.at(playerBName).joinedTime;
 
 						if (descend) {
-							return joinedTimeA < joinedTimeB;
+							return joinedTimeA.wHour < joinedTimeB.wHour || joinedTimeA.wMinute < joinedTimeB.wMinute || joinedTimeA.wSecond < joinedTimeB.wSecond;
 						} else {
-							return joinedTimeA > joinedTimeB;
+							return joinedTimeA.wHour > joinedTimeB.wHour || joinedTimeA.wMinute > joinedTimeB.wMinute || joinedTimeA.wSecond > joinedTimeB.wSecond;
 						}
 					});
 				} else if (sorts_specs->Specs->ColumnUserID == accountNameId) {
@@ -305,7 +305,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 			// hide player without data, when setting is active
 			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
-				bool open = drawRow(alignment, player.joinedTime, player.username.c_str(), player.characterName.c_str(), player.killproofId.c_str(), player.status,
+				bool open = drawRow(alignment, &player.joinedTime, player.username.c_str(), player.characterName.c_str(), player.killproofId.c_str(), player.status,
 					[&player](const Killproof& kp) { return player.getKillproofs(kp); },
 					[&player](const Killproof& kp) { return player.getCoffers(kp); },
 					[&player](const Killproof& kp) { return player.getKpOverall(kp); },
@@ -313,13 +313,13 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 				if (open) {
 					for (std::string linkedAccount : player.linkedAccounts) {
 						Player& linkedPlayer = cachedPlayers.at(linkedAccount);
-						drawRow(alignment, 0, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), linkedPlayer.killproofId.c_str(), LoadingStatus::Loaded,
+						drawRow(alignment, nullptr, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), linkedPlayer.killproofId.c_str(), LoadingStatus::Loaded,
 						        [&linkedPlayer](const Killproof& kp) { return linkedPlayer.getKillproofs(kp); },
 						        [&linkedPlayer](const Killproof& kp) { return linkedPlayer.getCoffers(kp); },
 						        [&linkedPlayer](const Killproof& kp) { return linkedPlayer.getKpOverall(kp); },
 								false, false);
 					}
-					drawRow(alignment, 0, lang.translate(LangKey::Overall).c_str(), "--->", "", player.status,
+					drawRow(alignment, nullptr, lang.translate(LangKey::Overall).c_str(), "--->", "", player.status,
 						[&player](const Killproof& kp) { return player.getKillproofsTotal(kp); },
 						[&player](const Killproof& kp) { return player.getCoffersTotal(kp); },
 						[&player](const Killproof& kp) { return player.getKpOverallTotal(kp); },
@@ -342,17 +342,14 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::End();
 }
 
-bool KillproofUI::drawRow(const Alignment& alignment, __time64_t joinTime, const char* username, const char* characterName, const char* killproofId, const std::atomic<LoadingStatus>& status,
+bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime, const char* username, const char* characterName, const char* killproofId, const std::atomic<LoadingStatus>& status,
                           kpFunction killproofsFun, kpFunction coffersFun, kpFunction kpOverallFun, bool treeNode, bool isCommander) {
 	ImGui::TableNextRow();
 
 	bool open = false;
 
-	if (ImGui::TableNextColumn() && joinTime > 0) {
-		const auto& timePoint = std::chrono::system_clock::from_time_t(joinTime);
-		const auto& localTime = std::chrono::current_zone()->to_local(timePoint);
-		const auto& timePointCast = std::chrono::time_point_cast<std::chrono::seconds>(localTime);
-		ImGui::TextUnformatted(std::format("{:%T}", timePointCast).c_str());
+	if (ImGui::TableNextColumn() && joinTime) {
+		ImGui::Text("%02d:%02d:%02d", joinTime->wHour, joinTime->wMinute, joinTime->wSecond);
 	}
 
 	// username
