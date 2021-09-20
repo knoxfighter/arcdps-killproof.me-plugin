@@ -16,9 +16,9 @@ void UpdateChecker::Draw() {
 		ImGui::Begin(headerName.c_str(), &shown, ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), lang.translate(LangKey::UpdateDesc).c_str());
 		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "%s: %i.%i.%i", lang.translate(LangKey::UpdateCurrentVersion).c_str(), version[0], version[1],
-		                   version[3]);
+		                   version[2]);
 		ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), "%s: %i.%i.%i", lang.translate(LangKey::UpdateNewVersion).c_str(), newVersion[0], newVersion[1],
-		                   newVersion[3]);
+		                   newVersion[2]);
 		if (ImGui::Button(lang.translate(LangKey::UpdateOpenPage).c_str())) {
 			std::thread([]() {
 				ShellExecuteA(nullptr, nullptr, "https://github.com/knoxfighter/arcdps-killproof.me-plugin/releases/latest", nullptr, nullptr, SW_SHOW);
