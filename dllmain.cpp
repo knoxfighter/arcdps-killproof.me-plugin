@@ -183,7 +183,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 							Player& player = playerIt->second;
 							// update charactername
 							player.characterName = src->name;
-							if (player.addedBy == AddedBy::Manually) {
+							if (player.addedBy == AddedBy::Manually || player.addedBy == AddedBy::Miscellaneous) {
 								player.addedBy = AddedBy::Arcdps;
 							}
 							player.id = src->id;
@@ -199,27 +199,14 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						// Tell the UI to resort, cause we added a player
 						killproofUi.needSort = true;
 					}
-						/* remove */
+					/* remove */
 					else {
 						// do NOT remove yourself
 						if (username != selfAccountName) {
 							std::scoped_lock<std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex);
-							auto pred = [](const std::string& player) {
-								if (player == selfAccountName) return false;
-								const auto& cachedIt = cachedPlayers.find(player);
-								if (cachedIt != cachedPlayers.end()) {
-									return cachedIt->second.addedBy == AddedBy::Arcdps;
-								}
 
-								return false;
-							};
-							// Yourself got removed, you have left the squad/group
-							// remove all other players, except yourself
-							const auto& trackedSub = std::ranges::remove_if(trackedPlayers, pred);
-							trackedPlayers.erase(trackedSub.begin(), trackedSub.end());
-
-							const auto& instanceSub = std::ranges::remove_if(instancePlayers, pred);
-							instancePlayers.erase(instanceSub.begin(), instanceSub.end());
+							// remove specific user
+							removePlayer(username, AddedBy::Arcdps);
 						}
 					}
 				}
@@ -544,7 +531,7 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 				const auto& instanceSub = std::ranges::remove_if(instancePlayers, pred);
 				instancePlayers.erase(instanceSub.begin(), instanceSub.end());
 			} else {
-				removePlayerAll(username);
+				removePlayer(username, AddedBy::Extras);
 			}
 		}
 	}

@@ -39,7 +39,7 @@ void Player::loadKillproofs() {
 			// replace the key in the global map, when kpid or charname was used to create this player
 			if (username == killproofId || username != accountname) {
 				// lock the maps
-				std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);
+				std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(trackedPlayersMutex, instancePlayersMutex, cachedPlayersMutex);
 
 				// replace the key of the cache
 				auto node = cachedPlayers.extract(username);
@@ -50,12 +50,13 @@ void Player::loadKillproofs() {
 				// Therefore `this` is invalid and going on further results in an UseAfterFree !
 				if (!inserRes.inserted) {
 					// last action to do: remove the wrong username from the list of tracked players
-					removePlayerTracking(username);
+					removePlayer(username);
 					return;
 				}
 
 				// replace the player in tracked players
-				std::replace(trackedPlayers.begin(), trackedPlayers.end(), username, accountname);
+				std::ranges::replace(trackedPlayers, username, accountname);
+				std::ranges::replace(instancePlayers, username, accountname);
 
 				// set the username as charactername
 				if (username != killproofId && username != accountname) {

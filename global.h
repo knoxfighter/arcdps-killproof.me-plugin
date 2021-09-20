@@ -6,9 +6,11 @@
 #include <d3d9.h>
 
 #include "Killproofs.h"
+#include "Player.h"
 
-#define KILLPROOF_ME_PLUGIN_NAME "killproof.me"
+constexpr auto KILLPROOF_ME_PLUGIN_NAME = "killproof.me";
 
+enum class AddedBy;
 class Player;
 class KillproofUI;
 
@@ -38,9 +40,9 @@ inline bool fileExists(const std::string& filename) {
 	return (stat(filename.c_str(), &buffer) == 0);
 }
 
-void removePlayerAll(const std::string& username);
-void removePlayerInstance(const std::string& username);
-void removePlayerTracking(const std::string& username);
+void removePlayer(const std::string& username, AddedBy addedByToDelete = AddedBy::Miscellaneous);
+// void removePlayerInstance(const std::string& username);
+// void removePlayerTracking(const std::string& username);
 bool addPlayerTracking(const std::string& username);
 bool addPlayerAll(const std::string& username);
 bool addPlayerInstance(const std::string& username);

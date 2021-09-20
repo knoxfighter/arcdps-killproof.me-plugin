@@ -84,23 +84,28 @@ void loadKillproofs(Player& player) {
 /**
  * lock `trackedPlayersMutex` and `instancePlayersMutex` before calling this
  */
-void removePlayerAll(const std::string& username) {
-	removePlayerInstance(username);
-	removePlayerTracking(username);
-}
+void removePlayer(const std::string& username, AddedBy addedByToDelete) {
+	// remove specific user
+	auto pred = [&username, addedByToDelete](const std::string& player) {
+		if (username == player) {
+			if (addedByToDelete == AddedBy::Miscellaneous) {
+				return true;
+			}
+			const auto& cachedPlayerIt = cachedPlayers.find(player);
+			if (cachedPlayerIt != cachedPlayers.end()) {
+				return cachedPlayerIt->second.addedBy == addedByToDelete;
+			}
+		}
 
-/**
- * lock `instancePlayersMutex` before calling this
- */
-void removePlayerInstance(const std::string& username) {
-	instancePlayers.erase(std::ranges::remove(instancePlayers, username).begin(), instancePlayers.end());
-}
+		return false;
+	};
 
-/**
- * lock `trackedPlayersMutex` before calling this
- */
-void removePlayerTracking(const std::string& username) {
-	trackedPlayers.erase(std::ranges::remove(trackedPlayers, username).begin(), trackedPlayers.end());
+	// actually remove from tracking
+	const auto& trackedSub = std::ranges::remove_if(trackedPlayers, pred);
+	trackedPlayers.erase(trackedSub.begin(), trackedSub.end());
+
+	const auto& instanceSub = std::ranges::remove_if(instancePlayers, pred);
+	instancePlayers.erase(instanceSub.begin(), instanceSub.end());
 }
 
 /**
