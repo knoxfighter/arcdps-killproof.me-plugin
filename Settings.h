@@ -28,7 +28,7 @@ class Settings {
 
 public:
 	struct SettingsObject {
-		int killproofKey;
+		WPARAM killproofKey;
 		bool hidePrivateAccount;
 		bool showKillproof;
 		std::string blockedDataText;

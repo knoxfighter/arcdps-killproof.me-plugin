@@ -11,42 +11,17 @@
 
 SettingsUI settingsUI;
 
-SettingsUI::SettingsUI() {
-	// set all buffer to the values from Settings
-
-	int killProofKey = settings.getKillProofKey();
-	// copy in the string represantation of the key ID
-	strcpy_s(shortcut, std::to_string(killProofKey).c_str());
-	// convert virtual key to vsc key
-	UINT vscKey = MapVirtualKeyA(killProofKey, MAPVK_VK_TO_VSC);
-	// get the name representation of the key
-	GetKeyNameTextA((vscKey << 16), shortCutRealName, 32);
-}
-
 void SettingsUI::draw() {
-	// Setting to select, which key is used to open the killproofs menu (will also close it)
-	ImGui::Text(lang.translate(LangKey::SettingsShortcutText).c_str());
-	ImGui::SameLine();
-	ImGui::PushItemWidth(30);
-	if (ImGui::InputText("##shortcut", shortcut, 64)) {
-		try {
-			const int keyId = std::stoi(shortcut);
-			settings.settings.killproofKey = keyId;
-			// convert virtual key to vsc key
-			UINT vscKey = MapVirtualKeyA(keyId, MAPVK_VK_TO_VSC);
-			// get the name representation of the key
-			GetKeyNameTextA((vscKey << 16), shortCutRealName, 32);
-		}
-		catch ([[maybe_unused]] const std::invalid_argument& e) {
+	if (ImGui::IsWindowAppearing()) {
+		std::string killproofKey = std::to_string(settings.getKillProofKey());
+		memset(shortcut, 0, sizeof(shortcut));
+		killproofKey.copy(shortcut, killproofKey.size());
 
-		}
-		catch ([[maybe_unused]] const std::out_of_range& e) {
-
-		}
+		cofferValue = settings.settings.cofferValue;
 	}
-	ImGui::PopItemWidth();
-	ImGui::SameLine();
-	ImGui::TextUnformatted(shortCutRealName);
+
+	// Setting to select, which key is used to open the killproofs menu (will also close it)
+	ImGuiEx::KeyInput(lang.translate(LangKey::SettingsShortcutText).c_str(), "##shortcut", shortcut, sizeof(shortcut), settings.settings.killproofKey);
 
 	ImGui::Checkbox(lang.translate(LangKey::SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
 	if (ImGui::InputInt(lang.translate(LangKey::SettingsCofferValue).c_str(), &cofferValue)) {
