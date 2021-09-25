@@ -31,7 +31,6 @@
 BUILD_ENUM_SERIALIZED(
 	LangKey,
 	KpWindowName, "Killproof.me",
-	SettingsWindowName, "Killproof Settings",
 	MenuName, "Killproof.me",
 	SubMenuKp, "Killproofs",
 	SubMenuSettings, "Settings",
@@ -105,6 +104,7 @@ BUILD_ENUM_SERIALIZED(
 	SettingsFromWindowName, "from window",
 	SettingsCofferValue, "Killproofs per coffer",
 	SettingsHideExtrasMessage, "Hide Unofficial Extras Message",
+	SettingsKeyNotSetText, "(not set)",
 
 	Alignment, "Alignment",
 	HeaderAlignment, "Header alignment",

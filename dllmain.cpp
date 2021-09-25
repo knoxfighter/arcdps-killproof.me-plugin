@@ -284,9 +284,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 }
 
 uintptr_t mod_options() {
-	ImGuiEx::BeginMenu(lang.translate(LangKey::SettingsWindowName).c_str(), []() {
-		settingsUI.draw();
-	});
+	settingsUI.draw();
 
 	return 0;
 }
@@ -347,7 +345,7 @@ void readArcExports() {
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	// try {
-		// ImGui::ShowDemoWindow();
+		// ImGui::ShowMetricsWindow();
 		if (!not_charsel_or_loading) return 0;
 		ShowKillproof();
 

@@ -12,16 +12,20 @@
 SettingsUI settingsUI;
 
 void SettingsUI::draw() {
-	if (ImGui::IsWindowAppearing()) {
+	if (initialized) {
 		std::string killproofKey = std::to_string(settings.getKillProofKey());
 		memset(shortcut, 0, sizeof(shortcut));
 		killproofKey.copy(shortcut, killproofKey.size());
 
 		cofferValue = settings.settings.cofferValue;
+
+		initialized = true;
 	}
 
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0.f, 0.f});
+
 	// Setting to select, which key is used to open the killproofs menu (will also close it)
-	ImGuiEx::KeyInput(lang.translate(LangKey::SettingsShortcutText).c_str(), "##shortcut", shortcut, sizeof(shortcut), settings.settings.killproofKey);
+	ImGuiEx::KeyInput(lang.translate(LangKey::SettingsShortcutText).c_str(), "##shortcut", shortcut, sizeof(shortcut), settings.settings.killproofKey, lang.translate(LangKey::SettingsKeyNotSetText).c_str());
 
 	ImGui::Checkbox(lang.translate(LangKey::SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
 	if (ImGui::InputInt(lang.translate(LangKey::SettingsCofferValue).c_str(), &cofferValue)) {
@@ -60,4 +64,6 @@ void SettingsUI::draw() {
 	}
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip(lang.translate(LangKey::SettingsClearCacheTooltip).c_str());
+
+	ImGui::PopStyleVar();
 }
