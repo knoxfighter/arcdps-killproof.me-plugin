@@ -23,4 +23,5 @@ private:
 
 	char userAddBuf[1024]{};
 	ImGuiTable* table = nullptr;
+	uint64_t frameCount = 0;
 };
