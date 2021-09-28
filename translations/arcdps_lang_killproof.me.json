@@ -1,7 +1,6 @@
 {
   "translations": [
     [ "KpWindowName", "Killproof.me" ],
-    [ "SettingsWindowName", "Killproof Settings" ],
     [ "MenuName", "Killproof.me" ],
     [ "SubMenuKp", "Killproofs" ],
     [ "SubMenuSettings", "Settings" ],
@@ -74,6 +73,7 @@
     [ "SettingsFromWindowName", "from window" ],
     [ "SettingsCofferValue", "Killproofs per coffer" ],
     [ "SettingsHideExtrasMessage", "Hide Unofficial Extras Message" ],
+    [ "SettingsKeyNotSetText", "(not set)" ],
     [ "Alignment", "Alignment" ],
     [ "HeaderAlignment", "Header alignment" ],
     [ "Left", "Left" ],
