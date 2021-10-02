@@ -452,6 +452,9 @@ uintptr_t mod_release() {
 #if _DEBUG
 	lang.saveToFile();
 #endif
+
+	iconLoader.Shutdown();
+
 	return 0;
 }
 

@@ -21,11 +21,6 @@ void KillproofUI::openInBrowser(const char* username) {
 }
 
 void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
-	++frameCount;
-	if (frameCount < 10) {
-		return;
-	}
-
 	// ImGui::SetNextWindowSizeConstraints(ImVec2(150, 50), ImVec2(windowWidth, windowsHeight));
 	std::string title = lang.translate(LangKey::KpWindowName);
 	title.append("##Killproof.me");
