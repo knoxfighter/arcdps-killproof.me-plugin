@@ -82,6 +82,7 @@ void Player::loadKillproofs() {
 					const auto& playerEmplace = cachedPlayers.try_emplace(accountName, accountName, AddedBy::Miscellaneous);
 					if (playerEmplace.second) {
 						Player& player = playerEmplace.first->second;
+						player.killproofId = linked.at("kpid").get<std::string>();
 						loadKPs(linked, player.killproofs, player.coffers);
 					}
 

@@ -99,16 +99,37 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 			// only run when username is not empty
 			if (!username.empty()) {
-				// only add to tracking, if not already there
-				if (std::ranges::find(trackedPlayers, username) == trackedPlayers.end()) {
+				const auto& existingPlayer = std::ranges::find_if(cachedPlayers, [&username](const auto& elem) -> bool {
+					return elem.first == username || elem.second.characterName == username || elem.second.killproofId == username;
+				});
+
+				if (existingPlayer == cachedPlayers.end()) {
+					// add new player
 					trackedPlayers.emplace_back(username);
 
 					const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Manually);
-					if (!tryEmplace.second && tryEmplace.first->second.status == LoadingStatus::NotLoaded) {
-						// update to manually if already created
-						tryEmplace.first->second.addedBy = AddedBy::Manually;
+					// This should always be `true`
+					if (tryEmplace.second) {
+						loadKillproofs(tryEmplace.first->second);
 					}
-					loadKillproofs(tryEmplace.first->second);
+				} else {
+					// player already exists
+					// update username to actual accountname
+					username = existingPlayer->first;
+					
+					// check of player is already tracked
+					if (std::ranges::find(trackedPlayers, username) == trackedPlayers.end()) {
+						// not yet tracked, add to tracking and update
+						trackedPlayers.emplace_back(username);
+
+						// set to Manually added
+						existingPlayer->second.addedBy = AddedBy::Manually;
+						existingPlayer->second.resetJoinedTime();
+						loadKillproofs(existingPlayer->second);
+					} else {
+						// user already exists and user is already tracked -> Try to load killproofs to override sizeCheck
+						loadKillproofs(existingPlayer->second);
+					}
 				}
 				userAddBuf[0] = '\0';
 			}
@@ -383,7 +404,7 @@ bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime
 
 	// #
 	if (ImGui::TableNextColumn() && joinTime) {
-		drawTextRow(&open, std::format("{:02d}:{:02d}:{:02d}", joinTime->wHour, joinTime->wMinute, joinTime->wSecond).c_str(), username, status,
+		drawTextRow(&open, std::format("{:02d}:{:02d}:{:02d}##{}", joinTime->wHour, joinTime->wMinute, joinTime->wSecond, username).c_str(), username, status,
 					first == ImGui::TableGetColumnIndex() && treeNode);
 	}
 

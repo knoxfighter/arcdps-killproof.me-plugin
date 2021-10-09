@@ -428,7 +428,7 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* 
 
 	// dx11 not available in older arcdps versions
 	std::string arcVersion = arcversionstr;
-	auto firstDot = arcVersion.find_first_of(".");
+	auto firstDot = arcVersion.find_first_of('.');
 	arcVersion = arcVersion.substr(0, firstDot);
 	int arcVersionNum = std::stoi(arcVersion);
 	if (arcVersionNum > 20210828 && dxver == 11) {
