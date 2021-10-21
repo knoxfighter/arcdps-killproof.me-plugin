@@ -366,7 +366,7 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 	ImGui::End();
 }
 
-void KillproofUI::drawTextRow(bool* open, const char* text, const char* usernameLink, const std::atomic<LoadingStatus>& status, bool treeNode) {
+void KillproofUI::drawTextRow(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode) {
 	if (treeNode) {
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
 
@@ -375,13 +375,17 @@ void KillproofUI::drawTextRow(bool* open, const char* text, const char* username
 			treeNodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 		}
 
-		*open = ImGui::TreeNodeEx(text, treeNodeFlags);
+		std::string actualText(text);
+		actualText.append("##");
+		actualText.append(username);
+
+		*open = ImGui::TreeNodeEx(actualText.c_str(), treeNodeFlags);
 		ImGui::PopStyleVar();
 	} else {
 		ImGui::TextUnformatted(text);
 		if (status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
 			// Open users kp.me in the browser
-			openInBrowser(usernameLink);
+			openInBrowser(username);
 		}
 	}
 }
@@ -404,8 +408,8 @@ bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime
 
 	// #
 	if (ImGui::TableNextColumn() && joinTime) {
-		drawTextRow(&open, std::format("{:02d}:{:02d}:{:02d}##{}", joinTime->wHour, joinTime->wMinute, joinTime->wSecond, username).c_str(), username, status,
-					first == ImGui::TableGetColumnIndex() && treeNode);
+		drawTextRow(&open, std::format("{:02d}:{:02d}:{:02d}", joinTime->wHour, joinTime->wMinute, joinTime->wSecond).c_str(), username, status,
+		            first == ImGui::TableGetColumnIndex() && treeNode);
 	}
 
 	// username
