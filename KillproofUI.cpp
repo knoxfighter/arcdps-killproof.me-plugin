@@ -198,10 +198,38 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 		/**
 		 * HEADER
 		 */
-		ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_PreferSortDescending, 0, joinTimeId);
-		ImGui::TableSetupColumn(accountName.c_str(), ImGuiTableColumnFlags_PreferSortDescending, 0, accountNameId);
-		ImGui::TableSetupColumn(charName.c_str(), ImGuiTableColumnFlags_PreferSortDescending, 0, characterNameId);
-		ImGui::TableSetupColumn(killproofName.c_str(), ImGuiTableColumnFlags_PreferSortDescending, 0, killproofId);
+		ImGuiTableColumnIdx first = 0;
+		for (int i = 0; i <= table->ColumnsCount; ++i) {
+			if (table->EnabledMaskByDisplayOrder & ((ImU64)1 << i)) {
+				first = table->DisplayOrderToIndex[i];
+				break;
+			}
+		}
+
+		ImGuiTableColumnFlags columnFlags;
+		columnFlags = ImGuiTableColumnFlags_PreferSortDescending;
+		if (first == 0) {
+			columnFlags |= ImGuiTableColumnFlags_IndentEnable;
+		}
+		ImGui::TableSetupColumn("#", columnFlags, 0, joinTimeId);
+
+		columnFlags = ImGuiTableColumnFlags_PreferSortDescending;
+		if (first == 1) {
+			columnFlags |= ImGuiTableColumnFlags_IndentEnable;
+		}
+		ImGui::TableSetupColumn(accountName.c_str(), columnFlags, 0, accountNameId);
+
+		columnFlags = ImGuiTableColumnFlags_PreferSortDescending;
+		if (first == 2) {
+			columnFlags |= ImGuiTableColumnFlags_IndentEnable;
+		}
+		ImGui::TableSetupColumn(charName.c_str(), columnFlags, 0, characterNameId);
+
+		columnFlags = ImGuiTableColumnFlags_PreferSortDescending;
+		if (first == 3) {
+			columnFlags |= ImGuiTableColumnFlags_IndentEnable;
+		}
+		ImGui::TableSetupColumn(killproofName.c_str(), columnFlags, 0, killproofId);
 
 		for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 			Killproof kp = static_cast<Killproof>(i);

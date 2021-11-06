@@ -346,10 +346,11 @@ void readArcExports() {
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	// try {
 		// ImGui::ShowMetricsWindow();
-		if (!not_charsel_or_loading) return 0;
-		ShowKillproof();
 
 		updateChecker.Draw();
+
+		if (!not_charsel_or_loading) return 0;
+		ShowKillproof();
 	// } catch (const std::exception& e) {
 	// 	arc_log_file(e.what());
 	// 	throw e;
