@@ -157,6 +157,7 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
   <ItemGroup>
     <ClCompile Include="Coffers.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="extension\MainWindow.cpp" />
     <ClCompile Include="extension\arcdps_structs.cpp" />
     <ClCompile Include="extension\Icon.cpp" />
     <ClCompile Include="extension\UpdateCheckerBase.cpp" />
@@ -178,6 +179,7 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coffers.h" />
+    <ClInclude Include="extension\MainWindow.h" />
     <ClInclude Include="extension\arcdps_extras_structs.h" />
     <ClInclude Include="extension\arcdps_structs.h" />
     <ClInclude Include="extension\arcdps_structs_slim.h" />

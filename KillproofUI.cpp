@@ -20,33 +20,11 @@ void KillproofUI::openInBrowser(const char* username) {
 	}).detach();
 }
 
-void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
-	// ImGui::SetNextWindowSizeConstraints(ImVec2(150, 50), ImVec2(windowWidth, windowsHeight));
-	std::string title = lang.translate(LangKey::KpWindowName);
-	title.append("##Killproof.me");
+void KillproofUI::DrawContextMenu() {
+	windowSettingsUI.draw(table, ImGui::GetCurrentWindow());
+}
 
-	flags |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
-
-	if (!settings.getShowHeader()) {
-		flags |= ImGuiWindowFlags_NoTitleBar;
-	}
-
-	if (settings.getPosition() != Position::Manual) {
-		flags |= ImGuiWindowFlags_NoMove;
-	}
-
-	ImGui::Begin(title.c_str(), p_open, flags);
-
-	/**
-	 * Settings UI
-	 */
-	ImGuiWindow* currentWindow = ImGui::GetCurrentWindow();
-	if (ImGuiEx::BeginPopupContextWindow(nullptr, 1, ImGuiHoveredFlags_ChildWindows)) {
-		windowSettingsUI.draw(table, currentWindow);
-
-		ImGui::EndPopup();
-	}
-
+void KillproofUI::DrawContent() {
 	// lock the mutexes, before we access sensible data
 	std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);
 
@@ -384,14 +362,6 @@ void KillproofUI::draw(bool* p_open, ImGuiWindowFlags flags) {
 
 		ImGui::EndTable();
 	}
-
-	/**
-	 * Reposition Window
-	 */
-	ImGuiEx::WindowReposition(settings.getPosition(), settings.getCornerVector(), settings.getCornerPosition(), settings.getFromWindowID(),
-							  settings.getAnchorPanelCornerPosition(), settings.getSelfPanelCornerPosition());
-
-	ImGui::End();
 }
 
 void KillproofUI::drawTextRow(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode) {

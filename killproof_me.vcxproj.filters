@@ -87,6 +87,9 @@
     <ClCompile Include="Coffers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="extension\MainWindow.cpp">
+      <Filter>Source Files\extension</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KillproofUI.h">
@@ -162,6 +165,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="extension\arcdps_extras_structs.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\MainWindow.h">
       <Filter>Header Files\extension</Filter>
     </ClInclude>
   </ItemGroup>

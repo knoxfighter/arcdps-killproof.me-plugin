@@ -320,7 +320,21 @@ void ShowKillproof() {
 	}
 	lastFrameShow = showKillproof;
 	if (showKillproof) {
-		killproofUi.draw(&showKillproof, (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0));
+		std::string title = lang.translate(LangKey::KpWindowName);
+		title.append("##Killproof.me");
+
+		Param param;
+		param.title = title;
+		param.p_open = &showKillproof;
+		param.flags = (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0);
+		param.showHeader = settings.getShowHeader();
+		param.position = settings.getPosition();
+		param.cornerVector = settings.getCornerVector();
+		param.cornerPosition = settings.getCornerPosition();
+		param.fromWindowID = settings.getFromWindowID();
+		param.anchorPanelCornerPosition = settings.getAnchorPanelCornerPosition();
+		param.selfPanelCornerPosition = settings.getSelfPanelCornerPosition();
+		killproofUi.Draw(param);
 	}
 }
 

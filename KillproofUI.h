@@ -5,15 +5,19 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_internal.h"
 #include "Player.h"
+
+#include "extension/MainWindow.h"
 #include "extension/arcdps_structs.h"
 
 typedef std::function<amountVal(const Killproof&)> kpFunction;
 
-class KillproofUI {
+class KillproofUI : public MainWindow {
 public:
 	std::atomic_bool needSort = false;
 
-	void draw(bool* p_open, ImGuiWindowFlags flags);
+protected:
+	void DrawContextMenu() override;
+	void DrawContent() override;
 
 private:
 	static void openInBrowser(const char* username);
