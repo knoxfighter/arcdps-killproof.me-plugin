@@ -361,7 +361,7 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	// try {
 		// ImGui::ShowMetricsWindow();
 
-		updateChecker.Draw();
+		GlobalObjects::updateChecker->Draw();
 
 		if (!not_charsel_or_loading) return 0;
 		ShowKillproof();
@@ -377,18 +377,22 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 arcdps_exports* mod_init() {
 	bool loading_successful = true;
 	std::string error_message = "Unknown error";
-	// load images
+
+	GlobalObjects::updateChecker = std::make_unique<UpdateChecker>();
+
+	const auto& currentVersion = GlobalObjects::updateChecker->GetCurrentVersion(self_dll);
+
 	try {
 		// Setup iconLoader
 		iconLoader.Setup(self_dll, d3d9Device, d3d11Device);
 
-		// check for new version on github
-		const auto& currentVersion = UpdateCheckerBase::GetCurrentVersion(self_dll);
-		if (currentVersion) {
-			updateChecker.CheckForUpdate(currentVersion.value(), "knoxfighter/arcdps-killproof.me-plugin", false);
-		}
+		// Clear old Files
+		GlobalObjects::updateChecker->ClearFiles(self_dll);
 
-		UpdateCheckerBase::ClearFiles(self_dll);
+		// check for new version on github
+		if (currentVersion) {
+			GlobalObjects::updateState = std::move(GlobalObjects::updateChecker->CheckForUpdate(self_dll, currentVersion.value(), "knoxfighter/arcdps-killproof.me-plugin", false));
+		}
 
 		settings.load();
 
@@ -401,7 +405,7 @@ arcdps_exports* mod_init() {
 
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.out_name = KILLPROOF_ME_PLUGIN_NAME;
-	const std::string& version = UpdateCheckerBase::GetVersionAsString(self_dll);
+	const std::string& version = currentVersion ? GlobalObjects::updateChecker->GetVersionAsString(currentVersion.value()) : "Unknown";
 	char* version_c_str = new char[version.length() + 1];
 	strcpy_s(version_c_str, version.length() + 1, version.c_str());
 	arc_exports.out_build = version_c_str;
@@ -460,6 +464,10 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* 
 
 /* release mod -- return ignored */
 uintptr_t mod_release() {
+	// finish and clear updateState
+	GlobalObjects::updateState->FinishPendingTasks();
+	GlobalObjects::updateState.reset(nullptr);
+
 	icons.clear();
 
 	settings.unload();

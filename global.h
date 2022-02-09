@@ -7,6 +7,9 @@
 
 #include "Killproofs.h"
 #include "Player.h"
+#include "UpdateChecker.h"
+
+#include "extension/UpdateCheckerBase.h"
 
 constexpr auto KILLPROOF_ME_PLUGIN_NAME = "killproof.me";
 
@@ -46,3 +49,9 @@ void removePlayer(const std::string& username, AddedBy addedByToDelete = AddedBy
 bool addPlayerTracking(const std::string& username);
 bool addPlayerAll(const std::string& username);
 bool addPlayerInstance(const std::string& username);
+
+class GlobalObjects {
+public:
+	static inline std::unique_ptr<UpdateChecker> updateChecker = nullptr;
+	static inline std::unique_ptr<UpdateCheckerBase::UpdateState> updateState = nullptr;
+};

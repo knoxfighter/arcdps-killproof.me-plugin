@@ -4,7 +4,5 @@
 
 class UpdateChecker : public UpdateCheckerBase {
 public:
-	void Draw() override;
+	void Draw();
 };
-
-extern UpdateChecker updateChecker;

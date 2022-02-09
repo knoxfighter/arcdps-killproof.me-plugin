@@ -57,6 +57,9 @@ enum class Killproof : int {
 bool defaultHidden(const Killproof& kp);
 
 std::string toString(Killproof e);
+inline std::string to_string(Killproof e) {
+	return toString(e);
+}
 
 class Killproofs {
 	std::map<Killproof, amountVal> killproofs = {

@@ -7,7 +7,7 @@
 #include "global.h"
 #include "json.hpp"
 #include "KillproofUI.h"
-#include "extension/UpdateCheckerBase.h"
+#include "UpdateChecker.h"
 
 void Player::loadKillproofs() {
 	using namespace std::chrono_literals;
@@ -24,7 +24,7 @@ void Player::loadKillproofs() {
 
 	// download it in a new thread (fire and forget)
 	const auto call = [this](const auto& self, const std::string& link) -> void {
-		std::string version = UpdateCheckerBase::GetVersionAsString(self_dll);
+		std::string version = GlobalObjects::updateChecker->GetVersionAsString(*GlobalObjects::updateState->CurrentVersion);
 		std::string userAgent = "arcdps-killproof.me-plugin/";
 		userAgent.append(version);
 		cpr::Response response = cpr::Get(cpr::Url{link}, cpr::Header{{"User-Agent", userAgent }}, cpr::Ssl(cpr::ssl::TLSv1_2{}));
