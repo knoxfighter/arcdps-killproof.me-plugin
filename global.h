@@ -10,14 +10,13 @@
 #include "UpdateChecker.h"
 
 #include "extension/UpdateCheckerBase.h"
+#include "unofficial_extras/Definitions.h"
 
 constexpr auto KILLPROOF_ME_PLUGIN_NAME = "killproof.me";
 
 enum class AddedBy;
 class Player;
 class KillproofUI;
-
-extern KillproofUI killproofUi;
 
 extern std::vector<std::string> trackedPlayers;
 extern std::mutex trackedPlayersMutex;
@@ -29,10 +28,6 @@ extern HMODULE self_dll;
 extern std::map<Killproof, UINT> icons;
 extern std::string selfAccountName;
 extern bool extrasLoaded;
-
-typedef void(*e3_func_ptr)(const char* str);
-extern e3_func_ptr arc_log_file;
-extern e3_func_ptr arc_log;
 
 void loadAllKillproofs();
 void loadKillproofsSizeChecked(Player& player);
@@ -52,6 +47,29 @@ bool addPlayerInstance(const std::string& username);
 
 class GlobalObjects {
 public:
-	static inline std::unique_ptr<UpdateChecker> updateChecker = nullptr;
-	static inline std::unique_ptr<UpdateCheckerBase::UpdateState> updateState = nullptr;
+	// Updating myself stuff
+	static inline std::unique_ptr<UpdateChecker> UPDATE_CHECKER = nullptr;
+	static inline std::unique_ptr<UpdateCheckerBase::UpdateState> UPDATE_STATE = nullptr;
+
+	// arc keyboard modifier
+	static inline DWORD ARC_GLOBAL_MOD1 = 0;
+	static inline DWORD ARC_GLOBAL_MOD2 = 0;
+	static inline DWORD ARC_GLOBAL_MOD_MULTI = 0;
+
+	// Arc export Cache
+	static inline bool ARC_HIDE_ALL = false;
+	static inline bool ARC_PANEL_ALWAYS_DRAW = false;
+	static inline bool ARC_MOVELOCK_ALTUI = false;
+	static inline bool ARC_CLICKLOCK_ALTUI = false;
+	static inline bool ARC_WINDOW_FASTCLOSE = false;
+
+	// Arc helper functions
+	static void UpdateArcExports();
+	static bool ModsPressed();
+	static bool CanMoveWindows();
+
+	// other
+	// TODO: fill with actual values and keep them up to date
+	static inline Language CURRENT_LANGUAGE = Language::English;
+	static inline HKL CURRENT_HKL;
 };

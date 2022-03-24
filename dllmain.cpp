@@ -16,14 +16,17 @@
 #include "Settings.h"
 #include "SettingsUI.h"
 #include "UpdateChecker.h"
-#include "extension/arcdps_extras_structs.h"
+#include "unofficial_extras/Definitions.h"
 #include "extension/arcdps_structs.h"
 #include "extension/Icon.h" // this import is needed for the icons map
+#include "extension/KeyBindHandler.h"
+#include "extension/KeyInput.h"
+#include "extension/Singleton.h"
 #include "extension/Widgets.h"
-#include "imgui/imgui.h"
+#include "extension/Windows/PositioningComponent.h"
+#include "extension/Windows/Demo/DemoWindow.h"
 
-// predefine some functions
-void readArcExports();
+#include "imgui/imgui.h"
 
 // globals
 char* arcvers;
@@ -33,28 +36,17 @@ HMODULE self_dll;
 IDirect3DDevice9* d3d9Device;
 ID3D11Device* d3d11Device;
 UINT directxVersion;
+
+// define `extern`s of other files
+SingletonManager g_singletonManagerInstance;
+arc_export_func_u64 ARC_EXPORT_E6;
+arc_export_func_u64 ARC_EXPORT_E7;
+e3_func_ptr ARC_LOG_FILE;
+e3_func_ptr ARC_LOG;
+
 bool showSettings = false;
 bool initFailed = false;
 bool extrasLoaded = false;
-
-typedef uint64_t (*arc_export_func_u64)();
-// arc options
-arc_export_func_u64 arc_export_e6;
-bool arc_hide_all = false;
-bool arc_panel_always_draw = false;
-bool arc_movelock_altui = false;
-bool arc_clicklock_altui = false;
-bool arc_window_fastclose = false;
-
-// arc keyboard modifier
-arc_export_func_u64 arc_export_e7;
-DWORD arc_global_mod1 = 0;
-DWORD arc_global_mod2 = 0;
-DWORD arc_global_mod_multi = 0;
-
-// arc add to log
-e3_func_ptr arc_log_file;
-e3_func_ptr arc_log;
 
 BOOL APIENTRY DllMain(HMODULE hModule,
                       DWORD ul_reason_for_call,
@@ -74,6 +66,14 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	try {
+		if (ImGuiEx::KeyCodeInputWndHandle(hWnd, uMsg, wParam, lParam)) {
+			return 0;
+		}
+
+		if (KeyBindHandler::instance().Wnd(hWnd, uMsg, wParam, lParam)) {
+			return 0;
+		}
+
 		auto const io = &ImGui::GetIO();
 
 		switch (uMsg) {
@@ -92,22 +92,22 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			}
 			case WM_KEYDOWN:
 			case WM_SYSKEYDOWN: {
-				readArcExports();
 				const int vkey = (int)wParam;
+				// GlobalObjects::UpdateArcExports();
 				// close windows on escape press (return 0, so arc and gw2 are not processing this event)
-				bool& show_killproof = settings.getShowKillproof();
-				if (!arc_hide_all && vkey == VK_ESCAPE) {
-					// close killproof window with escape
-					if (arc_window_fastclose && !settings.getDisableEscClose() && show_killproof) {
-						show_killproof = false;
-						return 0;
-					}
-				}
+				// bool& show_killproof = settings.getShowKillproof();
+				// if (!arc_hide_all && vkey == VK_ESCAPE) {
+				// 	// close killproof window with escape
+				// 	if (arc_window_fastclose && !settings.getDisableEscClose() && show_killproof) {
+				// 		show_killproof = false;
+				// 		return 0;
+				// 	}
+				// }
 				// toggle killproof window
-				if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey() && !arc_hide_all) {
-					show_killproof = !show_killproof;
-					return 0;
-				}
+				// if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey() && !arc_hide_all) {
+				// 	show_killproof = !show_killproof;
+				// 	return 0;
+				// }
 				if (vkey == VK_CONTROL) {
 					io->KeyCtrl = true;
 				} else if (vkey == VK_MENU) {
@@ -119,17 +119,24 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				break;
 			}
 			case WM_ACTIVATEAPP: {
+				GlobalObjects::UpdateArcExports();
 				if (!wParam) {
-					io->KeysDown[arc_global_mod1] = false;
-					io->KeysDown[arc_global_mod2] = false;
+					io->KeysDown[GlobalObjects::ARC_GLOBAL_MOD1] = false;
+					io->KeysDown[GlobalObjects::ARC_GLOBAL_MOD2] = false;
 				}
+				break;
+			}
+			// track current input language
+			case WM_INPUTLANGCHANGE: {
+				GlobalObjects::CURRENT_HKL = (HKL)lParam;
 				break;
 			}
 			default:
 				break;
 		}
 	} catch (const std::exception& e) {
-		arc_log_file(e.what());
+		ARC_LOG_FILE("exception in mod_wnd");
+		ARC_LOG_FILE(e.what());
 		throw e;
 	}
 
@@ -197,7 +204,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						}
 
 						// Tell the UI to resort, cause we added a player
-						killproofUi.needSort = true;
+						KillproofUI::instance().needSort = true;
 					}
 					/* remove */
 					else {
@@ -227,11 +234,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 			}
 		}
 	} catch (const std::exception& e) {
-		arc_log_file(e.what());
+		ARC_LOG_FILE(e.what());
 
 		// create dump of params
 		if (ev) {
-			arc_log_file("ev:\n");
+			ARC_LOG_FILE("ev:\n");
 			char event[sizeof(cbtevent)];
 			memcpy(event, ev, sizeof(cbtevent));
 			std::stringstream evss;
@@ -240,11 +247,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 			}
 			evss << "\n";
 			std::string evs = evss.str();
-			arc_log_file(evs.c_str());
+			ARC_LOG_FILE(evs.c_str());
 		}
 
 		if (src) {
-			arc_log_file("src:\n");
+			ARC_LOG_FILE("src:\n");
 			char srcData[sizeof(ag)];
 			memcpy(srcData, src, sizeof(ag));
 			std::stringstream srcDatass;
@@ -253,16 +260,16 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 			}
 			srcDatass << "\n";
 			std::string srcDataS = srcDatass.str();
-			arc_log_file(srcDataS.c_str());
+			ARC_LOG_FILE(srcDataS.c_str());
 
 			if (src->name) {
-				arc_log_file("src->name:\n");
-				arc_log_file(src->name);
+				ARC_LOG_FILE("src->name:\n");
+				ARC_LOG_FILE(src->name);
 			}
 		}
 
 		if (dst) {
-			arc_log_file("dst:\n");
+			ARC_LOG_FILE("dst:\n");
 			char dstData[sizeof(ag)];
 			memcpy(dstData, dst, sizeof(ag));
 			std::stringstream dstDatass;
@@ -271,11 +278,11 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 			}
 			dstDatass << "\n";
 			std::string dstDataS = dstDatass.str();
-			arc_log_file(dstDataS.c_str());
+			ARC_LOG_FILE(dstDataS.c_str());
 
 			if (dst->name) {
-				arc_log_file("dst->name:\n");
-				arc_log_file(dst->name);
+				ARC_LOG_FILE("dst->name:\n");
+				ARC_LOG_FILE(dst->name);
 			}
 		}
 		throw e;
@@ -284,87 +291,45 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 }
 
 uintptr_t mod_options() {
-	settingsUI.draw();
+	settingsUI.Draw();
 
 	return 0;
 }
 
 uintptr_t mod_windows(const char* windowname) {
 	if (!windowname) {
-		bool& showKillproof = settings.getShowKillproof();
-		ImGui::Checkbox(lang.translate(LangKey::SubMenuKp).c_str(), &showKillproof);
+		KillproofUI::instance().DrawOptionCheckbox();
+#if _DEBUG
+		DemoWindow::instance().DrawOptionCheckbox();
+#endif
 	}
 	return 0;
-}
-
-bool modsPressed() {
-	auto io = &ImGui::GetIO();
-
-	return io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2];
-}
-
-bool canMoveWindows() {
-	if (!arc_movelock_altui) {
-		return true;
-	} else {
-		return modsPressed();
-	}
 }
 
 bool lastFrameShow = false;
 
 void ShowKillproof() {
-	bool& showKillproof = settings.getShowKillproof();
+	bool& showKillproof = Settings::instance().settings.showKillproof;
 	if (!lastFrameShow && showKillproof) {
 		loadAllKillproofs();
 	}
 	lastFrameShow = showKillproof;
-	if (showKillproof) {
-		std::string title = lang.translate(LangKey::KpWindowName);
-		title.append("##Killproof.me");
 
-		Param param;
-		param.title = title;
-		param.p_open = &showKillproof;
-		param.flags = (!canMoveWindows() ? ImGuiWindowFlags_NoMove : 0);
-		param.showHeader = settings.getShowHeader();
-		param.position = settings.getPosition();
-		param.cornerVector = settings.getCornerVector();
-		param.cornerPosition = settings.getCornerPosition();
-		param.fromWindowID = settings.getFromWindowID();
-		param.anchorPanelCornerPosition = settings.getAnchorPanelCornerPosition();
-		param.selfPanelCornerPosition = settings.getSelfPanelCornerPosition();
-		killproofUi.Draw(param);
-	}
-}
-
-void readArcExports() {
-	uint64_t e6_result = arc_export_e6();
-	uint64_t e7_result = arc_export_e7();
-
-	arc_hide_all = (e6_result & 0x01);
-	arc_panel_always_draw = (e6_result & 0x02);
-	arc_movelock_altui = (e6_result & 0x04);
-	arc_clicklock_altui = (e6_result & 0x08);
-	arc_window_fastclose = (e6_result & 0x10);
-
-
-	uint16_t* ra = (uint16_t*)&e7_result;
-	if (ra) {
-		arc_global_mod1 = ra[0];
-		arc_global_mod2 = ra[1];
-		arc_global_mod_multi = ra[2];
-	}
+	KillproofUI::instance().Draw();
 }
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
+#if _DEBUG
+	DemoWindow::instance().Draw();
+#endif
 	// try {
 		// ImGui::ShowMetricsWindow();
 
-		GlobalObjects::updateChecker->Draw();
+		GlobalObjects::UPDATE_CHECKER->Draw();
 
 		if (!not_charsel_or_loading) return 0;
 		ShowKillproof();
+		
 	// } catch (const std::exception& e) {
 	// 	arc_log_file(e.what());
 	// 	throw e;
@@ -378,25 +343,32 @@ arcdps_exports* mod_init() {
 	bool loading_successful = true;
 	std::string error_message = "Unknown error";
 
-	GlobalObjects::updateChecker = std::make_unique<UpdateChecker>();
+	GlobalObjects::UPDATE_CHECKER = std::make_unique<UpdateChecker>();
 
-	const auto& currentVersion = GlobalObjects::updateChecker->GetCurrentVersion(self_dll);
+	const auto& currentVersion = GlobalObjects::UPDATE_CHECKER->GetCurrentVersion(self_dll);
 
 	try {
 		// Setup iconLoader
 		iconLoader.Setup(self_dll, d3d9Device, d3d11Device);
 
 		// Clear old Files
-		GlobalObjects::updateChecker->ClearFiles(self_dll);
+		GlobalObjects::UPDATE_CHECKER->ClearFiles(self_dll);
 
 		// check for new version on github
 		if (currentVersion) {
-			GlobalObjects::updateState = std::move(GlobalObjects::updateChecker->CheckForUpdate(self_dll, currentVersion.value(), "knoxfighter/arcdps-killproof.me-plugin", false));
+			GlobalObjects::UPDATE_STATE = std::move(GlobalObjects::UPDATE_CHECKER->CheckForUpdate(self_dll, currentVersion.value(), "knoxfighter/arcdps-killproof.me-plugin", false));
 		}
 
-		settings.load();
+		Settings::instance().load();
 
 		lang.readFromFile();
+
+		// windows init
+#if _DEBUG
+		DemoWindow::instance().Init();
+#endif
+		KillproofUI::instance().Init();
+
 	} catch (const std::exception& e) {
 		loading_successful = false;
 		error_message = "Error loading all icons: ";
@@ -405,7 +377,7 @@ arcdps_exports* mod_init() {
 
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.out_name = KILLPROOF_ME_PLUGIN_NAME;
-	const std::string& version = currentVersion ? GlobalObjects::updateChecker->GetVersionAsString(currentVersion.value()) : "Unknown";
+	const std::string& version = currentVersion ? GlobalObjects::UPDATE_CHECKER->GetVersionAsString(currentVersion.value()) : "Unknown";
 	char* version_c_str = new char[version.length() + 1];
 	strcpy_s(version_c_str, version.length() + 1, version.c_str());
 	arc_exports.out_build = version_c_str;
@@ -433,17 +405,17 @@ arcdps_exports* mod_init() {
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* imguicontext, void* dxptr, HMODULE new_arcdll, void* mallocfn,
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, ImGuiContext* imguicontext, void* dxptr, HMODULE new_arcdll, void* mallocfn,
                                                      void* freefn, UINT dxver) {
 	arcvers = arcversionstr;
-	ImGui::SetCurrentContext(static_cast<ImGuiContext*>(imguicontext));
+	ImGui::SetCurrentContext(imguicontext);
 	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);
 
 	arc_dll = new_arcdll;
-	arc_export_e6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
-	arc_export_e7 = (arc_export_func_u64)GetProcAddress(arc_dll, "e7");
-	arc_log_file = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
-	arc_log = (e3_func_ptr)GetProcAddress(arc_dll, "e8");
+	ARC_EXPORT_E6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
+	ARC_EXPORT_E7 = (arc_export_func_u64)GetProcAddress(arc_dll, "e7");
+	ARC_LOG_FILE = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
+	ARC_LOG = (e3_func_ptr)GetProcAddress(arc_dll, "e8");
 
 	// dx11 not available in older arcdps versions
 	std::string arcVersion = arcversionstr;
@@ -459,24 +431,29 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, void* 
 		directxVersion = 9;
 	}
 
+	// install imgui hooks
+	PositioningComponentImGuiHook::InstallHooks(imguicontext);
+
 	return mod_init;
 }
 
 /* release mod -- return ignored */
 uintptr_t mod_release() {
 	// finish and clear updateState
-	GlobalObjects::updateState->FinishPendingTasks();
-	GlobalObjects::updateState.reset(nullptr);
+	GlobalObjects::UPDATE_STATE->FinishPendingTasks();
+	GlobalObjects::UPDATE_STATE.reset(nullptr);
 
 	icons.clear();
 
-	settings.unload();
+	Settings::instance().unload();
 
 #if _DEBUG
 	lang.saveToFile();
 #endif
 
 	iconLoader.Shutdown();
+
+	g_singletonManagerInstance.Shutdown();
 
 	return 0;
 }
@@ -534,7 +511,7 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 			}
 
 			// Tell the UI to resort, cause we added a player
-			killproofUi.needSort = true;
+			KillproofUI::instance().needSort = true;
 		} else // User removed
 		{
 			if (username == selfAccountName) {
@@ -561,25 +538,59 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 	}
 }
 
-extern "C" __declspec(dllexport) void arcdps_unofficial_extras_subscriber_init(const ExtrasAddonInfo* pExtrasInfo, ExtrasSubscriberInfo* pSubscriberInfo) {
-	extrasLoaded = true;
+void language_changed_callback(Language pNewLanguage) {
+	GlobalObjects::CURRENT_LANGUAGE = pNewLanguage;
+}
 
-	if (pExtrasInfo->ApiVersion != 1) {
-		// incompatible extra API version, do not subscribe and show error
-		return;
-	}
+/**
+ * here for backwardscompatible to unofficial extras API v1.
+ * Can be removed after it has a proper release.
+ */
+typedef void (*SquadUpdateCallbackSignature)(const UserInfo* pUpdatedUsers, uint64_t pUpdatedUsersCount);
+struct ExtrasSubscriberInfo
+{
+	// Null terminated name of the addon subscribing to the changes. Must be valid for the lifetime of the subcribing addon. Set to
+	// nullptr if initialization fails
+	const char* SubscriberName = nullptr;
+
+	// Called whenever anything in the squad changes. Only the users that changed are sent. If a user is removed from
+	// the squad, it will be sent with Role == UserRole::None
+	SquadUpdateCallbackSignature SquadUpdateCallback = nullptr;
+};
+
+extern "C" __declspec(dllexport) void arcdps_unofficial_extras_subscriber_init(const ExtrasAddonInfo* pExtrasInfo, void* pSubscriberInfo) {
+	extrasLoaded = true;
 
 	// do not subscribe, if initialization called from arcdps failed.
 	if (initFailed) {
 		return;
 	}
 
-	if (selfAccountName.empty()) {
-		selfAccountName = pExtrasInfo->SelfAccountName;
-		if (selfAccountName.at(0) == ':')
-			selfAccountName.erase(0, 1);
-	}
+	if (pExtrasInfo->ApiVersion == 1) {
+		// V1 of the unofficial extras API, treat is as that!
+		ExtrasSubscriberInfo* extrasSubscriberInfo = static_cast<ExtrasSubscriberInfo*>(pSubscriberInfo);
 
-	pSubscriberInfo->SubscriberName = KILLPROOF_ME_PLUGIN_NAME;
-	pSubscriberInfo->SquadUpdateCallback = squad_update_callback;
+		if (selfAccountName.empty()) {
+			selfAccountName = pExtrasInfo->SelfAccountName;
+			if (selfAccountName.at(0) == ':')
+				selfAccountName.erase(0, 1);
+		}
+
+		extrasSubscriberInfo->SubscriberName = KILLPROOF_ME_PLUGIN_NAME;
+		extrasSubscriberInfo->SquadUpdateCallback = squad_update_callback;
+	}
+	// MaxInfoVersion has to be higher to have enough space to hold this object
+	else if (pExtrasInfo->ApiVersion == 2 && pExtrasInfo->MaxInfoVersion >= 1) {
+		ExtrasSubscriberInfoV1* subscriberInfo = static_cast<ExtrasSubscriberInfoV1*>(pSubscriberInfo);
+
+		if (selfAccountName.empty()) {
+			selfAccountName = pExtrasInfo->SelfAccountName;
+			if (selfAccountName.at(0) == ':')
+				selfAccountName.erase(0, 1);
+		}
+
+		subscriberInfo->SubscriberName = KILLPROOF_ME_PLUGIN_NAME;
+		subscriberInfo->SquadUpdateCallback = squad_update_callback;
+		subscriberInfo->LanguageChangedCallback = language_changed_callback;
+	}
 }

@@ -1,17 +1,21 @@
 ﻿#include "KillproofUI.h"
 
-#include <mutex>
-#include <Windows.h>
-#include <future>
-
 #include "global.h"
+#include "KillproofUIPositioningComponent.h"
+#include "KillproofUIKeyBindComponent.h"
+#include "Lang.h"
 #include "Player.h"
 #include "Settings.h"
-#include "extension//Icon.h"
-#include "Lang.h"
-#include "imgui/imgui_internal.h"
+
+#include "extension/Icon.h"
+#include "extension/imgui_stdlib.h"
 #include "extension/Widgets.h"
-#include "WindowSettingsUI.h"
+
+#include <future>
+#include <mutex>
+#include <Windows.h>
+
+using std::string_literals::operator ""s;
 
 void KillproofUI::openInBrowser(const char* username) {
 	const auto& string = std::format("https://killproof.me/proof/{}", username);
@@ -20,13 +24,217 @@ void KillproofUI::openInBrowser(const char* username) {
 	}).detach();
 }
 
+KillproofUI::KillproofUI() {
+	CreateComponent<KillproofUIPositioningComponent>();
+	CreateComponent<KillproofUIKeyBindComponent>();
+}
+
+bool& KillproofUI::GetOpenVar() {
+	return Settings::instance().settings.showKillproof;
+}
+
+void KillproofUI::SetMaxHeightCursorPos(float pNewCursorPos) {
+	// Table border size is hardcoded within ImGui `TABLE_BORDER_SIZE = 1.0f;`
+
+	// [ DEBUG ]
+	// ImGuiWindow* subWindow = ImGui::GetCurrentWindow();
+	// ImGui::GetForegroundDrawList(mThisWindow)->AddRect(subWindow->Pos, subWindow->Pos + subWindow->Size, 0xff00ff00);
+	// ImVec2 imVec2 = ;
+	// imVec2.y -= pNewCursorPos;
+	// ImGui::GetForegroundDrawList(mThisWindow)->AddRect(subWindow->Pos, subWindow->Pos + ImGui::GetCursorPos(), 0xffffff00);
+
+	mCurrentCursorPos = pNewCursorPos;
+}
+
+SizingPolicy& KillproofUI::getSizingPolicy() {
+	return Settings::instance().settings.sizingPolicy;
+}
+
+bool& KillproofUI::getShowTitleBar() {
+	return Settings::instance().settings.showHeader;
+}
+
+std::optional<std::string>& KillproofUI::getTitle() {
+	return Settings::instance().settings.headerText;
+}
+
+const std::string& KillproofUI::getTitleDefault() {
+	return lang.translate(LangKey::KpWindowName);
+}
+
+const std::string& KillproofUI::getWindowID() {
+	return "Killproof.me"s;
+}
+
+std::optional<std::string>& KillproofUI::getAppearAsInOption() {
+	return Settings::instance().settings.appearAsInOption;
+}
+
+const std::string& KillproofUI::getAppearAsInOptionDefault() {
+	return lang.translate(LangKey::SubMenuKp);
+}
+
+bool& KillproofUI::getShowBackground() {
+	return Settings::instance().settings.showBackground;
+}
+
+bool& KillproofUI::getShowScrollbar() {
+	return Settings::instance().settings.showScrollbar;
+}
+
+std::optional<ImVec2>& KillproofUI::getPadding() {
+	return Settings::instance().settings.windowPadding;
+}
+
+bool KillproofUI::getMaxHeightActive() {
+	return Settings::instance().settings.maxDisplayed > 0;
+}
+
 void KillproofUI::DrawContextMenu() {
-	windowSettingsUI.draw(table, ImGui::GetCurrentWindow());
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+
+	if (ImGui::BeginMenu(lang.translate(LangKey::SettingsColumnSetup).c_str())) {
+		ImGui::PushItemFlag(ImGuiItemFlags_SelectableDontClosePopup, true);
+
+		// #
+		ImGuiEx::MenuItemTableColumnVisibility(table, 0);
+		// username
+		ImGuiEx::MenuItemTableColumnVisibility(table, 1);
+		// charname
+		ImGuiEx::MenuItemTableColumnVisibility(table, 2);
+		// id
+		ImGuiEx::MenuItemTableColumnVisibility(table, 3);
+
+		constexpr int beginCol = 4;
+
+
+		// Raids
+		if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsGroup).c_str())) {
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::li) + beginCol);
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::ld) + beginCol);
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::liLd) + beginCol);
+
+			// W1
+			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW1Group).c_str())) {
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::vg) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::gorse) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::sabetha) + beginCol);
+
+				ImGui::EndMenu();
+			}
+
+			// W2
+			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW2Group).c_str())) {
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::sloth) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::matthias) + beginCol);
+
+				ImGui::EndMenu();
+			}
+
+			// W3
+			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW3Group).c_str())) {
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::escort) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::kc) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::xera) + beginCol);
+
+				ImGui::EndMenu();
+			}
+
+			// W4
+			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW4Group).c_str())) {
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::cairn) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::mo) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::samarog) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::deimos) + beginCol);
+
+				ImGui::EndMenu();
+			}
+
+			// W5
+			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW5Group).c_str())) {
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::desmina) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::river) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::statues) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::dhuum) + beginCol);
+
+				ImGui::EndMenu();
+			}
+
+			// W6
+			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW6Group).c_str())) {
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::ca) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::twins) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::qadim) + beginCol);
+
+				ImGui::EndMenu();
+			}
+
+			// W7
+			if (ImGui::BeginMenu(lang.translate(LangKey::SettingsRaidsW7Group).c_str())) {
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::sabir) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::adina) + beginCol);
+				ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::qadim2) + beginCol);
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenu();
+		}
+
+		// Fractals
+		if (ImGui::BeginMenu(lang.translate(LangKey::SettingsFractalsGroup).c_str())) {
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::uce) + beginCol);
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::ufe) + beginCol);
+
+			ImGui::EndMenu();
+		}
+
+		// Strikes
+		if (ImGui::BeginMenu(lang.translate(LangKey::SettingsStrikesGruop).c_str())) {
+			ImGuiEx::MenuItemTableColumnVisibility(table, static_cast<int>(Killproof::boneskinnerVial) + beginCol);
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::PopItemFlag();
+
+		ImGui::EndMenu();
+	}
+
+	ImGui::PopStyleVar();
+}
+
+void KillproofUI::DrawStyleSettingsSubMenu() {
+	Settings& settings = Settings::instance();
+	ImGui::Checkbox(lang.translate(LangKey::SettingsShowPrivateText).c_str(), &settings.settings.showPrivateAccounts);
+	ImGui::Checkbox(lang.translate(LangKey::SettingsShowControls).c_str(), &settings.settings.showControls);
+	ImGui::Checkbox(lang.translate(LangKey::SettingsShowLinkedByDefault).c_str(), &settings.settings.showLinkedByDefault);
+	ImGui::Checkbox(lang.translate(LangKey::SettingsShowCommander).c_str(), &settings.settings.showCommander);
+
+	// input for data private
+	ImGui::PushItemWidth(50);
+	ImGui::InputText(lang.translate(LangKey::SettingsBlockedText).c_str(), &settings.settings.blockedDataText);
+	ImGui::PopItemWidth();
+
+	ImGuiEx::EnumCombo(lang.translate(LangKey::Alignment).c_str(), settings.settings.alignment, Alignment::Unaligned);
+	ImGuiEx::EnumCombo(lang.translate(LangKey::HeaderAlignment).c_str(), settings.settings.headerAlignment, Alignment::Unaligned);
+	ImGuiEx::EnumCombo(lang.translate(LangKey::Language).c_str(), settings.settings.language, LanguageSetting::Spanish);
+
+	ImGui::InputInt("max displayed", &settings.settings.maxDisplayed);
+
+	ImGui::Separator();
+
+	MainWindow::DrawStyleSettingsSubMenu();
 }
 
 void KillproofUI::DrawContent() {
 	// lock the mutexes, before we access sensible data
 	std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);
+
+	// Reset Row counter
+	mCurrentRow = 0;
+
+	auto& settings = Settings::instance();
 
 	/**
 	* ERROR MESSAGES
@@ -41,7 +249,7 @@ void KillproofUI::DrawContent() {
 	/**
 	 * Unofficial Extras message
 	 */
-	if (!extrasLoaded && !settings.getHideExtrasMessage()) {
+	if (!extrasLoaded && !settings.settings.hideExtrasMessage) {
 		ImGui::TextUnformatted(lang.translate(LangKey::UnofficialExtrasNotInstalled).c_str());
 
 		ImGui::SameLine();
@@ -60,7 +268,7 @@ void KillproofUI::DrawContent() {
 	/**
 	* Controls
 	*/
-	if (!settings.getHideControls()) {
+	if (settings.settings.showControls) {
 		bool addPlayer = false;
 		if (ImGui::InputText("##useradd", userAddBuf, sizeof userAddBuf, ImGuiInputTextFlags_EnterReturnsTrue)) {
 			addPlayer = true;
@@ -156,13 +364,16 @@ void KillproofUI::DrawContent() {
 	/**
 	* TABLE
 	*/
-	Alignment alignment = settings.getAlignment();
-	Alignment headerAlignment = settings.getHeaderAlignment();
+	Alignment alignment = settings.settings.alignment;
+	Alignment headerAlignment = settings.settings.headerAlignment;
 	const int columnCount = static_cast<int>(Killproof::FINAL_ENTRY) + 4;
 
-	if (ImGui::BeginTable("kp.me", columnCount,
-						  ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable |
-						  ImGuiTableFlags_Reorderable | ImGuiTableFlags_RowBg | ImGuiTableFlags_PadOuterX)) {
+	ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable |
+						  ImGuiTableFlags_Reorderable | ImGuiTableFlags_RowBg | ImGuiTableFlags_PadOuterX | ImGuiTableFlags_ScrollY;
+
+	ImVec2 outerSize (0.f, getMaxHeightActive() ? mCurrentCursorPos : 0.f);
+
+	if (ImGui::BeginTable("kp.me", columnCount, tableFlags, outerSize)) {
 		table = GImGui->CurrentTable;
 		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
 		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
@@ -220,6 +431,8 @@ void KillproofUI::DrawContent() {
 			ImGui::TableSetupColumn(toString(kp).c_str(), columnFlags, 0.f, static_cast<ImU32>(kp));
 		}
 
+		ImGui::TableSetupScrollFreeze(0, 1);
+
 		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
 
 		// join time
@@ -244,7 +457,7 @@ void KillproofUI::DrawContent() {
 			if (ImGui::TableNextColumn()) {
 				Killproof kp = static_cast<Killproof>(i);
 				std::string columnName = toString(kp);
-				if (settings.getShowHeaderText()) {
+				if (settings.settings.headerText) {
 					ImGuiEx::TableHeader(columnName.c_str(), true, nullptr, headerAlignment);
 				} else {
 					ImGuiEx::TableHeader(columnName.c_str(), false, iconLoader.getTexture(icons.at(kp)), headerAlignment);
@@ -332,7 +545,7 @@ void KillproofUI::DrawContent() {
 			const Player& player = cachedPlayers.at(trackedPlayer);
 
 			// hide player without data, when setting is active
-			if (!(settings.getHidePrivateAccount() && player.status == LoadingStatus::NoDataAvailable)) {
+			if (!(!settings.settings.showPrivateAccounts && player.status == LoadingStatus::NoDataAvailable)) {
 				bool open = drawRow(alignment, &player.joinedTime, player.username.c_str(), player.characterName.c_str(), player.killproofId.c_str(),
 									player.status,
 									[&player](const Killproof& kp) { return player.getKillproofs(kp); },
@@ -358,18 +571,28 @@ void KillproofUI::DrawContent() {
 					ImGui::TreePop();
 				}
 			}
+
+			newRow();
 		}
 
 		ImGui::EndTable();
 	}
 }
 
-void KillproofUI::drawTextRow(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode) {
+void KillproofUI::newRow() {
+	if (mCurrentRow < Settings::instance().settings.maxDisplayed) {
+		SetMaxHeightCursorPos();
+	}
+
+	++mCurrentRow;
+}
+
+void KillproofUI::drawTextColumn(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode) {
 	if (treeNode) {
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
 
 		ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding;
-		if (settings.getShowOverallByDefault()) {
+		if (Settings::instance().settings.showLinkedByDefault) {
 			treeNodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 		}
 
@@ -406,7 +629,7 @@ bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime
 
 	// #
 	if (ImGui::TableNextColumn() && joinTime) {
-		drawTextRow(&open, std::format("{:02d}:{:02d}:{:02d}", joinTime->wHour, joinTime->wMinute, joinTime->wSecond).c_str(), username, status,
+		drawTextColumn(&open, std::format("{:02d}:{:02d}:{:02d}", joinTime->wHour, joinTime->wMinute, joinTime->wSecond).c_str(), username, status,
 		            first == ImGui::TableGetColumnIndex() && treeNode);
 	}
 
@@ -421,17 +644,17 @@ bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime
 		// 		ImGui::SameLine();
 		// 	}
 		// }
-		drawTextRow(&open, username, username, status, first == ImGui::TableGetColumnIndex() && treeNode);
+		drawTextColumn(&open, username, username, status, first == ImGui::TableGetColumnIndex() && treeNode);
 	}
 
 	// charactername
 	if (ImGui::TableNextColumn()) {
-		drawTextRow(&open, characterName, username, status, first == ImGui::TableGetColumnIndex() && treeNode);
+		drawTextColumn(&open, characterName, username, status, first == ImGui::TableGetColumnIndex() && treeNode);
 	}
 
 	// killproofID
 	if (ImGui::TableNextColumn()) {
-		drawTextRow(&open, killproofId, username, status, first == ImGui::TableGetColumnIndex() && treeNode);
+		drawTextColumn(&open, killproofId, username, status, first == ImGui::TableGetColumnIndex() && treeNode);
 	}
 
 	for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
@@ -440,9 +663,9 @@ bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime
 			amountVal totalAmount = kpOverallFun(kp);
 
 			if (status == LoadingStatus::LoadingById || status == LoadingStatus::LoadingByChar) {
-				ImGuiEx::SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), settings.getAlignment());
+				ImGuiEx::SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), Settings::instance().settings.alignment);
 			} else if (totalAmount == -1 || status != LoadingStatus::Loaded) {
-				ImGuiEx::AlignedTextColumn(alignment, "%s", settings.getBlockedDataText().c_str());
+				ImGuiEx::AlignedTextColumn(alignment, "%s", Settings::instance().settings.blockedDataText.c_str());
 			} else {
 				ImGuiEx::AlignedTextColumn(alignment, "%i", totalAmount);
 

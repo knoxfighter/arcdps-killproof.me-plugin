@@ -2,8 +2,8 @@
 
 #include <map>
 #include <string>
+#include <nlohmann/json.hpp>
 
-#include "json.hpp"
 #include "extension/map.h"
 
 #define BUILD_MAP_JSON(val, val2, key) {key::val, #val}
@@ -77,14 +77,13 @@ BUILD_ENUM_SERIALIZED(
 
 	SettingsShortcutText, "Shortcut to open killproofs menu:",
 	SettingsBlockedText, "Text to display when data is unavailable/private",
-	SettingsHidePrivateText, "Hide players without killproof.me account",
+	SettingsShowPrivateText, "Private accounts",
 	SettingsDisableESCText, "Do NOT close killproof.me window on ESC",
 	SettingsShowHeaderText, "Show header with text instead of images",
-	SettingsShowHeader, "Show window header",
 	SettingsClearCacheText, "Clear Cache",
 	SettingsClearCacheTooltip, "Clear the cache and reload killproof.me data for all players",
-	SettingsHideHeaderButtons, "Hide header buttons and search field",
-	SettingsShowOverallByDefault, "Show linked account KPs by default",
+	SettingsShowControls, "Show controls (header buttons and search field)",
+	SettingsShowLinkedByDefault, "Show linked account KPs by default",
 	SettingsShowCommander, "Show commander Tag next to accountname",
 	SettingsColumnSetup, "Column Setup",
 	SettingsStyle, "Style",
@@ -108,6 +107,7 @@ BUILD_ENUM_SERIALIZED(
 
 	Alignment, "Alignment",
 	HeaderAlignment, "Header alignment",
+	Language, "Language",
 	Left, "Left",
 	Center, "Center",
 	Right, "Right",
@@ -121,6 +121,10 @@ BUILD_ENUM_SERIALIZED(
 	CornerPositionTopRight, "top-right",
 	CornerPositionBottomLeft, "bottom-left",
 	CornerPositionBottomRight, "bottom-right",
+
+	SizingPolicySizeToContent, "Autoresize window to content",
+	SizingPolicySizeContentToWindow, "Size content to window",
+	SizingPolicyManualWindowSize, "Manual window sizing",
 
 	UpdateWindowHeader, "Arcdps Killproof.me Plugin Update",
 	UpdateDesc, "A new update for the Kilproof.me plugin is available.",
@@ -150,7 +154,7 @@ public:
 	Lang() = default;
 	~Lang() = default;
 
-	std::string translate(LangKey key);
+	const std::string& translate(LangKey key);
 
 	void saveToFile();
 	void readFromFile();

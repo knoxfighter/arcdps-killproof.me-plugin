@@ -6,28 +6,28 @@
 #include "Settings.h"
 #include "global.h"
 #include "Lang.h"
+
+#include "extension/KeyBindHandler.h"
+#include "extension/KeyInput.h"
+
 #include "imgui/imgui.h"
 #include "extension/Widgets.h"
 
 SettingsUI settingsUI;
 
-void SettingsUI::draw() {
-	if (initialized) {
-		std::string killproofKey = std::to_string(settings.getKillProofKey());
-		memset(shortcut, 0, sizeof(shortcut));
-		killproofKey.copy(shortcut, killproofKey.size());
-
-		cofferValue = settings.settings.cofferValue;
-
-		initialized = true;
-	}
-
+void SettingsUI::Draw() {
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0.f, 0.f});
 
+	Settings& settings = Settings::instance();
+
 	// Setting to select, which key is used to open the killproofs menu (will also close it)
-	ImGuiEx::KeyInput(lang.translate(LangKey::SettingsShortcutText).c_str(), "##shortcut", shortcut, sizeof(shortcut), settings.settings.killproofKey, lang.translate(LangKey::SettingsKeyNotSetText).c_str());
+	KeyBinds::Key oldKey = settings.settings.windowKey;
+	if (ImGuiEx::KeyCodeInput(lang.translate(LangKey::SettingsShortcutText).c_str(), settings.settings.windowKey, GlobalObjects::CURRENT_LANGUAGE, GlobalObjects::CURRENT_HKL)) {
+		KeyBindHandler::instance().UpdateKeys(oldKey, settings.settings.windowKey);
+	}
 
 	ImGui::Checkbox(lang.translate(LangKey::SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
+	int& cofferValue = settings.settings.cofferValue;
 	if (ImGui::InputInt(lang.translate(LangKey::SettingsCofferValue).c_str(), &cofferValue)) {
 		if (cofferValue < 0) {
 			cofferValue = 0;
@@ -35,8 +35,6 @@ void SettingsUI::draw() {
 		if (cofferValue > 5) {
 			cofferValue = 5;
 		}
-
-		settings.settings.cofferValue = cofferValue;
 	}
 
 	ImGui::Checkbox(lang.translate(LangKey::SettingsHideExtrasMessage).c_str(), &settings.settings.hideExtrasMessage);

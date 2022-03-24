@@ -157,11 +157,20 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
   <ItemGroup>
     <ClCompile Include="Coffers.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="extension\MainWindow.cpp" />
+    <ClCompile Include="extension\imgui_stdlib.cpp" />
+    <ClCompile Include="extension\KeyBindHandler.cpp" />
+    <ClCompile Include="extension\KeyInput.cpp" />
     <ClCompile Include="extension\arcdps_structs.cpp" />
     <ClCompile Include="extension\Icon.cpp" />
+    <ClCompile Include="extension\Singleton.cpp" />
     <ClCompile Include="extension\UpdateCheckerBase.cpp" />
     <ClCompile Include="extension\Widgets.cpp" />
+    <ClCompile Include="extension\Windows\Demo\DemoKeyBindComponent.cpp" />
+    <ClCompile Include="extension\Windows\Demo\DemoPositioningComponent.cpp" />
+    <ClCompile Include="extension\Windows\Demo\DemoWindow.cpp" />
+    <ClCompile Include="extension\Windows\KeyBindComponent.cpp" />
+    <ClCompile Include="extension\Windows\MainWindow.cpp" />
+    <ClCompile Include="extension\Windows\PositioningComponent.cpp" />
     <ClCompile Include="global.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -170,23 +179,35 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="Killproofs.cpp" />
     <ClCompile Include="KillproofUI.cpp" />
+    <ClCompile Include="KillproofUIKeyBindComponent.cpp" />
     <ClCompile Include="Lang.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsUI.cpp" />
+    <ClCompile Include="unofficial_extras\KeyBindHelper.cpp" />
+    <ClCompile Include="unofficial_extras\KeyBindsTranslation.cpp" />
     <ClCompile Include="UpdateChecker.cpp" />
-    <ClCompile Include="WindowSettingsUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coffers.h" />
-    <ClInclude Include="extension\MainWindow.h" />
-    <ClInclude Include="extension\arcdps_extras_structs.h" />
+    <ClInclude Include="extension\imgui_stdlib.h" />
+    <ClInclude Include="extension\KeyBindHandler.h" />
+    <ClInclude Include="extension\KeyInput.h" />
     <ClInclude Include="extension\arcdps_structs.h" />
     <ClInclude Include="extension\arcdps_structs_slim.h" />
     <ClInclude Include="extension\Icon.h" />
     <ClInclude Include="extension\map.h" />
+    <ClInclude Include="extension\nlohmannJsonExtension.h" />
+    <ClInclude Include="extension\Singleton.h" />
     <ClInclude Include="extension\UpdateCheckerBase.h" />
     <ClInclude Include="extension\Widgets.h" />
+    <ClInclude Include="extension\Windows\ComponentBase.h" />
+    <ClInclude Include="extension\Windows\Demo\DemoKeyBindComponent.h" />
+    <ClInclude Include="extension\Windows\Demo\DemoPositioningComponent.h" />
+    <ClInclude Include="extension\Windows\Demo\DemoWindow.h" />
+    <ClInclude Include="extension\Windows\KeyBindComponent.h" />
+    <ClInclude Include="extension\Windows\MainWindow.h" />
+    <ClInclude Include="extension\Windows\PositioningComponent.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -196,14 +217,19 @@ powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVers
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Killproofs.h" />
+    <ClInclude Include="KillproofUIKeyBindComponent.h" />
+    <ClInclude Include="KillproofUIPositioningComponent.h" />
     <ClInclude Include="Lang.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="KillproofUI.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsUI.h" />
+    <ClInclude Include="unofficial_extras\Definitions.h" />
+    <ClInclude Include="unofficial_extras\KeyBindHelper.h" />
+    <ClInclude Include="unofficial_extras\KeyBindsTranslation.h" />
+    <ClInclude Include="unofficial_extras\KeyBindStructs.h" />
     <ClInclude Include="UpdateChecker.h" />
-    <ClInclude Include="WindowSettingsUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="killproof_me.rc" />

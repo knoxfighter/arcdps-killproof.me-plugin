@@ -8,7 +8,7 @@
 #include "imgui/imgui.h"
 
 void UpdateChecker::Draw() {
-	const auto& updateState = GlobalObjects::updateState;
+	const auto& updateState = GlobalObjects::UPDATE_STATE;
 	if (!updateState) {
 		// wrongly initialized UpdateChecker, nothing to do here!
 		return;

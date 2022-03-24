@@ -25,6 +25,24 @@
     <Filter Include="Header Files\extension">
       <UniqueIdentifier>{f2bf6229-6aaf-4cbb-8854-4cf16abed580}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\unofficial_extras">
+      <UniqueIdentifier>{b833c896-c8a8-4f63-87b7-b7d11630908a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\unofficial_extras">
+      <UniqueIdentifier>{222507f3-22b4-4464-9f98-2a57024a0cea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\extension\Windows">
+      <UniqueIdentifier>{3c5a5be6-d343-48cf-b73d-503f27cde941}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\extension\Windows">
+      <UniqueIdentifier>{3c3eae21-2dd1-4e7e-bfdf-0c78baa304eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\extension\Windows\Demo">
+      <UniqueIdentifier>{8784cec6-cfd4-4b64-9691-0d2cb1f531ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\extension\Windows\Demo">
+      <UniqueIdentifier>{eedaaff8-5f6c-43e6-bd68-34e2845cc020}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -75,9 +93,6 @@
     <ClCompile Include="extension\arcdps_structs.cpp">
       <Filter>Source Files\extension</Filter>
     </ClCompile>
-    <ClCompile Include="WindowSettingsUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="extension\UpdateCheckerBase.cpp">
       <Filter>Source Files\extension</Filter>
     </ClCompile>
@@ -87,8 +102,44 @@
     <ClCompile Include="Coffers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="extension\MainWindow.cpp">
+    <ClCompile Include="extension\imgui_stdlib.cpp">
       <Filter>Source Files\extension</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\KeyInput.cpp">
+      <Filter>Source Files\extension</Filter>
+    </ClCompile>
+    <ClCompile Include="unofficial_extras\KeyBindsTranslation.cpp">
+      <Filter>Source Files\unofficial_extras</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\KeyBindHandler.cpp">
+      <Filter>Source Files\extension</Filter>
+    </ClCompile>
+    <ClCompile Include="unofficial_extras\KeyBindHelper.cpp">
+      <Filter>Source Files\unofficial_extras</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\Singleton.cpp">
+      <Filter>Source Files\extension</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\Windows\MainWindow.cpp">
+      <Filter>Source Files\extension\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\Windows\Demo\DemoWindow.cpp">
+      <Filter>Source Files\extension\Windows\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\Windows\PositioningComponent.cpp">
+      <Filter>Source Files\extension\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\Windows\Demo\DemoPositioningComponent.cpp">
+      <Filter>Source Files\extension\Windows\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\Windows\KeyBindComponent.cpp">
+      <Filter>Source Files\extension\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\Windows\Demo\DemoKeyBindComponent.cpp">
+      <Filter>Source Files\extension\Windows\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="KillproofUIKeyBindComponent.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,9 +200,6 @@
     <ClInclude Include="extension\map.h">
       <Filter>Header Files\extension</Filter>
     </ClInclude>
-    <ClInclude Include="WindowSettingsUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="extension\UpdateCheckerBase.h">
       <Filter>Header Files\extension</Filter>
     </ClInclude>
@@ -164,11 +212,59 @@
     <ClInclude Include="Coffers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="extension\arcdps_extras_structs.h">
+    <ClInclude Include="extension\imgui_stdlib.h">
       <Filter>Header Files\extension</Filter>
     </ClInclude>
-    <ClInclude Include="extension\MainWindow.h">
+    <ClInclude Include="extension\KeyInput.h">
       <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="unofficial_extras\Definitions.h">
+      <Filter>Header Files\unofficial_extras</Filter>
+    </ClInclude>
+    <ClInclude Include="unofficial_extras\KeyBindsTranslation.h">
+      <Filter>Header Files\unofficial_extras</Filter>
+    </ClInclude>
+    <ClInclude Include="unofficial_extras\KeyBindStructs.h">
+      <Filter>Header Files\unofficial_extras</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\KeyBindHandler.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Singleton.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="unofficial_extras\KeyBindHelper.h">
+      <Filter>Header Files\unofficial_extras</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Windows\MainWindow.h">
+      <Filter>Header Files\extension\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Windows\Demo\DemoWindow.h">
+      <Filter>Header Files\extension\Windows\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Windows\PositioningComponent.h">
+      <Filter>Header Files\extension\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Windows\ComponentBase.h">
+      <Filter>Header Files\extension\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Windows\Demo\DemoPositioningComponent.h">
+      <Filter>Header Files\extension\Windows\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Windows\KeyBindComponent.h">
+      <Filter>Header Files\extension\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Windows\Demo\DemoKeyBindComponent.h">
+      <Filter>Header Files\extension\Windows\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\nlohmannJsonExtension.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="KillproofUIPositioningComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KillproofUIKeyBindComponent.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

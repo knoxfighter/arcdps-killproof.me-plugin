@@ -1,12 +1,13 @@
 #pragma once
 
-#include <optional>
-#include <string>
-
 #include "Coffers.h"
 #include "Killproofs.h"
 #include "Settings.h"
-#include "extension/json.hpp"
+
+#include <optional>
+#include <string>
+
+#include <nlohmann/json.hpp>
 
 enum class LoadingStatus {
 	NotLoaded,

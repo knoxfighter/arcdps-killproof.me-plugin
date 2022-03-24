@@ -3,6 +3,7 @@
   "name": "arcdps-killproof-me-plugin",
   "version-string": "2.6.4",
   "dependencies": [
-    "cpr"
+    "cpr",
+    "nlohmann-json"
   ]
 }

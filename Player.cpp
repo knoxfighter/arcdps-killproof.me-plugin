@@ -1,13 +1,17 @@
 #include "Player.h"
 
+#include "global.h"
+#include "KillproofUI.h"
+#include "UpdateChecker.h"
+
+#include "extension/arcdps_structs.h"
+
 #include <set>
+
 #include <cpr/cpr.h>
 #include <cpr/util.h>
 
-#include "global.h"
-#include "json.hpp"
-#include "KillproofUI.h"
-#include "UpdateChecker.h"
+#include <nlohmann/json.hpp>
 
 void Player::loadKillproofs() {
 	using namespace std::chrono_literals;
@@ -24,7 +28,7 @@ void Player::loadKillproofs() {
 
 	// download it in a new thread (fire and forget)
 	const auto call = [this](const auto& self, const std::string& link) -> void {
-		std::string version = GlobalObjects::updateChecker->GetVersionAsString(*GlobalObjects::updateState->CurrentVersion);
+		std::string version = GlobalObjects::UPDATE_CHECKER->GetVersionAsString(*GlobalObjects::UPDATE_STATE->CurrentVersion);
 		std::string userAgent = "arcdps-killproof.me-plugin/";
 		userAgent.append(version);
 		cpr::Response response = cpr::Get(cpr::Url{link}, cpr::Header{{"User-Agent", userAgent }}, cpr::Ssl(cpr::ssl::TLSv1_2{}));
@@ -126,7 +130,7 @@ void Player::loadKillproofs() {
 			cs.append(" -- StatusLine: ");
 			cs.append(response.status_line);
 			cs.append("\n");
-			arc_log_file(cs.c_str());
+			ARC_LOG_FILE(cs.c_str());
 
 			this->errorMessage = cs;
 
@@ -137,7 +141,7 @@ void Player::loadKillproofs() {
 		}
 
 		// say UI to reload sorting
-		killproofUi.needSort = true;
+		KillproofUI::instance().needSort = true;
 	};
 
 	// create the link for getting by accountname/kpid
@@ -160,7 +164,7 @@ amountVal Player::getKpOverall(const Killproof& kp) const {
 		totalAmount += cofferAmount;
 	}
 	else {
-		totalAmount += cofferAmount * settings.getCofferValue();
+		totalAmount += cofferAmount * Settings::instance().settings.cofferValue;
 	}
 	return totalAmount;
 }
@@ -187,7 +191,7 @@ amountVal Player::getKpOverallTotal(const Killproof& kp) const {
 		totalAmount += cofferAmount;
 	}
 	else {
-		totalAmount += cofferAmount * settings.getCofferValue();
+		totalAmount += cofferAmount * Settings::instance().settings.cofferValue;
 	}
 	return totalAmount;
 }

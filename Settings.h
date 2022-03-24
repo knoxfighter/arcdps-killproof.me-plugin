@@ -1,87 +1,88 @@
 #pragma once
 
-#include <map>
+#include "Killproofs.h"
 
 #include "extension/arcdps_structs.h"
-#include "json.hpp"
-#include "Killproofs.h"
+#include "extension/Singleton.h"
+#include "extension/nlohmannJsonExtension.h"
+#include "unofficial_extras/KeyBindStructs.h"
+
 #include "imgui/imgui.h"
 
-class WindowSettingsUI;
-class SettingsUI;
+#include "unofficial_extras/Definitions.h"
 
-#define NLOHMANN_JSON_FROM_NON_THROWING(v1) if (nlohmann_json_j.contains(#v1)) nlohmann_json_j.at(#v1).get_to(nlohmann_json_t.v1);
-#define NLOHMANN_DEFINE_TYPE_INTRUSIVE_NON_THROWING(Type, ...)  \
-	friend void to_json(nlohmann::json& nlohmann_json_j, const Type& nlohmann_json_t) { NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(NLOHMANN_JSON_TO, __VA_ARGS__)) } \
-	friend void from_json(const nlohmann::json& nlohmann_json_j, Type& nlohmann_json_t) { NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(NLOHMANN_JSON_FROM_NON_THROWING, __VA_ARGS__)) }
+#include <map>
 
-#define NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_NON_THROWING(Type, ...)  \
-	inline void to_json(nlohmann::json& nlohmann_json_j, const Type& nlohmann_json_t) { NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(NLOHMANN_JSON_TO, __VA_ARGS__)) } \
-	inline void from_json(const nlohmann::json& nlohmann_json_j, Type& nlohmann_json_t) { NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(NLOHMANN_JSON_FROM_NON_THROWING, __VA_ARGS__)) }
-
+#include <nlohmann/json.hpp>
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_NON_THROWING(ImVec2, x, y)
 
-class Settings {
-	friend SettingsUI;
-	friend WindowSettingsUI;
+struct SettingsKey : KeyBinds::Key {
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsKey, DeviceType, Code, Modifier)
+};
 
+enum class LanguageSetting {
+	English = 0,
+	LikeGame = 1,
+	French = 2,
+	German = 3,
+	Spanish = 4,
+	// Chinese = 5
+};
+std::string to_string(LanguageSetting pLang);
+
+class Settings : public Singleton<Settings> {
 public:
 	struct SettingsObject {
-		WPARAM killproofKey;
-		bool hidePrivateAccount;
-		bool showKillproof;
+		uint32_t version = 1;
+		SettingsKey windowKey {KeyBinds::DeviceType::Keyboard, static_cast<int32_t>(KeyBinds::KeyCode::K), 0};
+		bool showPrivateAccounts = true;
+		bool showKillproof = false;
 		std::string blockedDataText;
-		bool disableEscClose;
+		bool disableEscClose = false;
 		Alignment alignment = Alignment::Left;
 		Alignment headerAlignment = Alignment::Left;
-		bool showHeaderText;
-		bool hideControls = false;
-		bool showOverallByDefault = false;
+		bool showControls = true;
+		bool showLinkedByDefault = false;
+		bool showHeaderText = false; // this is for the header in the table
 		bool showHeader = true;
+		bool showBackground = true;
+		bool showScrollbar = true;
 		Position position = Position::Manual;
 		CornerPosition cornerPosition = CornerPosition::TopLeft;
 		ImVec2 cornerVector;
 		CornerPosition anchorPanelCornerPosition = CornerPosition::TopLeft;
 		CornerPosition selfPanelCornerPosition = CornerPosition::TopLeft;
-		ImGuiID fromWindowID;
+		ImGuiID fromWindowID = 0;
 		bool showCommander = false;
-		uint8_t cofferValue = 3;
+		int cofferValue = 3;
 		bool hideExtrasMessage = false;
+		SizingPolicy sizingPolicy = SizingPolicy::SizeToContent;
+		std::optional<std::string> headerText;
+		std::optional<std::string> appearAsInOption;
+		std::optional<ImVec2> windowPadding;
+		int maxDisplayed = 0;
+		LanguageSetting language = LanguageSetting::LikeGame;
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE_NON_THROWING(SettingsObject, killproofKey, hidePrivateAccount, showKillproof, blockedDataText, disableEscClose,
-		                                            alignment, headerAlignment, showHeaderText, hideControls, showOverallByDefault, showHeader, position,
-		                                            cornerPosition, cornerVector, anchorPanelCornerPosition, selfPanelCornerPosition, fromWindowID,
-		                                            showCommander, cofferValue, hideExtrasMessage)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE_NON_THROWING(SettingsObject, version, windowKey, showPrivateAccounts, showKillproof,
+		                                            blockedDataText, disableEscClose,
+		                                            alignment, headerAlignment, showControls,
+		                                            showLinkedByDefault, showHeader, position,
+		                                            cornerPosition, cornerVector, anchorPanelCornerPosition,
+		                                            selfPanelCornerPosition, fromWindowID,
+		                                            showCommander, cofferValue, hideExtrasMessage, sizingPolicy,
+		                                            headerText, appearAsInOption, showBackground, showScrollbar,
+		                                            windowPadding, maxDisplayed, language)
 	};
 
 	Settings() = default;
-	~Settings() = default;
 
 	void load();
 	void unload();
 
-	// getter/setter
-	[[nodiscard]] int getKillProofKey() const;
-	[[nodiscard]] bool getHidePrivateAccount() const;
-	[[nodiscard]] bool& getShowKillproof();
-	[[nodiscard]] const std::string& getBlockedDataText() const;
-	[[nodiscard]] bool getDisableEscClose() const;
-	[[nodiscard]] Alignment getAlignment() const;
-	[[nodiscard]] Alignment getHeaderAlignment() const;
-	[[nodiscard]] bool getShowHeaderText() const;
-	[[nodiscard]] bool getHideControls() const;
-	[[nodiscard]] bool getShowOverallByDefault() const;
-	[[nodiscard]] bool getShowHeader() const;
-	[[nodiscard]] Position getPosition() const;
-	[[nodiscard]] CornerPosition getCornerPosition() const;
-	[[nodiscard]] const ImVec2& getCornerVector() const;
-	[[nodiscard]] CornerPosition getAnchorPanelCornerPosition() const;
-	[[nodiscard]] CornerPosition getSelfPanelCornerPosition() const;
-	[[nodiscard]] ImGuiID getFromWindowID() const;
-	[[nodiscard]] bool getShowCommander() const;
-	[[nodiscard]] uint8_t getCofferValue() const;
-	[[nodiscard]] bool getHideExtrasMessage() const;
+	SettingsObject settings;
+
+	[[nodiscard]] Language GetLanguage();
 
 	// delete copy/move
 	Settings(const Settings& other) = delete;
@@ -89,12 +90,6 @@ public:
 	Settings& operator=(const Settings& other) = delete;
 	Settings& operator=(Settings&& other) noexcept = delete;
 private:
-	void setDefaults();
 	void saveToFile();
 	void readFromFile();
-
-	SettingsObject settings;
-	bool visibilityPopup = true;
 };
-
-extern Settings settings;

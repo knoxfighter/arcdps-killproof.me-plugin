@@ -7,7 +7,7 @@
 
 Lang lang;
 
-std::string Lang::translate(LangKey key) {
+const std::string& Lang::translate(LangKey key) {
 	return lang.translations.at(key);
 }
 
