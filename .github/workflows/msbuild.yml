@@ -55,6 +55,6 @@ jobs:
       with:
         name: d3d9_arcdps_killproof_me
         path: |
-          x64/${{ env.BUILD_CONFIGURATION }}/*.dll
-          x64/${{ env.BUILD_CONFIGURATION }}/*.pdb
+          x64/${{ env.BUILD_CONFIGURATION }}/d3d9_arcdps_killproof_me.dll
+          x64/${{ env.BUILD_CONFIGURATION }}/d3d9_arcdps_killproof_me.pdb
           
