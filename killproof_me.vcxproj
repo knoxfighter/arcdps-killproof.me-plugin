@@ -151,7 +151,7 @@
     </Link>
     <PostBuildEvent>
       <Command>
-powershell.exe -noprofile -executionpolicy bypass "&amp; '.\extension\updateVersion.ps1' '.\killproof_me.rc'"</Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

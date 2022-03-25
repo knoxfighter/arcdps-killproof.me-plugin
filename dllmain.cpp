@@ -315,7 +315,7 @@ void ShowKillproof() {
 	}
 	lastFrameShow = showKillproof;
 
-	KillproofUI::instance().Draw();
+	KillproofUI::instance().Draw(!GlobalObjects::CanMoveWindows() ? ImGuiWindowFlags_NoMove : 0);
 }
 
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
