@@ -28,14 +28,32 @@ jobs:
       uses: lukka/run-vcpkg@v10
       with:
         vcpkgGitCommitId: af2287382b1991dbdcb7e5112d236f3323b9dd7a
-        #vcpkgTriplet: x64-windows
       
     - name: Setup vcpkg
       run: |
         ${{ github.workspace }}/vcpkg/vcpkg.exe integrate install
+        
+    - name: Update version
+      shell: pwsh
+      run: |
+        $file = "./killproof_me.rc"
+        $regex = '(.*(?:(?:FILEVERSION)|(?:FileVersion)|(?:PRODUCTVERSION)|(?:ProductVersion)).*?(?:\d*[.,]){3})(\d*)(.*)'
+        $tmp = Get-Content $file | Foreach {
+          [regex]::replace($_, $regex, 
+            {param($m) $m.Groups[1].Value + ([int]${{github.run_number}}) + $m.Groups[3].Value})
+        }
+        $tmp | Set-Content $file
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+      
+    - name: Archive files
+      uses: actions/upload-artifact@v3
+      with:
+        name: d3d9_arcdps_killproof_me
+        path: |
+          x64/${{ env.BUILD_CONFIGURATION }}/d3d9_arcdps_killproof_me.dll
+          x64/${{ env.BUILD_CONFIGURATION }}/d3d9_arcdps_killproof_me.pdb
