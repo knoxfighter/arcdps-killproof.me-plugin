@@ -43,8 +43,7 @@ jobs:
           [regex]::replace($_, $regex, 
             {param($m) $m.Groups[1].Value + ([int]${{github.run_number}}) + $m.Groups[3].Value})
         }
-
-$tmp | Set-Content $file
+        $tmp | Set-Content $file
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
