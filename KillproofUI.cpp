@@ -5,6 +5,7 @@
 #include "KillproofUIKeyBindComponent.h"
 #include "Lang.h"
 #include "Player.h"
+#include "resource.h"
 #include "Settings.h"
 
 #include "extension/Icon.h"
@@ -587,7 +588,8 @@ void KillproofUI::newRow() {
 	++mCurrentRow;
 }
 
-void KillproofUI::drawTextColumn(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode) {
+void KillproofUI::drawTextColumn(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode, bool first, bool
+                                 isCommander) {
 	if (treeNode) {
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
 
@@ -600,9 +602,14 @@ void KillproofUI::drawTextColumn(bool* open, const char* text, const char* usern
 		actualText.append("##");
 		actualText.append(username);
 
-		*open = ImGui::TreeNodeEx(actualText.c_str(), treeNodeFlags);
+		*open = ImGuiEx::TreeNodeEx(actualText.c_str(), treeNodeFlags, isCommander && Settings::instance().settings.showCommander ? iconLoader.getTexture(ID_Commander_White) : nullptr);
 		ImGui::PopStyleVar();
 	} else {
+		if (isCommander && Settings::instance().settings.showCommander) {
+			float size = ImGui::GetFontSize();
+			ImGui::Image(iconLoader.getTexture(ID_Commander_White), ImVec2(size, size));
+			ImGui::SameLine();
+		}
 		ImGui::TextUnformatted(text);
 		if (status == LoadingStatus::Loaded && ImGui::IsItemClicked()) {
 			// Open users kp.me in the browser
@@ -619,7 +626,7 @@ bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime
 	bool open = false;
 
 	// find first column that is visible
-	ImGuiTableColumnIdx first;
+	ImGuiTableColumnIdx first = 0;
 	for (int i = 0; i <= table->ColumnsCount; ++i) {
 		if (table->EnabledMaskByDisplayOrder & ((ImU64)1 << i)) {
 			first = table->DisplayOrderToIndex[i];
@@ -630,31 +637,33 @@ bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime
 	// #
 	if (ImGui::TableNextColumn() && joinTime) {
 		drawTextColumn(&open, std::format("{:02d}:{:02d}:{:02d}", joinTime->wHour, joinTime->wMinute, joinTime->wSecond).c_str(), username, status,
-		            first == ImGui::TableGetColumnIndex() && treeNode);
+		               first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), false);
 	}
 
+	bool usernameEnabled = true;
+	for (auto i = 0, j = 0; i < table->DisplayOrderToIndex.size(); ++i) {
+		if (table->DisplayOrderToIndex[i] == 1 && table->EnabledMaskByDisplayOrder & (ImU64)1 << i) {
+			usernameEnabled = true;
+			break;
+		}
+		if (table->DisplayOrderToIndex[i] == 2 && table->EnabledMaskByDisplayOrder & (ImU64)1 << i) {
+			usernameEnabled = false;
+			break;
+		}
+	}
 	// username
 	if (ImGui::TableNextColumn()) {
-		// TODO: implement in first column only
-		// if (isCommander && settings.getShowCommander()) {
-		// 	auto* icon = iconLoader.getTexture(ID_Commander_White);
-		// 	if (icon) {
-		// 		float size = ImGui::GetFontSize();
-		// 		ImGui::Image(icon, ImVec2(size, size));
-		// 		ImGui::SameLine();
-		// 	}
-		// }
-		drawTextColumn(&open, username, username, status, first == ImGui::TableGetColumnIndex() && treeNode);
+		drawTextColumn(&open, username, username, status, first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), isCommander && usernameEnabled);
 	}
 
 	// charactername
 	if (ImGui::TableNextColumn()) {
-		drawTextColumn(&open, characterName, username, status, first == ImGui::TableGetColumnIndex() && treeNode);
+		drawTextColumn(&open, characterName, username, status, first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), isCommander && !usernameEnabled);
 	}
 
 	// killproofID
 	if (ImGui::TableNextColumn()) {
-		drawTextColumn(&open, killproofId, username, status, first == ImGui::TableGetColumnIndex() && treeNode);
+		drawTextColumn(&open, killproofId, username, status, first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), false);
 	}
 
 	for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {

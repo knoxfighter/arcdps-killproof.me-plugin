@@ -143,6 +143,21 @@ bool addPlayerTracking(const std::string& username) {
 	return false;
 }
 
+/**
+ *
+ * lock `cachedPlayersMutex` before calling this!
+ */
+void updateCommander(const std::string& commanderName) {
+	for (auto& cachedPlayer : cachedPlayers) {
+		Player& player = cachedPlayer.second;
+		if (player.username == commanderName) {
+			player.commander = true;
+		} else {
+			player.commander = false;
+		}
+	}
+}
+
 void GlobalObjects::UpdateArcExports() {
 	uint64_t e6_result = ARC_EXPORT_E6();
 	uint64_t e7_result = ARC_EXPORT_E7();

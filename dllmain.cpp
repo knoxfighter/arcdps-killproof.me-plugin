@@ -163,7 +163,8 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 
 					/* add */
 					if (src->prof) {
-						std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(cachedPlayersMutex, trackedPlayersMutex, instancePlayersMutex);
+						std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(
+							cachedPlayersMutex, trackedPlayersMutex, instancePlayersMutex);
 
 						// this is self
 						if (selfAccountName.empty() && dst->self) {
@@ -176,7 +177,8 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						auto playerIt = cachedPlayers.find(username);
 						if (playerIt == cachedPlayers.end()) {
 							// no element found, create it
-							const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Arcdps, dst->self, src->name, src->id);
+							const auto& tryEmplace = cachedPlayers.try_emplace(
+								username, username, AddedBy::Arcdps, dst->self, src->name, src->id);
 
 							// check if emplacing successful, if yes, load the kp.me page
 							if (tryEmplace.second) {
@@ -219,16 +221,14 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 				}
 			}
 		} else {
-			if (ev->is_statechange != CBTS_NONE) {
-				if (ev->is_statechange == CBTS_TAG) {
-					// some other person is tag now!
-					uintptr_t id = src->id;
-					for (auto& cachedPlayer : cachedPlayers | std::views::values) {
-						if (cachedPlayer.id == id) {
-							cachedPlayer.commander = true;
-						} else {
-							cachedPlayer.commander = false;
-						}
+			if (ev->is_statechange == CBTS_TAG) {
+				// some other person is tag now!
+				uintptr_t id = src->id;
+				for (auto& cachedPlayer : cachedPlayers | std::views::values) {
+					if (cachedPlayer.id == id) {
+						cachedPlayer.commander = true;
+					} else {
+						cachedPlayer.commander = false;
 					}
 				}
 			}
@@ -323,13 +323,13 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	DemoWindow::instance().Draw();
 #endif
 	// try {
-		// ImGui::ShowMetricsWindow();
+	// ImGui::ShowMetricsWindow();
 
-		GlobalObjects::UPDATE_CHECKER->Draw();
+	GlobalObjects::UPDATE_CHECKER->Draw();
 
-		if (!not_charsel_or_loading) return 0;
-		ShowKillproof();
-		
+	if (!not_charsel_or_loading) return 0;
+	ShowKillproof();
+
 	// } catch (const std::exception& e) {
 	// 	arc_log_file(e.what());
 	// 	throw e;
@@ -356,7 +356,9 @@ arcdps_exports* mod_init() {
 
 		// check for new version on github
 		if (currentVersion) {
-			GlobalObjects::UPDATE_STATE = std::move(GlobalObjects::UPDATE_CHECKER->CheckForUpdate(self_dll, currentVersion.value(), "knoxfighter/arcdps-killproof.me-plugin", false));
+			GlobalObjects::UPDATE_STATE = std::move(
+				GlobalObjects::UPDATE_CHECKER->CheckForUpdate(self_dll, currentVersion.value(),
+				                                              "knoxfighter/arcdps-killproof.me-plugin", false));
 		}
 
 		Settings::instance().load();
@@ -377,7 +379,9 @@ arcdps_exports* mod_init() {
 
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.out_name = KILLPROOF_ME_PLUGIN_NAME;
-	const std::string& version = currentVersion ? GlobalObjects::UPDATE_CHECKER->GetVersionAsString(currentVersion.value()) : "Unknown";
+	const std::string& version = currentVersion
+		                             ? GlobalObjects::UPDATE_CHECKER->GetVersionAsString(currentVersion.value())
+		                             : "Unknown";
 	char* version_c_str = new char[version.length() + 1];
 	strcpy_s(version_c_str, version.length() + 1, version.c_str());
 	arc_exports.out_build = version_c_str;
@@ -405,7 +409,8 @@ arcdps_exports* mod_init() {
 }
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
-extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, ImGuiContext* imguicontext, void* dxptr, HMODULE new_arcdll, void* mallocfn,
+extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, ImGuiContext* imguicontext, void* dxptr,
+                                                     HMODULE new_arcdll, void* mallocfn,
                                                      void* freefn, UINT dxver) {
 	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(imguicontext);
@@ -465,7 +470,8 @@ extern "C" __declspec(dllexport) void* get_release_addr() {
 }
 
 void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCount) {
-	std::scoped_lock<std::mutex, std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex, cachedPlayersMutex);
+	std::scoped_lock<std::mutex, std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex,
+	                                                           cachedPlayersMutex);
 
 	for (size_t i = 0; i < updatedUsersCount; i++) {
 		std::string username = updatedUsers[i].AccountName;
@@ -477,6 +483,10 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 
 		if (updatedUsers[i].Role != UserRole::None) // User added/updated
 		{
+			if (updatedUsers[i].Role == UserRole::SquadLeader) {
+				updateCommander(username);
+			}
+
 			// add to tracking
 			// addPlayerTracking(username);
 			if (!addPlayerAll(username)) {
@@ -487,7 +497,8 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 			auto playerIt = cachedPlayers.find(username);
 			if (playerIt == cachedPlayers.end()) {
 				// no element found, create it
-				const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Extras, username == selfAccountName);
+				const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Extras,
+				                                                   username == selfAccountName);
 
 				// check if emplacing successful, if yes, load the kp.me page
 				if (tryEmplace.second) {
@@ -496,6 +507,11 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 
 					// load killproofs
 					loadKillproofsSizeChecked(player);
+
+					// add commander if he is it
+					if (updatedUsers[i].Role == UserRole::SquadLeader) {
+						player.commander = true;
+					}
 				}
 			} else {
 				// load user data if not yet loaded (check inside function)
@@ -507,6 +523,11 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 				// update joined data
 				if (!playerIt->second.self) {
 					playerIt->second.resetJoinedTime();
+				}
+
+				// add commander if he is it
+				if (updatedUsers[i].Role == UserRole::SquadLeader) {
+					playerIt->second.commander = true;
 				}
 			}
 
@@ -547,8 +568,7 @@ void language_changed_callback(Language pNewLanguage) {
  * Can be removed after it has a proper release.
  */
 typedef void (*SquadUpdateCallbackSignature)(const UserInfo* pUpdatedUsers, uint64_t pUpdatedUsersCount);
-struct ExtrasSubscriberInfo
-{
+struct ExtrasSubscriberInfo {
 	// Null terminated name of the addon subscribing to the changes. Must be valid for the lifetime of the subcribing addon. Set to
 	// nullptr if initialization fails
 	const char* SubscriberName = nullptr;
@@ -558,7 +578,45 @@ struct ExtrasSubscriberInfo
 	SquadUpdateCallbackSignature SquadUpdateCallback = nullptr;
 };
 
-extern "C" __declspec(dllexport) void arcdps_unofficial_extras_subscriber_init(const ExtrasAddonInfo* pExtrasInfo, void* pSubscriberInfo) {
+void addSelfUser(std::string name) {
+	if (name.at(0) == ':')
+		name.erase(0, 1);
+
+	if (selfAccountName.empty()) {
+		selfAccountName = name;
+	}
+
+	addPlayerAll(name);
+
+	const auto& playerIt = cachedPlayers.find(name);
+	if (playerIt == cachedPlayers.end()) {
+		// no element found, create it
+		const auto& tryEmplace = cachedPlayers.try_emplace(name, name, AddedBy::Extras, true);
+
+		// check if emplacing successful, if yes, load the kp.me page
+		if (tryEmplace.second) {
+			// save player object to work on
+			Player& player = tryEmplace.first->second;
+
+			// load killproofs
+			loadKillproofsSizeChecked(player);
+		}
+	} else {
+		// load user data if not yet loaded (check inside function)
+		loadKillproofsSizeChecked(playerIt->second);
+
+		// This player was added automatically
+		playerIt->second.addedBy = AddedBy::Extras;
+
+		// update joined data
+		if (!playerIt->second.self) {
+			playerIt->second.resetJoinedTime();
+		}
+	}
+}
+
+extern "C" __declspec(dllexport) void arcdps_unofficial_extras_subscriber_init(
+	const ExtrasAddonInfo* pExtrasInfo, void* pSubscriberInfo) {
 	extrasLoaded = true;
 
 	// do not subscribe, if initialization called from arcdps failed.
@@ -570,11 +628,7 @@ extern "C" __declspec(dllexport) void arcdps_unofficial_extras_subscriber_init(c
 		// V1 of the unofficial extras API, treat is as that!
 		ExtrasSubscriberInfo* extrasSubscriberInfo = static_cast<ExtrasSubscriberInfo*>(pSubscriberInfo);
 
-		if (selfAccountName.empty()) {
-			selfAccountName = pExtrasInfo->SelfAccountName;
-			if (selfAccountName.at(0) == ':')
-				selfAccountName.erase(0, 1);
-		}
+		addSelfUser(pExtrasInfo->SelfAccountName);
 
 		extrasSubscriberInfo->SubscriberName = KILLPROOF_ME_PLUGIN_NAME;
 		extrasSubscriberInfo->SquadUpdateCallback = squad_update_callback;
@@ -583,11 +637,7 @@ extern "C" __declspec(dllexport) void arcdps_unofficial_extras_subscriber_init(c
 	else if (pExtrasInfo->ApiVersion == 2 && pExtrasInfo->MaxInfoVersion >= 1) {
 		ExtrasSubscriberInfoV1* subscriberInfo = static_cast<ExtrasSubscriberInfoV1*>(pSubscriberInfo);
 
-		if (selfAccountName.empty()) {
-			selfAccountName = pExtrasInfo->SelfAccountName;
-			if (selfAccountName.at(0) == ':')
-				selfAccountName.erase(0, 1);
-		}
+		addSelfUser(pExtrasInfo->SelfAccountName);
 
 		subscriberInfo->SubscriberName = KILLPROOF_ME_PLUGIN_NAME;
 		subscriberInfo->SquadUpdateCallback = squad_update_callback;

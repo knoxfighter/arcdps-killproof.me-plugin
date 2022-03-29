@@ -44,6 +44,7 @@ void removePlayer(const std::string& username, AddedBy addedByToDelete = AddedBy
 bool addPlayerTracking(const std::string& username);
 bool addPlayerAll(const std::string& username);
 bool addPlayerInstance(const std::string& username);
+void updateCommander(const std::string& commanderName);
 
 class GlobalObjects {
 public:
