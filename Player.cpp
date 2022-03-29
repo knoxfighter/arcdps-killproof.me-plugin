@@ -28,33 +28,45 @@ void Player::loadKillproofs() {
 
 	// download it in a new thread (fire and forget)
 	const auto call = [this](const auto& self, const std::string& link) -> void {
-		std::string version = GlobalObjects::UPDATE_CHECKER->GetVersionAsString(*GlobalObjects::UPDATE_STATE->CurrentVersion);
+		std::string version = GlobalObjects::UPDATE_CHECKER->GetVersionAsString(
+			*GlobalObjects::UPDATE_STATE->CurrentVersion);
 		std::string userAgent = "arcdps-killproof.me-plugin/";
 		userAgent.append(version);
-		cpr::Response response = cpr::Get(cpr::Url{link}, cpr::Header{{"User-Agent", userAgent }}, cpr::Ssl(cpr::ssl::TLSv1_2{}));
+		cpr::Response response = cpr::Get(cpr::Url{link}, cpr::Header{{"User-Agent", userAgent}},
+		                                  cpr::Ssl(cpr::ssl::TLSv1_2{}));
 
 		if (response.status_code == 200) {
 			auto json = nlohmann::json::parse(response.text);
 
-			// get kpid and accountname
-			killproofId = json.at("kpid").get<std::string>();
+			// get accountname
 			std::string accountname = json.at("account_name").get<std::string>();
 
 			// replace the key in the global map, when kpid or charname was used to create this player
-			if (username == killproofId || username != accountname) {
+			if (username != accountname) {
 				// lock the maps
-				std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(trackedPlayersMutex, instancePlayersMutex, cachedPlayersMutex);
+				std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(
+					trackedPlayersMutex, instancePlayersMutex, cachedPlayersMutex);
 
 				// replace the key of the cache
 				auto node = cachedPlayers.extract(username);
 				node.key() = accountname;
-				const auto inserRes = cachedPlayers.insert(std::move(node));
+				const auto insertRes = cachedPlayers.insert(std::move(node));
 
 				// When insertion of changed node fails, the key already exists and `this` gets destructed.
 				// Therefore `this` is invalid and going on further results in an UseAfterFree !
-				if (!inserRes.inserted) {
+				if (!insertRes.inserted) {
 					// last action to do: remove the wrong username from the list of tracked players
 					removePlayer(username);
+					// add the new accountname to display, if it is currently not shown
+					addPlayerTracking(accountname);
+					// add charactername to correct user
+					Player& actualPlayer = cachedPlayers.at(accountname);
+					if (status == LoadingStatus::LoadingByChar) {
+						actualPlayer.characterName = username;
+					}
+					if (actualPlayer.status == LoadingStatus::NoDataAvailable) {
+						actualPlayer.LoadAll(json);
+					}
 					return;
 				}
 
@@ -63,38 +75,15 @@ void Player::loadKillproofs() {
 				std::ranges::replace(instancePlayers, username, accountname);
 
 				// set the username as charactername
-				if (username != killproofId && username != accountname) {
+				if (this->status == LoadingStatus::LoadingByChar) {
 					characterName = username;
 				}
 			}
 
-			// set username AFTER the check, if it the same as the kpid
+			// set username AFTER the check, if it is the same as the kpid
 			username = accountname;
 
-			loadKPs(json, killproofs, coffers);
-
-			if (json.contains("linked_totals")) {
-				auto linked_totals = json.at("linked_totals");
-				Killproofs& killproofs = linkedTotalKillproofs.emplace();
-				Coffers& coffers = linkedTotalCoffers.emplace();
-				loadKPs(linked_totals, killproofs, coffers);
-			}
-
-			if (json.contains("linked")) {
-				for (auto linked : json.at("linked")) {
-					std::string accountName = linked.at("account_name").get<std::string>();
-					const auto& playerEmplace = cachedPlayers.try_emplace(accountName, accountName, AddedBy::Miscellaneous);
-					if (playerEmplace.second) {
-						Player& player = playerEmplace.first->second;
-						player.killproofId = linked.at("kpid").get<std::string>();
-						loadKPs(linked, player.killproofs, player.coffers);
-					}
-
-					linkedAccounts.emplace_back(accountName);
-				}
-			}
-
-			this->status = LoadingStatus::Loaded;
+			LoadAll(json);
 		}
 		// silently set, when user not found
 		else if (response.status_code == 404) {
@@ -162,8 +151,7 @@ amountVal Player::getKpOverall(const Killproof& kp) const {
 	amountVal totalAmount = killproofAmount;
 	if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
 		totalAmount += cofferAmount;
-	}
-	else {
+	} else {
 		totalAmount += cofferAmount * Settings::instance().settings.cofferValue;
 	}
 	return totalAmount;
@@ -189,14 +177,43 @@ amountVal Player::getKpOverallTotal(const Killproof& kp) const {
 	amountVal totalAmount = killproofAmount;
 	if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
 		totalAmount += cofferAmount;
-	}
-	else {
+	} else {
 		totalAmount += cofferAmount * Settings::instance().settings.cofferValue;
 	}
 	return totalAmount;
 }
 
-void Player::loadKPs(nlohmann::json& json, Killproofs& killproofStorage, Coffers& cofferStorage) {
+void Player::LoadAll(const nlohmann::json& json) {
+	// save kpid
+	killproofId = json.at("kpid").get<std::string>();
+
+	loadKPs(json, killproofs, coffers);
+
+	if (json.contains("linked_totals")) {
+		auto linked_totals = json.at("linked_totals");
+		Killproofs& killproofs = linkedTotalKillproofs.emplace();
+		Coffers& coffers = linkedTotalCoffers.emplace();
+		loadKPs(linked_totals, killproofs, coffers);
+	}
+
+	if (json.contains("linked")) {
+		for (auto linked : json.at("linked")) {
+			std::string accountName = linked.at("account_name").get<std::string>();
+			const auto& playerEmplace = cachedPlayers.try_emplace(accountName, accountName, AddedBy::Miscellaneous);
+			if (playerEmplace.second) {
+				Player& player = playerEmplace.first->second;
+				player.killproofId = linked.at("kpid").get<std::string>();
+				loadKPs(linked, player.killproofs, player.coffers);
+			}
+
+			linkedAccounts.emplace_back(accountName);
+		}
+	}
+
+	this->status = LoadingStatus::Loaded;
+}
+
+void Player::loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, Coffers& cofferStorage) {
 	auto tokens = json.at("tokens");
 	// when field is null, data is not available
 	if (tokens.is_null()) {
@@ -224,7 +241,7 @@ void Player::loadKPs(nlohmann::json& json, Killproofs& killproofStorage, Coffers
 	// else it is an array (can be empty)
 	else if (killproofs.is_array()) {
 		// track all used killproof IDs
-		std::set<int> unUsedKPs = { 77302, 81743, 88485, 94020, 93781 };
+		std::set<int> unUsedKPs = {77302, 81743, 88485, 94020, 93781};
 
 		// iterate over all available killproofs
 		for (auto killproof : killproofs) {

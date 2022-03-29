@@ -72,8 +72,9 @@ public:
 	amountVal getKillproofsTotal(const Killproof& kp) const;
 	amountVal getCoffersTotal(const Killproof& kp) const;
 	amountVal getKpOverallTotal(const Killproof& kp) const;
-	
-	static void loadKPs(nlohmann::json& json, Killproofs& killproofStorage, Coffers& cofferStorage);
+
+	void LoadAll(const nlohmann::json& json);
+	static void loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, Coffers& cofferStorage);
 
 private:
 	Killproofs killproofs;
