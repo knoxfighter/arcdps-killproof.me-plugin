@@ -599,7 +599,7 @@ void KillproofUI::drawTextColumn(bool* open, const char* text, const char* usern
 		}
 
 		std::string actualText(text);
-		actualText.append("##");
+		actualText.append("###");
 		actualText.append(username);
 
 		*open = ImGuiEx::TreeNodeEx(actualText.c_str(), treeNodeFlags, isCommander && Settings::instance().settings.showCommander ? iconLoader.getTexture(ID_Commander_White) : nullptr);
