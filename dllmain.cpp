@@ -639,6 +639,7 @@ extern "C" __declspec(dllexport) void arcdps_unofficial_extras_subscriber_init(
 
 		addSelfUser(pExtrasInfo->SelfAccountName);
 
+		subscriberInfo->InfoVersion = 1;
 		subscriberInfo->SubscriberName = KILLPROOF_ME_PLUGIN_NAME;
 		subscriberInfo->SquadUpdateCallback = squad_update_callback;
 		subscriberInfo->LanguageChangedCallback = language_changed_callback;
