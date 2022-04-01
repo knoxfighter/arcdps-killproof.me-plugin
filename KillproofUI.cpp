@@ -483,13 +483,13 @@ void KillproofUI::DrawContent() {
 						const SYSTEMTIME& joinedTimeA = cachedPlayers.at(playerAName).joinedTime;
 						const SYSTEMTIME& joinedTimeB = cachedPlayers.at(playerBName).joinedTime;
 
+						auto tiedTimeA = std::tie(joinedTimeA.wYear, joinedTimeA.wMonth, joinedTimeA.wDay, joinedTimeA.wHour, joinedTimeA.wMinute, joinedTimeA.wSecond);
+						auto tiedTimeB = std::tie(joinedTimeB.wYear, joinedTimeB.wMonth, joinedTimeB.wDay, joinedTimeB.wHour, joinedTimeB.wMinute, joinedTimeB.wSecond);
+
 						if (descend) {
-							return joinedTimeA.wHour < joinedTimeB.wHour || (joinedTimeA.wHour == joinedTimeB.wHour && (joinedTimeA.wMinute < joinedTimeB.
-								wMinute || (joinedTimeA.wMinute == joinedTimeB.wMinute && joinedTimeA.wSecond < joinedTimeB.wSecond)));
-						} else {
-							return joinedTimeA.wHour > joinedTimeB.wHour || (joinedTimeA.wHour == joinedTimeB.wHour && (joinedTimeA.wMinute > joinedTimeB.
-								wMinute || (joinedTimeA.wMinute == joinedTimeB.wMinute && joinedTimeA.wSecond > joinedTimeB.wSecond)));
+							return tiedTimeA < tiedTimeB;
 						}
+						return tiedTimeA > tiedTimeB;
 					});
 				} else if (sorts_specs->Specs->ColumnUserID == accountNameId) {
 					// sort by account name. Account name is the value we used in trackedPlayers, so nothing more to do
