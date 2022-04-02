@@ -16,7 +16,7 @@
 #include <mutex>
 #include <Windows.h>
 
-using std::string_literals::operator ""s;
+// using std::string_literals::operator ""s;
 
 void KillproofUI::openInBrowser(const char* username) {
 	const auto& string = std::format("https://killproof.me/proof/{}", username);
@@ -64,7 +64,8 @@ const std::string& KillproofUI::getTitleDefault() {
 }
 
 const std::string& KillproofUI::getWindowID() {
-	return "Killproof.me"s;
+	static const std::string id{"Killproof.me"};
+	return id;
 }
 
 std::optional<std::string>& KillproofUI::getAppearAsInOption() {
@@ -547,28 +548,12 @@ void KillproofUI::DrawContent() {
 
 			// hide player without data, when setting is active
 			if (!(!settings.settings.showPrivateAccounts && player.status == LoadingStatus::NoDataAvailable)) {
-				bool open = drawRow(alignment, &player.joinedTime, player.username.c_str(), player.characterName.c_str(), player.killproofId.c_str(),
-									player.status,
-									[&player](const Killproof& kp) { return player.getKillproofs(kp); },
-									[&player](const Killproof& kp) { return player.getCoffers(kp); },
-									[&player](const Killproof& kp) { return player.getKpOverall(kp); },
-									player.linkedTotalKillproofs.has_value(), player.commander);
+				bool open = drawRow<false /*isLinkedAccount*/>(alignment, player, player.linkedTotalKillproofs.has_value());
 				if (open) {
 					for (std::string linkedAccount : player.linkedAccounts) {
 						Player& linkedPlayer = cachedPlayers.at(linkedAccount);
-						drawRow(alignment, nullptr, linkedPlayer.username.c_str(), linkedPlayer.characterName.c_str(), linkedPlayer.killproofId.c_str(),
-								LoadingStatus::Loaded,
-								[&linkedPlayer](const Killproof& kp) { return linkedPlayer.getKillproofs(kp); },
-								[&linkedPlayer](const Killproof& kp) { return linkedPlayer.getCoffers(kp); },
-								[&linkedPlayer](const Killproof& kp) { return linkedPlayer.getKpOverall(kp); },
-								false, false);
+						drawRow<true /*isLinkedAccount*/>(alignment, linkedPlayer, false);
 					}
-					drawRow(alignment, nullptr, lang.translate(LangKey::Overall).c_str(), "--->", "", player.status,
-							[&player](const Killproof& kp) { return player.getKillproofsTotal(kp); },
-							[&player](const Killproof& kp) { return player.getCoffersTotal(kp); },
-							[&player](const Killproof& kp) { return player.getKpOverallTotal(kp); },
-							false, false);
-
 					ImGui::TreePop();
 				}
 			}
@@ -588,7 +573,7 @@ void KillproofUI::newRow() {
 	++mCurrentRow;
 }
 
-void KillproofUI::drawTextColumn(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode, bool first, bool
+void KillproofUI::drawTextRow(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode, bool first, bool
                                  isCommander) {
 	if (treeNode) {
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
@@ -618,9 +603,8 @@ void KillproofUI::drawTextColumn(bool* open, const char* text, const char* usern
 	}
 }
 
-bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime, const char* username, const char* characterName, const char* killproofId,
-						  const std::atomic<LoadingStatus>& status,
-						  kpFunction killproofsFun, kpFunction coffersFun, kpFunction kpOverallFun, bool treeNode, bool isCommander) {
+template<bool isLinkedAccount>
+bool KillproofUI::drawRow(const Alignment& alignment, const Player& player, bool treeNode) {
 	ImGui::TableNextRow();
 
 	bool open = false;
@@ -635,9 +619,13 @@ bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime
 	}
 
 	// #
-	if (ImGui::TableNextColumn() && joinTime) {
-		drawTextColumn(&open, std::format("{:02d}:{:02d}:{:02d}", joinTime->wHour, joinTime->wMinute, joinTime->wSecond).c_str(), username, status,
-		               first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), false);
+	if constexpr (!isLinkedAccount) {
+		if (ImGui::TableNextColumn()) {
+			drawTextRow(&open, std::format("{:02d}:{:02d}:{:02d}", player.joinedTime.wHour, player.joinedTime.wMinute, player.joinedTime.wSecond).c_str(),
+				player.username.c_str(), player.status, first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), false);
+		}
+	} else {
+		ImGui::TableNextColumn();
 	}
 
 	bool usernameEnabled = true;
@@ -653,39 +641,75 @@ bool KillproofUI::drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime
 	}
 	// username
 	if (ImGui::TableNextColumn()) {
-		drawTextColumn(&open, username, username, status, first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), isCommander && usernameEnabled);
+		drawTextRow(&open, player.username.c_str(), player.username.c_str(), player.status, first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), player.commander && usernameEnabled);
 	}
 
 	// charactername
 	if (ImGui::TableNextColumn()) {
-		drawTextColumn(&open, characterName, username, status, first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), isCommander && !usernameEnabled);
+		drawTextRow(&open, player.characterName.c_str(), player.username.c_str(), player.status, first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), player.commander && !usernameEnabled);
 	}
 
 	// killproofID
 	if (ImGui::TableNextColumn()) {
-		drawTextColumn(&open, killproofId, username, status, first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), false);
+		drawTextRow(&open, player.killproofId.c_str(), player.username.c_str(), player.status, first == ImGui::TableGetColumnIndex() && treeNode, first == ImGui::TableGetColumnIndex(), false);
 	}
+
+	auto drawAccount = [&open, &alignment](const Player& player, int kpIndex)
+	{
+		const Killproof kp = static_cast<Killproof>(kpIndex);
+		const amountVal totalAmount = player.getKillproofs(kp);
+
+		if (player.status == LoadingStatus::LoadingById || player.status == LoadingStatus::LoadingByChar) {
+			ImGuiEx::SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), Settings::instance().settings.alignment);
+		} else if (totalAmount == -1 || player.status != LoadingStatus::Loaded) {
+			ImGuiEx::AlignedTextColumn(alignment, "%s", Settings::instance().settings.blockedDataText.c_str());
+		} else {
+			if (player.linkedTotalKillproofs.has_value()) {
+				if (open) {
+					ImGuiEx::AlignedTextColumn(alignment, "%i\n(%i)", totalAmount, player.getKillproofsTotal(kp));
+				} else {
+					ImGuiEx::AlignedTextColumn(alignment, "%i", player.getKillproofsTotal(kp));
+				}
+			} else {
+				ImGuiEx::AlignedTextColumn(alignment, "%i ", totalAmount);
+			}
+
+			if (ImGui::IsItemHovered()) {
+				ImGui::BeginTooltip();
+				if (player.linkedTotalKillproofs.has_value())
+				{
+					ImGui::Text("%s: %d (%d)", lang.translate(LangKey::Killproofs), player.getKillproofs(kp), player.getKillproofsTotal(kp));
+					ImGui::Text("%s: %d (%d)", lang.translate(LangKey::Coffers), player.getCoffers(kp), player.getCoffersTotal(kp));
+				} else {
+					ImGui::Text("%s: %d", lang.translate(LangKey::Killproofs), player.getKillproofs(kp));
+					ImGui::Text("%s: %d", lang.translate(LangKey::Coffers), player.getCoffers(kp));
+				}
+				ImGui::EndTooltip();
+			}
+		}
+	};
+	
+	auto drawLinkedAccount = [&alignment] (const Player& player, int kpIndex) {
+		const Killproof kp = static_cast<Killproof>(kpIndex);
+		const amountVal totalAmount = player.getKillproofs(kp);
+
+		ImGuiEx::AlignedTextColumn(alignment, "%i ", totalAmount);
+
+		if (ImGui::IsItemHovered()) {
+			ImGui::BeginTooltip();
+				ImGui::Text("%s: %d", lang.translate(LangKey::Killproofs), player.getKillproofs(kp));
+				ImGui::Text("%s: %d", lang.translate(LangKey::Coffers), player.getCoffers(kp));
+			ImGui::EndTooltip();
+		}
+	};
+
 
 	for (int i = 0; i < static_cast<int>(Killproof::FINAL_ENTRY); ++i) {
 		if (ImGui::TableNextColumn()) {
-			Killproof kp = static_cast<Killproof>(i);
-			amountVal totalAmount = kpOverallFun(kp);
-
-			if (status == LoadingStatus::LoadingById || status == LoadingStatus::LoadingByChar) {
-				ImGuiEx::SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), Settings::instance().settings.alignment);
-			} else if (totalAmount == -1 || status != LoadingStatus::Loaded) {
-				ImGuiEx::AlignedTextColumn(alignment, "%s", Settings::instance().settings.blockedDataText.c_str());
+			if constexpr (isLinkedAccount) {
+				drawLinkedAccount(player, i);
 			} else {
-				ImGuiEx::AlignedTextColumn(alignment, "%i", totalAmount);
-
-				if (ImGui::IsItemHovered()) {
-					ImGui::BeginTooltip();
-					std::string kpText = std::format("{}: {}", lang.translate(LangKey::Killproofs), killproofsFun(kp));
-					ImGui::TextUnformatted(kpText.c_str());
-					std::string cofferText = std::format("{}: {}", lang.translate(LangKey::Coffers), coffersFun(kp));
-					ImGui::TextUnformatted(cofferText.c_str());
-					ImGui::EndTooltip();
-				}
+				drawAccount(player, i);
 			}
 		}
 	}

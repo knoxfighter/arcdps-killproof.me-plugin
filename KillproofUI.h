@@ -44,10 +44,9 @@ protected:
 
 private:
 	static void openInBrowser(const char* username);
-	bool drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime, const char* username, const char* characterName, const char* killproofId, const std::atomic<LoadingStatus>& status,
-	             kpFunction killproofsFun, kpFunction coffersFun, kpFunction kpOverallFun, bool treeNode, bool isCommander = false);
-	void drawTextColumn(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode, bool first = false, bool
-	                    isCommander = false);
+	template<bool isLinkedAccount>
+	bool drawRow(const Alignment& alignment, const Player& player, bool treeNode);
+	void drawTextRow(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode, bool first, bool isCommander);
 	void newRow();
 
 	char userAddBuf[1024]{};
