@@ -21,8 +21,11 @@ void SettingsUI::Draw() {
 	Settings& settings = Settings::instance();
 
 	// Setting to select, which key is used to open the killproofs menu (will also close it)
+	KeyBinds::Modifier arcdpsModifier = KeyBindHandler::GetArcdpsModifier();
 	KeyBinds::Key oldKey = settings.settings.windowKey;
-	if (ImGuiEx::KeyCodeInput(lang.translate(LangKey::SettingsShortcutText).c_str(), settings.settings.windowKey, GlobalObjects::CURRENT_LANGUAGE, GlobalObjects::CURRENT_HKL)) {
+	if (ImGuiEx::KeyCodeInput(lang.translate(LangKey::SettingsShortcutText).c_str(), settings.settings.windowKey,
+	                          GlobalObjects::CURRENT_LANGUAGE, GlobalObjects::CURRENT_HKL,
+	                          ImGuiEx::KeyCodeInputFlags_FixedModifier, arcdpsModifier)) {
 		KeyBindHandler::instance().UpdateKeys(oldKey, settings.settings.windowKey);
 	}
 
@@ -54,7 +57,8 @@ void SettingsUI::Draw() {
 
 		// refill the cache with only tracked players
 		for (const Player& player : usersToKeep) {
-			const auto& tryEmplace = cachedPlayers.try_emplace(player.username, player.username, player.addedBy, player.self, player.characterName, player.id);
+			const auto& tryEmplace = cachedPlayers.try_emplace(player.username, player.username, player.addedBy,
+			                                                   player.self, player.characterName, player.id);
 
 			// load kp.me data if less than 10 people tracked
 			loadKillproofsSizeChecked(tryEmplace.first->second);
