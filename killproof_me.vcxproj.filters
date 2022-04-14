@@ -141,6 +141,12 @@
     <ClCompile Include="KillproofUIKeyBindComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="extension\Windows\Demo\DemoTable.cpp">
+      <Filter>Source Files\extension\Windows\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\Windows\Demo\DemoTableWindow.cpp">
+      <Filter>Source Files\extension\Windows\Demo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KillproofUI.h">
@@ -265,6 +271,15 @@
     </ClInclude>
     <ClInclude Include="KillproofUIKeyBindComponent.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Windows\MainTable.h">
+      <Filter>Header Files\extension\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Windows\Demo\DemoTable.h">
+      <Filter>Header Files\extension\Windows\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Windows\Demo\DemoTableWindow.h">
+      <Filter>Header Files\extension\Windows\Demo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

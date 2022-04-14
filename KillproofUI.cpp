@@ -499,9 +499,8 @@ void KillproofUI::DrawContent() {
 
 						if (descend) {
 							return playerAName < playerBName;
-						} else {
-							return playerAName > playerBName;
 						}
+						return playerAName > playerBName;
 					});
 				} else if (sorts_specs->Specs->ColumnUserID == characterNameId) {
 					// sort by character name
@@ -514,9 +513,8 @@ void KillproofUI::DrawContent() {
 
 						if (descend) {
 							return playerAChar < playerBChar;
-						} else {
-							return playerAChar > playerBChar;
 						}
+						return playerAChar > playerBChar;
 					});
 				} else {
 					// sort by any amount of KP
@@ -532,15 +530,17 @@ void KillproofUI::DrawContent() {
 						// descending: the more the higher up it gets
 						if (descend) {
 							return amountA > amountB;
-						} else {
-							return amountA < amountB;
 						}
+						return amountA < amountB;
 					});
 				}
 				sorts_specs->SpecsDirty = false;
 			}
 		}
 
+		/**
+		 * CONTENT
+		 */
 		// List of all players
 		for (const std::string& trackedPlayer : trackedPlayers) {
 			const Player& player = cachedPlayers.at(trackedPlayer);

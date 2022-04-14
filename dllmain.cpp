@@ -6,7 +6,6 @@
 #include <ranges>
 #include <sstream>
 #include <string>
-#include <wincodec.h>
 #include <Windows.h>
 
 #include "global.h"
@@ -24,7 +23,10 @@
 #include "extension/Singleton.h"
 #include "extension/Widgets.h"
 #include "extension/Windows/PositioningComponent.h"
+#ifdef _DEBUG
 #include "extension/Windows/Demo/DemoWindow.h"
+#include "extension/Windows/Demo/DemoTableWindow.h" 
+#endif
 
 #include "imgui/imgui.h"
 
@@ -301,6 +303,7 @@ uintptr_t mod_windows(const char* windowname) {
 		KillproofUI::instance().DrawOptionCheckbox();
 #if _DEBUG
 		DemoWindow::instance().DrawOptionCheckbox();
+		DemoTableWindow::instance().DrawOptionCheckbox();
 #endif
 	}
 	return 0;
@@ -321,6 +324,7 @@ void ShowKillproof() {
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 #if _DEBUG
 	DemoWindow::instance().Draw();
+	DemoTableWindow::instance().Draw();
 #endif
 	// try {
 	// ImGui::ShowMetricsWindow();
@@ -368,6 +372,7 @@ arcdps_exports* mod_init() {
 		// windows init
 #if _DEBUG
 		DemoWindow::instance().Init();
+		DemoTableWindow::instance().Init();
 #endif
 		KillproofUI::instance().Init();
 

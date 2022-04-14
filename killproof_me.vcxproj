@@ -164,6 +164,8 @@
     <ClCompile Include="extension\Widgets.cpp" />
     <ClCompile Include="extension\Windows\Demo\DemoKeyBindComponent.cpp" />
     <ClCompile Include="extension\Windows\Demo\DemoPositioningComponent.cpp" />
+    <ClCompile Include="extension\Windows\Demo\DemoTable.cpp" />
+    <ClCompile Include="extension\Windows\Demo\DemoTableWindow.cpp" />
     <ClCompile Include="extension\Windows\Demo\DemoWindow.cpp" />
     <ClCompile Include="extension\Windows\KeyBindComponent.cpp" />
     <ClCompile Include="extension\Windows\MainWindow.cpp" />
@@ -201,8 +203,11 @@
     <ClInclude Include="extension\Windows\ComponentBase.h" />
     <ClInclude Include="extension\Windows\Demo\DemoKeyBindComponent.h" />
     <ClInclude Include="extension\Windows\Demo\DemoPositioningComponent.h" />
+    <ClInclude Include="extension\Windows\Demo\DemoTable.h" />
+    <ClInclude Include="extension\Windows\Demo\DemoTableWindow.h" />
     <ClInclude Include="extension\Windows\Demo\DemoWindow.h" />
     <ClInclude Include="extension\Windows\KeyBindComponent.h" />
+    <ClInclude Include="extension\Windows\MainTable.h" />
     <ClInclude Include="extension\Windows\MainWindow.h" />
     <ClInclude Include="extension\Windows\PositioningComponent.h" />
     <ClInclude Include="global.h" />
