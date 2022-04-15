@@ -450,8 +450,10 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, ImGuiC
 /* release mod -- return ignored */
 uintptr_t mod_release() {
 	// finish and clear updateState
-	GlobalObjects::UPDATE_STATE->FinishPendingTasks();
-	GlobalObjects::UPDATE_STATE.reset(nullptr);
+	if (GlobalObjects::UPDATE_STATE) {
+		GlobalObjects::UPDATE_STATE->FinishPendingTasks();
+		GlobalObjects::UPDATE_STATE.reset(nullptr);
+	}
 
 	icons.clear();
 
