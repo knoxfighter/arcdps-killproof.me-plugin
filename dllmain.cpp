@@ -95,21 +95,6 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			case WM_KEYDOWN:
 			case WM_SYSKEYDOWN: {
 				const int vkey = (int)wParam;
-				// GlobalObjects::UpdateArcExports();
-				// close windows on escape press (return 0, so arc and gw2 are not processing this event)
-				// bool& show_killproof = settings.getShowKillproof();
-				// if (!arc_hide_all && vkey == VK_ESCAPE) {
-				// 	// close killproof window with escape
-				// 	if (arc_window_fastclose && !settings.getDisableEscClose() && show_killproof) {
-				// 		show_killproof = false;
-				// 		return 0;
-				// 	}
-				// }
-				// toggle killproof window
-				// if (io->KeysDown[arc_global_mod1] && io->KeysDown[arc_global_mod2] && vkey == settings.getKillProofKey() && !arc_hide_all) {
-				// 	show_killproof = !show_killproof;
-				// 	return 0;
-				// }
 				if (vkey == VK_CONTROL) {
 					io->KeyCtrl = true;
 				} else if (vkey == VK_MENU) {
