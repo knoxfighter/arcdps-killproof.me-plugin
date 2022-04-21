@@ -34,7 +34,7 @@ protected:
 	std::optional<std::string>& getAppearAsInOption() override;
 	const std::string& getAppearAsInOptionDefault() override;
 	bool& getShowBackground() override;
-	bool& getShowScrollbar() override;
+	bool& GetShowScrollbar() override;
 	std::optional<ImVec2>& getPadding() override;
 	bool getMaxHeightActive() override;
 

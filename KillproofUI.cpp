@@ -79,7 +79,7 @@ bool& KillproofUI::getShowBackground() {
 	return Settings::instance().settings.showBackground;
 }
 
-bool& KillproofUI::getShowScrollbar() {
+bool& KillproofUI::GetShowScrollbar() {
 	return Settings::instance().settings.showScrollbar;
 }
 
@@ -374,7 +374,7 @@ void KillproofUI::DrawContent() {
 
 	ImVec2 outerSize (0.f, getMaxHeightActive() ? mCurrentCursorPos : 0.f);
 
-	if (ImGuiEx::BeginTable("kp.me", columnCount, tableFlags, outerSize, 0, getShowScrollbar() ? 0 : ImGuiWindowFlags_NoScrollbar)) {
+	if (ImGuiEx::BeginTable("kp.me", columnCount, tableFlags, outerSize, 0, GetShowScrollbar() ? 0 : ImGuiWindowFlags_NoScrollbar)) {
 		table = GImGui->CurrentTable;
 		ImU32 accountNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 1;
 		ImU32 characterNameId = static_cast<ImU32>(Killproof::FINAL_ENTRY) + 2;
