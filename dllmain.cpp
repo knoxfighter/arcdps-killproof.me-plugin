@@ -40,7 +40,6 @@ ID3D11Device* d3d11Device;
 UINT directxVersion;
 
 // define `extern`s of other files
-SingletonManager g_singletonManagerInstance;
 arc_export_func_u64 ARC_EXPORT_E6;
 arc_export_func_u64 ARC_EXPORT_E7;
 e3_func_ptr ARC_LOG_FILE;
