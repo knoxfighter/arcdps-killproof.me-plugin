@@ -3,6 +3,7 @@
 #include "global.h"
 #include "KillproofUI.h"
 #include "UpdateChecker.h"
+#include "Settings.h"
 
 #include "extension/arcdps_structs.h"
 
@@ -56,7 +57,7 @@ void Player::loadKillproofs() {
 				// Therefore `this` is invalid and going on further results in an UseAfterFree !
 				if (!insertRes.inserted) {
 					// last action to do: remove the wrong username from the list of tracked players
-					removePlayer(username);
+					removePlayer(username, AddedBy::Miscellaneous);
 					// add the new accountname to display, if it is currently not shown
 					addPlayerTracking(accountname);
 					// add charactername to correct user
@@ -130,7 +131,7 @@ void Player::loadKillproofs() {
 		}
 
 		// say UI to reload sorting
-		KillproofUI::instance().needSort = true;
+		KillproofUI::instance().RequestSort();
 	};
 
 	// create the link for getting by accountname/kpid
@@ -203,6 +204,7 @@ void Player::LoadAll(const nlohmann::json& json) {
 			if (playerEmplace.second) {
 				Player& player = playerEmplace.first->second;
 				player.killproofId = linked.at("kpid").get<std::string>();
+				player.status = LoadingStatus::LoadedByLinked;
 				loadKPs(linked, player.killproofs, player.coffers);
 			}
 

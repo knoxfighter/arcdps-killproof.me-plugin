@@ -164,9 +164,8 @@ amountVal Killproofs::getAmount(const Killproof& id) const {
 	const auto killproofIt = killproofs.find(id);
 	if (killproofIt == killproofs.end()) {
 		return -1;
-	} else {
-		return killproofIt->second;
 	}
+	return killproofIt->second;
 }
 
 void Killproofs::setAmountFromId(const std::string& id, const amountVal& amount) {

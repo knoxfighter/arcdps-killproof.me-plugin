@@ -147,6 +147,9 @@
     <ClCompile Include="extension\Windows\Demo\DemoTableWindow.cpp">
       <Filter>Source Files\extension\Windows\Demo</Filter>
     </ClCompile>
+    <ClCompile Include="KillproofUITable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KillproofUI.h">
@@ -280,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="extension\Windows\Demo\DemoTableWindow.h">
       <Filter>Header Files\extension\Windows\Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="KillproofUITable.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

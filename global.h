@@ -6,7 +6,6 @@
 #include <d3d9.h>
 
 #include "Killproofs.h"
-#include "Player.h"
 #include "UpdateChecker.h"
 
 #include "extension/UpdateCheckerBase.h"
@@ -38,7 +37,7 @@ inline bool fileExists(const std::string& filename) {
 	return (stat(filename.c_str(), &buffer) == 0);
 }
 
-void removePlayer(const std::string& username, AddedBy addedByToDelete = AddedBy::Miscellaneous);
+void removePlayer(const std::string& username, AddedBy addedByToDelete);
 // void removePlayerInstance(const std::string& username);
 // void removePlayerTracking(const std::string& username);
 bool addPlayerTracking(const std::string& username);

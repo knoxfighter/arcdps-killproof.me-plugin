@@ -4,6 +4,7 @@
   "version-string": "2.6.4",
   "dependencies": [
     "cpr",
-    "nlohmann-json"
+    "nlohmann-json",
+	"magic-enum"
   ]
 }

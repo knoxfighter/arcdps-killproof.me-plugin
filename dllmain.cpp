@@ -192,7 +192,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						}
 
 						// Tell the UI to resort, cause we added a player
-						KillproofUI::instance().needSort = true;
+						KillproofUI::instance().RequestSort();
 					}
 					/* remove */
 					else {
@@ -523,7 +523,7 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 			}
 
 			// Tell the UI to resort, cause we added a player
-			KillproofUI::instance().needSort = true;
+			KillproofUI::instance().RequestSort();
 		} else // User removed
 		{
 			if (username == selfAccountName) {

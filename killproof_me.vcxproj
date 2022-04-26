@@ -90,7 +90,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;_DEBUG;KILLPROOFME_EXPORTS;_WINDOWS;_USRDLL;_SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MAGIC_ENUM_RANGE_MAX=256;NOMINMAX;_DEBUG;KILLPROOFME_EXPORTS;_WINDOWS;_USRDLL;_SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -109,7 +109,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;_DEBUG;KILLPROOFME_EXPORTS;_WINDOWS;_USRDLL;_SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MAGIC_ENUM_RANGE_MAX=256;NOMINMAX;_DEBUG;KILLPROOFME_EXPORTS;_WINDOWS;_USRDLL;_SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -130,7 +130,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;NDEBUG;KILLPROOFME_EXPORTS;_WINDOWS;_USRDLL;_SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MAGIC_ENUM_RANGE_MAX=256;NOMINMAX;NDEBUG;KILLPROOFME_EXPORTS;_WINDOWS;_USRDLL;_SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -179,6 +179,7 @@
     <ClCompile Include="Killproofs.cpp" />
     <ClCompile Include="KillproofUI.cpp" />
     <ClCompile Include="KillproofUIKeyBindComponent.cpp" />
+    <ClCompile Include="KillproofUITable.cpp" />
     <ClCompile Include="Lang.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Settings.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="Killproofs.h" />
     <ClInclude Include="KillproofUIKeyBindComponent.h" />
     <ClInclude Include="KillproofUIPositioningComponent.h" />
+    <ClInclude Include="KillproofUITable.h" />
     <ClInclude Include="Lang.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="KillproofUI.h" />

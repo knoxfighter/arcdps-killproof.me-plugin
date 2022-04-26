@@ -1,5 +1,6 @@
 #pragma once
 
+#include "KillproofUITable.h"
 #include "Player.h"
 
 #include "extension/arcdps_structs.h"
@@ -9,20 +10,19 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_internal.h"
 
-#include <atomic>
-
 typedef std::function<amountVal(const Killproof&)> kpFunction;
 
 class KillproofUI : public MainWindow, public Singleton<KillproofUI> {
 public:
-	std::atomic_bool needSort = false;
-
 	KillproofUI();
 	bool& GetOpenVar() override;
 	void SetMaxHeightCursorPos(float pNewCursorPos = ImGui::GetCursorPosY()) override;
 	void Draw(ImGuiWindowFlags imGuiWindowFlags = 0, MainWindowFlags mainWindowFlags = 0) override {
 		imGuiWindowFlags |= ImGuiWindowFlags_NoScrollbar;
 		MainWindow::Draw(imGuiWindowFlags, mainWindowFlags);
+	}
+	void RequestSort() {
+		mTable->RequestSort();
 	}
 
 protected:
@@ -43,15 +43,8 @@ protected:
 	void DrawContent() override;
 
 private:
-	static void openInBrowser(const char* username);
-	bool drawRow(const Alignment& alignment, const SYSTEMTIME* joinTime, const char* username, const char* characterName, const char* killproofId, const std::atomic<LoadingStatus>& status,
-	             kpFunction killproofsFun, kpFunction coffersFun, kpFunction kpOverallFun, bool treeNode, bool isCommander = false);
-	void drawTextColumn(bool* open, const char* text, const char* username, const std::atomic<LoadingStatus>& status, bool treeNode, bool first = false, bool
-	                    isCommander = false);
-	void newRow();
-
 	char userAddBuf[1024]{};
-	ImGuiTable* table = nullptr;
 	int mCurrentRow = 0;
 	float mCurrentCursorPos = 0;
+	std::unique_ptr<KillproofUITable> mTable;
 };

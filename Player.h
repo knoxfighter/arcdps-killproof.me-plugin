@@ -2,25 +2,28 @@
 
 #include "Coffers.h"
 #include "Killproofs.h"
-#include "Settings.h"
 
 #include <optional>
 #include <string>
+#include <Windows.h>
 
 #include <nlohmann/json.hpp>
 
 enum class LoadingStatus {
-	NotLoaded,
 	// loading was not yet tried
-	KpMeError,
+	NotLoaded,
 	// Error returned from kp.me
-	NoDataAvailable,
+	KpMeError,
 	// User has no kp.me account or account is private
-	Loaded,
+	NoDataAvailable,
 	// Successful, all data available to use
-	LoadingById,
+	Loaded,
 	// Data is currently being loaded by accountname oder kpid
-	LoadingByChar // Data is currently bering loaded by charactername
+	LoadingById,
+	// Data is currently bering loaded by charactername
+	LoadingByChar,
+	// Data was loaded by a linked account name
+	LoadedByLinked,
 };
 
 enum class AddedBy {

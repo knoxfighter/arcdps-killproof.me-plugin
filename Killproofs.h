@@ -7,6 +7,10 @@
 
 #define amountVal int32_t
 
+/**
+ * The ID of each killproof item.
+ * This also is the UserID of the `MainTable`, make sure it is corresponding to it.
+ */
 enum class Killproof : int {
 	// raid
 	li,
@@ -49,9 +53,7 @@ enum class Killproof : int {
 	// strikes
 	boneskinnerVial,
 
-	// always last element
-	// ALWAYS UPDATE AFTER CHANGING THE ENUM
-	FINAL_ENTRY,
+	// no final entry anymore, use `magic_enum` to iterate over the enum.
 };
 
 bool defaultHidden(const Killproof& kp);
