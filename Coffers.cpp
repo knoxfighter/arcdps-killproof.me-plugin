@@ -67,113 +67,69 @@ void Coffers::setAmount(const int& id, const int32_t& amount) {
 	switch (id) {
 		case 91203:
 			coffers[Killproof::vg] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91215:
 			coffers[Killproof::gorse] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91147:
 			coffers[Killproof::sabetha] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91160:
 			coffers[Killproof::sloth] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91252:
 			coffers[Killproof::matthias] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91262:
 			coffers[Killproof::escort] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91187:
 			coffers[Killproof::kc] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91182:
 			coffers[Killproof::xera] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91186:
 			coffers[Killproof::cairn] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91191:
 			coffers[Killproof::mo] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91267:
 			coffers[Killproof::samarog] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91233:
 			coffers[Killproof::deimos] = amount;
-			coffers[Killproof::li] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91211:
 			coffers[Killproof::desmina] = amount;
-			coffers[Killproof::ld] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91244:
 			coffers[Killproof::river] = amount;
-			coffers[Killproof::ld] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91138:
 			coffers[Killproof::statues] = amount;
-			coffers[Killproof::ld] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91220:
 			coffers[Killproof::dhuum] = amount;
-			coffers[Killproof::ld] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91157:
 			coffers[Killproof::ca] = amount;
-			coffers[Killproof::ld] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91166:
 			coffers[Killproof::twins] = amount;
-			coffers[Killproof::ld] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91237:
 			coffers[Killproof::qadim] = amount;
-			coffers[Killproof::ld] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91200:
 			coffers[Killproof::adina] = amount;
-			coffers[Killproof::ld] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91241:
 			coffers[Killproof::sabir] = amount;
-			coffers[Killproof::ld] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 		case 91260:
 			coffers[Killproof::qadim2] = amount;
-			coffers[Killproof::ld] += amount;
-			coffers[Killproof::liLd] += amount;
 			break;
 	}
 }

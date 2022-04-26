@@ -2,6 +2,10 @@
 
 #include "Killproofs.h"
 
+/**
+ * LI/LD are already tracked from coffers!
+ * Don't add them additionally.
+ */
 class Coffers {
 	std::map<Killproof, amountVal> coffers = {
 			{Killproof::li, 0},
