@@ -65,7 +65,7 @@ void Player::loadKillproofs() {
 					if (status == LoadingStatus::LoadingByChar) {
 						actualPlayer.characterName = username;
 					}
-					if (actualPlayer.status == LoadingStatus::NoDataAvailable) {
+					if (actualPlayer.status == LoadingStatus::NoDataAvailable || actualPlayer.status == LoadingStatus::LoadedByLinked) {
 						actualPlayer.LoadAll(json);
 					}
 					return;
@@ -88,10 +88,6 @@ void Player::loadKillproofs() {
 		}
 		// silently set, when user not found
 		else if (response.status_code == 404) {
-			this->killproofs.setAllKillproofFieldsToBlocked();
-			this->killproofs.setAllTokensFieldsToBlocked();
-			this->linkedTotalKillproofs.reset();
-
 			// try again as charactername (only when manually added)
 			if (status == LoadingStatus::LoadingById && addedBy == AddedBy::Manually) {
 				std::string new_link = "https://killproof.me/api/character/";
@@ -146,40 +142,46 @@ void Player::loadKillproofs() {
 	cprCall.detach();
 }
 
-amountVal Player::getKpOverall(const Killproof& kp) const {
-	amountVal killproofAmount = killproofs.getAmount(kp);
-	amountVal cofferAmount = coffers.getAmount(kp);
-	amountVal totalAmount = killproofAmount;
-	if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
-		totalAmount += cofferAmount;
-	} else {
-		totalAmount += cofferAmount * Settings::instance().settings.cofferValue;
+std::optional<amountVal> Player::getKpOverall(const Killproof& kp) const {
+	const auto& killproofAmount = killproofs.GetAmount(kp);
+	const auto& cofferAmount = coffers.GetAmount(kp);
+
+	if (!killproofAmount && !cofferAmount) return std::nullopt;
+
+	amountVal totalAmount = killproofAmount ? killproofAmount.value() : 0;
+
+	if (cofferAmount) {
+		if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
+			totalAmount += cofferAmount.value();
+		} else {
+			totalAmount += cofferAmount.value() * Settings::instance().settings.cofferValue;
+		}
 	}
 	return totalAmount;
 }
 
-amountVal Player::getKillproofsTotal(const Killproof& kp) const {
-	if (linkedTotalKillproofs) {
-		return linkedTotalKillproofs->getAmount(kp);
-	}
-	return 0;
+std::optional<amountVal> Player::getKillproofsTotal(const Killproof& kp) const {
+	return linkedTotalKillproofs ? linkedTotalKillproofs->GetAmount(kp) : std::nullopt;
 }
 
-amountVal Player::getCoffersTotal(const Killproof& kp) const {
-	if (linkedTotalCoffers) {
-		return linkedTotalCoffers->getAmount(kp);
-	}
-	return 0;
+std::optional<amountVal> Player::getCoffersTotal(const Killproof& kp) const {
+	return linkedTotalCoffers ? linkedTotalCoffers->GetAmount(kp) : std::nullopt;
 }
 
-amountVal Player::getKpOverallTotal(const Killproof& kp) const {
-	amountVal killproofAmount = getKillproofsTotal(kp);
-	amountVal cofferAmount = getCoffersTotal(kp);
-	amountVal totalAmount = killproofAmount;
-	if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
-		totalAmount += cofferAmount;
-	} else {
-		totalAmount += cofferAmount * Settings::instance().settings.cofferValue;
+std::optional<amountVal> Player::getKpOverallTotal(const Killproof& kp) const {
+	const auto& killproofAmount = getKillproofsTotal(kp);
+	const auto& cofferAmount = getCoffersTotal(kp);
+
+	if (!killproofAmount && !cofferAmount) return std::nullopt;
+
+	amountVal totalAmount = killproofAmount ? killproofAmount.value() : 0;
+
+	if (cofferAmount) {
+		if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
+			totalAmount += cofferAmount.value();
+		} else {
+			totalAmount += cofferAmount.value() * Settings::instance().settings.cofferValue;
+		}
 	}
 	return totalAmount;
 }
@@ -191,9 +193,9 @@ void Player::LoadAll(const nlohmann::json& json) {
 	loadKPs(json, killproofs, coffers);
 
 	if (json.contains("linked_totals")) {
-		auto linked_totals = json.at("linked_totals");
+		const auto linked_totals = json.at("linked_totals");
 		Killproofs& killproofs = linkedTotalKillproofs.emplace();
-		Coffers& coffers = linkedTotalCoffers.emplace();
+		Killproofs& coffers = linkedTotalCoffers.emplace();
 		loadKPs(linked_totals, killproofs, coffers);
 	}
 
@@ -215,57 +217,40 @@ void Player::LoadAll(const nlohmann::json& json) {
 	this->status = LoadingStatus::Loaded;
 }
 
-void Player::loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, Coffers& cofferStorage) {
+void Player::loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, Killproofs& cofferStorage) {
 	auto tokens = json.at("tokens");
 	// when field is null, data is not available
-	if (tokens.is_null()) {
-		// set all tokens fields to -1
-		killproofStorage.setAllTokensFieldsToBlocked();
-	}
 	// else it is an array (can be empty)
-	else if (tokens.is_array()) {
-		for (auto token : tokens) {
+	if (tokens.is_array()) {
+		for (const auto& token : tokens) {
 			auto id = token.at("id");
 			if (id.is_string()) {
-				killproofStorage.setAmountFromId(id.get<std::string>(), token.at("amount"));
+				killproofStorage.SetAmount(id.get<std::string>(), token.at("amount"));
 			} else if (id.is_number_integer()) {
-				killproofStorage.setAmountFromId(id.get<int>(), token.at("amount"));
+				killproofStorage.SetAmount(id.get<int>(), token.at("amount"));
 			}
 		}
 	}
 
 	auto killproofs = json.at("killproofs");
 	// when field is null, data is not available
-	if (killproofs.is_null()) {
-		// set all killproof fields to -1
-		killproofStorage.setAllKillproofFieldsToBlocked();
-	}
 	// else it is an array (can be empty)
-	else if (killproofs.is_array()) {
-		// track all used killproof IDs
-		std::set<int> unUsedKPs = {77302, 81743, 88485, 94020, 93781};
-
+	if (killproofs.is_array()) {
 		// iterate over all available killproofs
-		for (auto killproof : killproofs) {
+		for (const auto& killproof : killproofs) {
 			int kpId = killproof.at("id").get<int>();
-			unUsedKPs.erase(kpId);
-			killproofStorage.setAmountFromId(kpId, killproof.at("amount"));
-		}
-
-		// set rest KPs to blocked
-		for (int unUsedKP : unUsedKPs) {
-			killproofStorage.setBlockedFromId(unUsedKP);
+			killproofStorage.SetAmount(kpId, killproof.at("amount"));
 		}
 	}
 
 	auto coffers = json.at("coffers");
-	if (coffers.is_null()) {
-		cofferStorage.setAllTokensFieldsToBlocked();
-	} else if (coffers.is_array()) {
-		for (auto coffer : coffers) {
+	// when field is null, data is not available
+	// else it is an array (can be empty)
+	if (coffers.is_array()) {
+		for (const auto& coffer : coffers) {
 			int cofferId = coffer.at("id").get<int>();
 
-			cofferStorage.setAmount(cofferId, coffer.at("amount"));
+			cofferStorage.SetAmount<true>(cofferId, coffer.at("amount"));
 		}
 	}
 }

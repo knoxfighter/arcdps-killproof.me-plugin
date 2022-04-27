@@ -152,7 +152,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Coffers.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="extension\imgui_stdlib.cpp" />
     <ClCompile Include="extension\KeyBindHandler.cpp" />
@@ -189,7 +188,6 @@
     <ClCompile Include="UpdateChecker.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Coffers.h" />
     <ClInclude Include="extension\imgui_stdlib.h" />
     <ClInclude Include="extension\KeyBindHandler.h" />
     <ClInclude Include="extension\KeyInput.h" />

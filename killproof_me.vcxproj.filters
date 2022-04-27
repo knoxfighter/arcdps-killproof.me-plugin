@@ -99,9 +99,6 @@
     <ClCompile Include="UpdateChecker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Coffers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="extension\imgui_stdlib.cpp">
       <Filter>Source Files\extension</Filter>
     </ClCompile>
@@ -217,9 +214,6 @@
     </ClInclude>
     <ClInclude Include="extension\arcdps_structs_slim.h">
       <Filter>Header Files\extension</Filter>
-    </ClInclude>
-    <ClInclude Include="Coffers.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="extension\imgui_stdlib.h">
       <Filter>Header Files\extension</Filter>

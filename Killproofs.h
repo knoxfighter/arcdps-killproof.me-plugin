@@ -64,52 +64,160 @@ inline std::string to_string(Killproof e) {
 }
 
 class Killproofs {
-	std::map<Killproof, amountVal> killproofs = {
-		{Killproof::li, -1},
-		{Killproof::ld, -1},
-		{Killproof::uce, -1},
-		{Killproof::ufe, -1},
-		{Killproof::vg, -1},
-		{Killproof::gorse, -1},
-		{Killproof::sabetha, -1},
-		{Killproof::sloth, -1},
-		{Killproof::matthias, -1},
-		{Killproof::escort, -1},
-		{Killproof::kc, -1},
-		{Killproof::xera, -1},
-		{Killproof::cairn, -1},
-		{Killproof::mo, -1},
-		{Killproof::samarog, -1},
-		{Killproof::deimos, -1},
-		{Killproof::desmina, -1},
-		{Killproof::river, -1},
-		{Killproof::statues, -1},
-		{Killproof::dhuum, -1},
-		{Killproof::ca, -1},
-		{Killproof::twins, -1},
-		{Killproof::qadim, -1},
-		{Killproof::sabir, -1},
-		{Killproof::adina, -1},
-		{Killproof::qadim2, -1},
-		{Killproof::liLd, -1},
-		{Killproof::boneskinnerVial, -1},
-	};
+	std::map<Killproof, amountVal> killproofs;
 	mutable std::mutex mapMutex;
 
 public:
 	/**
 	 * GETTER
 	 */
-	amountVal getAmount(const std::string& id) const;
-	amountVal getAmount(const Killproof& id) const;
+	std::optional<amountVal> GetAmount(const Killproof& id) const;
 
 	/**
 	 * SETTER
 	 */
-	void setAmountFromId(const std::string& id, const amountVal& amount);
-	void setAmountFromId(const int& id, const amountVal& amount);
-	void setAmountFromEnum(const Killproof& killproof, const amountVal& amount);
-	void setAllTokensFieldsToBlocked();
-	void setAllKillproofFieldsToBlocked();
-	void setBlockedFromId(const int& id);
+	template<bool CofferIds = false>
+	void SetAmount(const std::string& id, const amountVal& amount) {
+		SetAmount<CofferIds>(std::stoi(id), amount);
+	}
+
+	template<bool CofferIds = false>
+	void SetAmount(const int& id, const amountVal& amount) {
+		std::lock_guard<std::mutex> guard(mapMutex);
+
+		if constexpr (CofferIds) {
+			switch (id) {
+				case 91203:
+					killproofs[Killproof::vg] = amount;
+					break;
+				case 91215:
+					killproofs[Killproof::gorse] = amount;
+					break;
+				case 91147:
+					killproofs[Killproof::sabetha] = amount;
+					break;
+				case 91160:
+					killproofs[Killproof::sloth] = amount;
+					break;
+				case 91252:
+					killproofs[Killproof::matthias] = amount;
+					break;
+				case 91262:
+					killproofs[Killproof::escort] = amount;
+					break;
+				case 91187:
+					killproofs[Killproof::kc] = amount;
+					break;
+				case 91182:
+					killproofs[Killproof::xera] = amount;
+					break;
+				case 91186:
+					killproofs[Killproof::cairn] = amount;
+					break;
+				case 91191:
+					killproofs[Killproof::mo] = amount;
+					break;
+				case 91267:
+					killproofs[Killproof::samarog] = amount;
+					break;
+				case 91233:
+					killproofs[Killproof::deimos] = amount;
+					break;
+				case 91211:
+					killproofs[Killproof::desmina] = amount;
+					break;
+				case 91244:
+					killproofs[Killproof::river] = amount;
+					break;
+				case 91138:
+					killproofs[Killproof::statues] = amount;
+					break;
+				case 91220:
+					killproofs[Killproof::dhuum] = amount;
+					break;
+				case 91157:
+					killproofs[Killproof::ca] = amount;
+					break;
+				case 91166:
+					killproofs[Killproof::twins] = amount;
+					break;
+				case 91237:
+					killproofs[Killproof::qadim] = amount;
+					break;
+				case 91200:
+					killproofs[Killproof::adina] = amount;
+					break;
+				case 91241:
+					killproofs[Killproof::sabir] = amount;
+					break;
+				case 91260:
+					killproofs[Killproof::qadim2] = amount;
+					break;
+			}
+		} else {
+			switch (id) {
+				case 77302:
+					killproofs[Killproof::li] = amount;
+				// set li/ld amount
+				killproofs[Killproof::liLd] = killproofs[Killproof::ld] + amount;
+				break;
+				case 88485:
+					killproofs[Killproof::ld] = amount;
+				// set li/ld amount
+				killproofs[Killproof::liLd] = killproofs[Killproof::li] + amount;
+				break;
+				case 81743: killproofs[Killproof::uce] = amount;
+				break;
+				case 94020: killproofs[Killproof::ufe] = amount;
+				break;
+				case 77705: killproofs[Killproof::vg] = amount;
+				break;
+				case 77751: killproofs[Killproof::gorse] = amount;
+				break;
+				case 77728: killproofs[Killproof::sabetha] = amount;
+				break;
+				case 77706: killproofs[Killproof::sloth] = amount;
+				break;
+				case 77679: killproofs[Killproof::matthias] = amount;
+				break;
+				case 78873: killproofs[Killproof::escort] = amount;
+				break;
+				case 78902: killproofs[Killproof::kc] = amount;
+				break;
+				case 78942: killproofs[Killproof::xera] = amount;
+				break;
+				case 80623: killproofs[Killproof::cairn] = amount;
+				break;
+				case 80269: killproofs[Killproof::mo] = amount;
+				break;
+				case 80087: killproofs[Killproof::samarog] = amount;
+				break;
+				case 80542: killproofs[Killproof::deimos] = amount;
+				break;
+				case 85993: killproofs[Killproof::desmina] = amount;
+				break;
+				case 85785: killproofs[Killproof::river] = amount;
+				break;
+				case 85800: killproofs[Killproof::statues] = amount;
+				break;
+				case 85633: killproofs[Killproof::dhuum] = amount;
+				break;
+				case 88543: killproofs[Killproof::ca] = amount;
+				break;
+				case 88860: killproofs[Killproof::twins] = amount;
+				break;
+				case 88645: killproofs[Killproof::qadim] = amount;
+				break;
+				case 91270: killproofs[Killproof::sabir] = amount;
+				break;
+				case 91246: killproofs[Killproof::adina] = amount;
+				break;
+				case 91175: killproofs[Killproof::qadim2] = amount;
+				break;
+				case 93781: killproofs[Killproof::boneskinnerVial] = amount;
+				break;
+				default: break;
+			}
+		}
+	}
 };

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Coffers.h"
 #include "Killproofs.h"
 
 #include <optional>
@@ -55,7 +54,6 @@ public:
 	AddedBy addedBy;
 	std::vector<std::string> linkedAccounts;
 	bool commander = false;
-	std::optional<Killproofs> linkedTotalKillproofs;
 	SYSTEMTIME joinedTime;
 	bool self = false;
 
@@ -64,23 +62,32 @@ public:
 	}
 
 	void loadKillproofs();
-	amountVal getKillproofs(const Killproof& kp) const {
-		return killproofs.getAmount(kp);
+	std::optional<amountVal> getKillproofs(const Killproof& kp) const {
+		return killproofs.GetAmount(kp);
 	}
-	amountVal getCoffers(const Killproof& kp) const {
-		return coffers.getAmount(kp);
+	std::optional<amountVal> getCoffers(const Killproof& kp) const {
+		return coffers.GetAmount(kp);
 	}
-	amountVal getKpOverall(const Killproof& kp) const;
+	/**
+	 * The amount of killproofs combined with the amount still inside coffers.
+	 */
+	std::optional<amountVal> getKpOverall(const Killproof& kp) const;
 
-	amountVal getKillproofsTotal(const Killproof& kp) const;
-	amountVal getCoffersTotal(const Killproof& kp) const;
-	amountVal getKpOverallTotal(const Killproof& kp) const;
+
+	/****************/
+	/* Linked Total */
+	/****************/
+
+	std::optional<amountVal> getKillproofsTotal(const Killproof& kp) const;
+	std::optional<amountVal> getCoffersTotal(const Killproof& kp) const;
+	std::optional<amountVal> getKpOverallTotal(const Killproof& kp) const;
 
 	void LoadAll(const nlohmann::json& json);
-	static void loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, Coffers& cofferStorage);
+	static void loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, Killproofs& cofferStorage);
 
 private:
 	Killproofs killproofs;
-	Coffers coffers;
-	std::optional<Coffers> linkedTotalCoffers;
+	Killproofs coffers;
+	std::optional<Killproofs> linkedTotalKillproofs;
+	std::optional<Killproofs> linkedTotalCoffers;
 };

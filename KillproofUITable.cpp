@@ -62,22 +62,22 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 			const auto& killproof = magic_enum::enum_cast<Killproof>(column.UserId);
 			if (killproof.has_value()) {
 				Killproof kp = killproof.value();
-				const amountVal totalAmount = pTotal ? pPlayer.getKpOverallTotal(kp) : pPlayer.getKpOverall(kp);
+				const std::optional<amountVal> totalAmount = pTotal ? pPlayer.getKpOverallTotal(kp) : pPlayer.getKpOverall(kp);
 
 				if (pPlayer.status == LoadingStatus::LoadingById || pPlayer.status == LoadingStatus::LoadingByChar) {
 					ImGuiEx::SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), Settings::instance().settings.alignment);
-				} else if (totalAmount == -1 || (pPlayer.status != LoadingStatus::Loaded && pPlayer.status != LoadingStatus::LoadedByLinked)) {
+				} else if (!totalAmount.has_value() || (pPlayer.status != LoadingStatus::Loaded && pPlayer.status != LoadingStatus::LoadedByLinked)) {
 					drawTextColumn(open, Settings::instance().settings.blockedDataText, pPlayer.username, pPlayer.status, first && pHasLinked, first , false);
 				} else {
-					drawTextColumn(open, std::to_string(totalAmount), pPlayer.username, pPlayer.status, first && pHasLinked, first , false);
+					drawTextColumn(open, std::to_string(totalAmount.value()), pPlayer.username, pPlayer.status, first && pHasLinked, first , false);
 
 					if (IsCurrentColumnHovered()) {
 						ImGui::BeginTooltip();
-						std::string kpText = std::format("{}: {}", lang.translate(LangKey::Killproofs), pTotal ? pPlayer.getKillproofsTotal(kp) : pPlayer.getKillproofs(kp));
+						std::string kpText = std::format("{}: {}", lang.translate(LangKey::Killproofs), (pTotal ? pPlayer.getKillproofsTotal(kp) : pPlayer.getKillproofs(kp)).value());
 						ImGui::TextUnformatted(kpText.c_str());
-						const amountVal coffers = pTotal ? pPlayer.getCoffersTotal(kp) : pPlayer.getCoffers(kp);
-						if (coffers > 0) {
-							std::string cofferText = std::format("{}: {}", lang.translate(LangKey::Coffers), coffers);
+						const std::optional<amountVal> coffers = pTotal ? pPlayer.getCoffersTotal(kp) : pPlayer.getCoffers(kp);
+						if (coffers.has_value()) {
+							std::string cofferText = std::format("{}: {}", lang.translate(LangKey::Coffers), coffers.value());
 							ImGui::TextUnformatted(cofferText.c_str());
 						}
 						ImGui::EndTooltip();
@@ -143,7 +143,7 @@ void KillproofUITable::DrawRows(TableColumnIdx pFirstColumnIndex) {
 
 		// hide player without data, when setting is active
 		if (!(!Settings::instance().settings.showPrivateAccounts && player.status == LoadingStatus::NoDataAvailable)) {
-			bool open = drawRow(pFirstColumnIndex, player, player.linkedTotalKillproofs.has_value());
+			bool open = drawRow(pFirstColumnIndex, player, !player.linkedAccounts.empty());
 			if (open) {
 				for (const std::string& linkedAccount : player.linkedAccounts) {
 					Player& linkedPlayer = cachedPlayers.at(linkedAccount);
@@ -227,8 +227,11 @@ void KillproofUITable::Sort(const ImGuiTableColumnSortSpecs* mColumnSortSpecs) {
 			const Player& playerA = cachedPlayers.at(playerAName);
 			const Player& playerB = cachedPlayers.at(playerBName);
 
-			const amountVal amountA = playerA.getKpOverall(kp);
-			const amountVal amountB = playerB.getKpOverall(kp);
+			const auto& amountAOpt = playerA.getKpOverall(kp);
+			const auto& amountBOpt = playerB.getKpOverall(kp);
+
+			amountVal amountA = amountAOpt ? amountAOpt.value() : -1;
+			amountVal amountB = amountBOpt ? amountBOpt.value() : -1;
 
 			// descending: the more the higher up it gets
 			if (descend) {
