@@ -50,8 +50,8 @@ bool initFailed = false;
 bool extrasLoaded = false;
 
 BOOL APIENTRY DllMain(HMODULE hModule,
-                      DWORD ul_reason_for_call,
-                      LPVOID lpReserved
+					  DWORD ul_reason_for_call,
+					  LPVOID lpReserved
 ) {
 	switch (ul_reason_for_call) {
 		case DLL_PROCESS_ATTACH:
@@ -66,6 +66,10 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
 uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+#if PERFORMANCE_LOG
+	const auto& beforePoint = std::chrono::high_resolution_clock::now();
+#endif
+
 	try {
 		if (ImGuiEx::KeyCodeInputWndHandle(hWnd, uMsg, wParam, lParam)) {
 			return 0;
@@ -126,12 +130,22 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		throw e;
 	}
 
+#if PERFORMANCE_LOG
+	const auto& afterPoint = std::chrono::high_resolution_clock::now();
+	const auto& diff = afterPoint - beforePoint;
+	ARC_LOG_FILE(std::format("mod_wnd: {}", diff.count()).c_str());
+#endif
+
 	return uMsg;
 }
 
 /* combat callback -- may be called asynchronously. return ignored */
 /* one participant will be party/squad, or minion of. no spawn statechange events. despawn statechange only on marked boss npcs */
 uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t id, uint64_t revision) {
+#if PERFORMANCE_LOG
+	const auto& beforePoint = std::chrono::high_resolution_clock::now();
+#endif
+
 	try {
 		/* ev is null. dst will only be valid on tracking add. skillname will also be null */
 		if (!ev) {
@@ -273,6 +287,13 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 		}
 		throw e;
 	}
+
+#if PERFORMANCE_LOG
+	const auto& afterPoint = std::chrono::high_resolution_clock::now();
+	const auto& diff = afterPoint - beforePoint;
+	ARC_LOG_FILE(std::format("mod_combat: {}", diff.count()).c_str());
+#endif
+
 	return 0;
 }
 
@@ -295,33 +316,42 @@ uintptr_t mod_windows(const char* windowname) {
 
 bool lastFrameShow = false;
 
-void ShowKillproof() {
-	bool& showKillproof = Settings::instance().settings.showKillproof;
-	if (!lastFrameShow && showKillproof) {
-		loadAllKillproofs();
-	}
-	lastFrameShow = showKillproof;
-
-	KillproofUI::instance().Draw(!GlobalObjects::CanMoveWindows() ? ImGuiWindowFlags_NoMove : 0);
-}
-
 uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
+#if PERFORMANCE_LOG
+	const auto& beforePoint = std::chrono::high_resolution_clock::now();
+#endif
+
 #if _DEBUG
 	DemoWindow::instance().Draw();
 	DemoTableWindow::instance().Draw();
 #endif
+
 	// try {
 	// ImGui::ShowMetricsWindow();
 
 	GlobalObjects::UPDATE_CHECKER->Draw();
 
-	if (!not_charsel_or_loading) return 0;
-	ShowKillproof();
+	if (not_charsel_or_loading) {
+		KillproofUI::instance().Draw(!GlobalObjects::CanMoveWindows() ? ImGuiWindowFlags_NoMove : 0);
+
+		// load killproofs if window was just opened
+		bool& showKillproof = Settings::instance().settings.showKillproof;
+		if (!lastFrameShow && showKillproof) {
+			loadAllKillproofs();
+		}
+		lastFrameShow = showKillproof;
+	}
 
 	// } catch (const std::exception& e) {
 	// 	arc_log_file(e.what());
 	// 	throw e;
 	// }
+
+#if PERFORMANCE_LOG
+	const auto& afterPoint = std::chrono::high_resolution_clock::now();
+	const auto& diff = afterPoint - beforePoint;
+	ARC_LOG_FILE(std::format("mod_imgui: {}", diff.count()).c_str());
+#endif
 
 	return 0;
 }
@@ -346,7 +376,7 @@ arcdps_exports* mod_init() {
 		if (currentVersion) {
 			GlobalObjects::UPDATE_STATE = std::move(
 				GlobalObjects::UPDATE_CHECKER->CheckForUpdate(self_dll, currentVersion.value(),
-				                                              "knoxfighter/arcdps-killproof.me-plugin", false));
+															  "knoxfighter/arcdps-killproof.me-plugin", false));
 		}
 
 		Settings::instance().load();
@@ -369,8 +399,8 @@ arcdps_exports* mod_init() {
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.out_name = KILLPROOF_ME_PLUGIN_NAME;
 	const std::string& version = currentVersion
-		                             ? GlobalObjects::UPDATE_CHECKER->GetVersionAsString(currentVersion.value())
-		                             : "Unknown";
+									 ? GlobalObjects::UPDATE_CHECKER->GetVersionAsString(currentVersion.value())
+									 : "Unknown";
 	char* version_c_str = new char[version.length() + 1];
 	strcpy_s(version_c_str, version.length() + 1, version.c_str());
 	arc_exports.out_build = version_c_str;
@@ -399,8 +429,8 @@ arcdps_exports* mod_init() {
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client load */
 extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, ImGuiContext* imguicontext, void* dxptr,
-                                                     HMODULE new_arcdll, void* mallocfn,
-                                                     void* freefn, UINT dxver) {
+													 HMODULE new_arcdll, void* mallocfn,
+													 void* freefn, UINT dxver) {
 	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(imguicontext);
 	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);
@@ -462,8 +492,7 @@ extern "C" __declspec(dllexport) void* get_release_addr() {
 
 void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCount) {
 	std::scoped_lock<std::mutex, std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex,
-	                                                           cachedPlayersMutex);
-
+															   cachedPlayersMutex);
 	for (size_t i = 0; i < updatedUsersCount; i++) {
 		std::string username = updatedUsers[i].AccountName;
 
@@ -489,7 +518,7 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 			if (playerIt == cachedPlayers.end()) {
 				// no element found, create it
 				const auto& tryEmplace = cachedPlayers.try_emplace(username, username, AddedBy::Extras,
-				                                                   username == selfAccountName);
+																   username == selfAccountName);
 
 				// check if emplacing successful, if yes, load the kp.me page
 				if (tryEmplace.second) {

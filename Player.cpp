@@ -218,7 +218,7 @@ void Player::LoadAll(const nlohmann::json& json) {
 }
 
 void Player::loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, Killproofs& cofferStorage) {
-	auto tokens = json.at("tokens");
+	const auto& tokens = json.at("tokens");
 	// when field is null, data is not available
 	// else it is an array (can be empty)
 	if (tokens.is_array()) {
@@ -232,7 +232,7 @@ void Player::loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, K
 		}
 	}
 
-	auto killproofs = json.at("killproofs");
+	const auto& killproofs = json.at("killproofs");
 	// when field is null, data is not available
 	// else it is an array (can be empty)
 	if (killproofs.is_array()) {
@@ -243,7 +243,7 @@ void Player::loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, K
 		}
 	}
 
-	auto coffers = json.at("coffers");
+	const auto& coffers = json.at("coffers");
 	// when field is null, data is not available
 	// else it is an array (can be empty)
 	if (coffers.is_array()) {
@@ -251,6 +251,16 @@ void Player::loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, K
 			int cofferId = coffer.at("id").get<int>();
 
 			cofferStorage.SetAmount<true>(cofferId, coffer.at("amount"));
+		}
+	}
+
+	if (json.contains("original_uce")) {
+		const auto& originalUce = json.at("original_uce");
+		if (originalUce.is_object()) {
+			amountVal uce = originalUce.at("amount").get<amountVal>();
+			if (uce > killproofStorage.GetAmount(Killproof::uce)) {
+				killproofStorage.SetAmount(Killproof::uce, uce);
+			}
 		}
 	}
 }

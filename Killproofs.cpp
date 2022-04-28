@@ -80,3 +80,9 @@ std::optional<amountVal> Killproofs::GetAmount(const Killproof& id) const {
 	}
 	return killproofIt->second;
 }
+
+void Killproofs::SetAmount(Killproof pId, const int32_t& pAmount) {
+	std::lock_guard<std::mutex> guard(mapMutex);
+
+	killproofs[pId] = pAmount;
+}

@@ -76,6 +76,8 @@ public:
 	/**
 	 * SETTER
 	 */
+	void SetAmount(Killproof pId, const amountVal& pAmount);
+
 	template<bool CofferIds = false>
 	void SetAmount(const std::string& id, const amountVal& amount) {
 		SetAmount<CofferIds>(std::stoi(id), amount);
