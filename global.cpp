@@ -48,6 +48,11 @@ std::map<Killproof, UINT> icons{
 	{Killproof::uce, ID_UFE},
 	{Killproof::ufe, ID_UFE},
 	{Killproof::boneskinnerVial, ID_Boneskinner_Vial},
+	{Killproof::maiTrin, ID_Mai_Trin},
+	{Killproof::maiTrinCM, ID_Mai_Trin},
+	{Killproof::ankka, ID_Ankka},
+	{Killproof::ministerLi, ID_Minister_Li},
+	{Killproof::harvest, ID_Harvest},
 };
 
 void loadAllKillproofs() {

@@ -237,6 +237,7 @@
     <ResourceCompile Include="killproof_me.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="icons\Ankka.png" />
     <Image Include="icons\Boneskinner_Ritual_Vial.png" />
     <Image Include="icons\Cairn_the_Indomitable_Shard.png" />
     <Image Include="icons\Cardinal_Adina%27s_Token.png" />
@@ -248,11 +249,14 @@
     <Image Include="icons\Ether_Djinn%27s_Token.png" />
     <Image Include="icons\Fragment_of_Saul%27s_Burden.png" />
     <Image Include="icons\Gorseval_Tentacle_Piece.png" />
+    <Image Include="icons\Harvest.png" />
     <Image Include="icons\Impaled_Prisoner.png" />
     <Image Include="icons\Keep_Construct_Rubble_(trophy).png" />
     <Image Include="icons\Legendary_Divination.png" />
     <Image Include="icons\Legendary_Insight.png" />
     <Image Include="icons\lild.png" />
+    <Image Include="icons\MaiTrin.png" />
+    <Image Include="icons\MinisterLi.png" />
     <Image Include="icons\Qadim%27s_Token.png" />
     <Image Include="icons\Rec_Room_Floor_Tile.png" />
     <Image Include="icons\Ribbon_Scrap.png" />

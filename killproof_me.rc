@@ -17,7 +17,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
-#pragma code_page(65001)
+#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -152,6 +152,14 @@ ID_LI                   PNG                     "icons\\Legendary_Insight.png"
 ID_Boneskinner_Vial     PNG                     "icons\\Boneskinner_Ritual_Vial.png"
 
 ID_Commander_White      PNG                     "icons\\Commander_tag_(white).png"
+
+ID_Mai_Trin             PNG                     "icons\\MaiTrin.png"
+
+ID_Ankka                PNG                     "icons\\Ankka.png"
+
+ID_Minister_Li          PNG                     "icons\\MinisterLi.png"
+
+ID_Harvest              PNG                     "icons\\Harvest.png"
 
 #endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////

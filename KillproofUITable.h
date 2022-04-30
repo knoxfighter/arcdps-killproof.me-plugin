@@ -68,6 +68,13 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 
 	// Strikes
 	{27, [] {return to_string(Killproof::boneskinnerVial);}, []{return iconLoader.getTexture(icons.at(Killproof::boneskinnerVial));}, "3", true},
+	
+	// EOD strikes
+	{33, [] {return to_string(Killproof::ankka);}, []{return iconLoader.getTexture(icons.at(Killproof::ankka));}, "3", false},
+	{34, [] {return to_string(Killproof::harvest);}, []{return iconLoader.getTexture(icons.at(Killproof::harvest));}, "3", false},
+	{35, [] {return to_string(Killproof::maiTrin);}, []{return iconLoader.getTexture(icons.at(Killproof::maiTrin));}, "3", false},
+	{36, [] {return to_string(Killproof::maiTrinCM);}, []{return iconLoader.getTexture(icons.at(Killproof::maiTrinCM));}, "3", false},
+	{37, [] {return to_string(Killproof::ministerLi);}, []{return iconLoader.getTexture(icons.at(Killproof::ministerLi));}, "3", false},
 };
 
 class KillproofUITable : public MainTable<> {
@@ -97,4 +104,3 @@ private:
 
 	void openInBrowser(const std::string& username);
 };
-

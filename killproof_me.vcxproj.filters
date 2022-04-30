@@ -372,5 +372,17 @@
     <Image Include="icons\Commander_tag_(white).png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="icons\MaiTrin.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Ankka.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\MinisterLi.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Harvest.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
