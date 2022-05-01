@@ -56,6 +56,7 @@ public:
 	bool commander = false;
 	SYSTEMTIME joinedTime;
 	bool self = false;
+	uint8_t subgroup = 0;
 
 	void resetJoinedTime() {
 		GetLocalTime(&joinedTime);

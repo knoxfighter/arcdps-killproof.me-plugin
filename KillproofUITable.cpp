@@ -59,6 +59,11 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 				continue;
 			}
 
+			if (column.UserId == SUBGROUP_ID) {
+				// subgroups are zero based and ui is one based
+				drawTextColumn(open, std::to_string(pPlayer.subgroup + 1), pPlayer.username, pPlayer.status, first && pHasLinked, first , false);
+			}
+
 			const auto& killproof = magic_enum::enum_cast<Killproof>(column.UserId);
 			if (killproof.has_value()) {
 				Killproof kp = killproof.value();

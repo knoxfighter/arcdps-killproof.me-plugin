@@ -14,12 +14,15 @@ constexpr ImU32 JOIN_TIME_ID = 32;
 constexpr ImU32 ACCOUNT_NAME_ID = 29;
 constexpr ImU32 CHARACTER_NAME_ID = 30;
 constexpr ImU32 KILLPROOF_ID_ID = 31;
+constexpr ImU32 SUBGROUP_ID = 64;
 
 static const std::vector<MainTableColumn> COLUMN_SETUP {
+	// general stuff
 	{JOIN_TIME_ID, [] {return "#"s;}, []{return nullptr;}, "0", true},
 	{ACCOUNT_NAME_ID, [] {return lang.translate(LangKey::Accountname);}, []{return nullptr;}, "0", true},
 	{CHARACTER_NAME_ID, [] {return lang.translate(LangKey::Charactername);}, []{return nullptr;}, "0", true},
 	{KILLPROOF_ID_ID, [] {return lang.translate(LangKey::KillproofId);}, []{return nullptr;}, "0", true},
+	{SUBGROUP_ID, [] {return lang.translate(LangKey::SubgroupText);}, []{return nullptr;}, "0", false},
 
 	// Raids
 	{0, [] {return to_string(Killproof::li);}, []{return iconLoader.getTexture(icons.at(Killproof::li));}, "1", true},
@@ -70,11 +73,11 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{27, [] {return to_string(Killproof::boneskinnerVial);}, []{return iconLoader.getTexture(icons.at(Killproof::boneskinnerVial));}, "3", true},
 	
 	// EOD strikes
-	{33, [] {return to_string(Killproof::ankka);}, []{return iconLoader.getTexture(icons.at(Killproof::ankka));}, "3", false},
-	{34, [] {return to_string(Killproof::harvest);}, []{return iconLoader.getTexture(icons.at(Killproof::harvest));}, "3", false},
 	{35, [] {return to_string(Killproof::maiTrin);}, []{return iconLoader.getTexture(icons.at(Killproof::maiTrin));}, "3", false},
-	{36, [] {return to_string(Killproof::maiTrinCM);}, []{return iconLoader.getTexture(icons.at(Killproof::maiTrinCM));}, "3", false},
+	{33, [] {return to_string(Killproof::ankka);}, []{return iconLoader.getTexture(icons.at(Killproof::ankka));}, "3", false},
 	{37, [] {return to_string(Killproof::ministerLi);}, []{return iconLoader.getTexture(icons.at(Killproof::ministerLi));}, "3", false},
+	{34, [] {return to_string(Killproof::harvest);}, []{return iconLoader.getTexture(icons.at(Killproof::harvest));}, "3", false},
+	{36, [] {return to_string(Killproof::maiTrinCM);}, []{return iconLoader.getTexture(icons.at(Killproof::maiTrinCM));}, "3", false},
 };
 
 class KillproofUITable : public MainTable<> {

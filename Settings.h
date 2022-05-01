@@ -41,7 +41,12 @@ inline void from_json(const nlohmann::json& nlohmann_json_j, KillproofUITable::T
 	nlohmann_json_t.IsStretch = nlohmann_json_j.at("IsStretch").get<ImU8>();
 }
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(KillproofUITable::TableSettings, IniMigrated, SaveFlags, RefScale, Columns)
+
+struct SettingsTableSettings : KillproofUITable::TableSettings {
+	uint16_t Version = 1;
+
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE_NON_THROWING(SettingsTableSettings, IniMigrated, SaveFlags, RefScale, Columns, Version)
+};
 
 enum class LanguageSetting {
 	English = 0,
@@ -88,7 +93,7 @@ public:
 		LanguageSetting language = LanguageSetting::LikeGame;
 		bool showAlternatingRowBackground = true;
 		bool highlightHoveredRows = true;
-		KillproofUITable::TableSettings tableSettings;
+		SettingsTableSettings tableSettings;
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE_NON_THROWING(SettingsObject, version, windowKey, showPrivateAccounts,
 		                                            showKillproof,

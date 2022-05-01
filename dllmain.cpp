@@ -231,6 +231,13 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						cachedPlayer.commander = false;
 					}
 				}
+			} else if (ev->is_statechange == CBTS_ENTERCOMBAT) {
+				if (src && src->name) {
+					const auto& player = cachedPlayers.find(src->name);
+					if (player != cachedPlayers.end()) {
+						player->second.subgroup = reinterpret_cast<uint8_t>(dst);
+					}
+				}
 			}
 		}
 	} catch (const std::exception& e) {
@@ -532,23 +539,29 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 					if (updatedUsers[i].Role == UserRole::SquadLeader) {
 						player.commander = true;
 					}
+
+					player.subgroup = updatedUsers[i].Subgroup;
 				}
 			} else {
+				auto& player = playerIt->second;
+
 				// load user data if not yet loaded (check inside function)
-				loadKillproofsSizeChecked(playerIt->second);
+				loadKillproofsSizeChecked(player);
 
 				// This player was added automatically
-				playerIt->second.addedBy = AddedBy::Extras;
+				player.addedBy = AddedBy::Extras;
 
 				// update joined data
-				if (!playerIt->second.self) {
-					playerIt->second.resetJoinedTime();
+				if (!player.self) {
+					player.resetJoinedTime();
 				}
 
 				// add commander if he is it
 				if (updatedUsers[i].Role == UserRole::SquadLeader) {
-					playerIt->second.commander = true;
+					player.commander = true;
 				}
+
+				player.subgroup = updatedUsers[i].Subgroup;
 			}
 
 			// Tell the UI to resort, cause we added a player

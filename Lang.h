@@ -34,6 +34,7 @@ BUILD_ENUM_SERIALIZED(
 	MenuName, "Killproof.me",
 	SubMenuKp, "Killproofs",
 	SubMenuSettings, "Settings",
+	SubgroupText, "Group",
 	LI, "LI",
 	Ld, "LD",
 	LiLd, "LI/LD",
