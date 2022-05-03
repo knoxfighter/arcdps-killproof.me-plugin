@@ -99,6 +99,7 @@ void KillproofUI::DrawStyleSettingsSubMenu() {
 	ImGui::Checkbox(lang.translate(LangKey::SettingsShowControls).c_str(), &settings.settings.showControls);
 	ImGui::Checkbox(lang.translate(LangKey::SettingsShowLinkedByDefault).c_str(), &settings.settings.showLinkedByDefault);
 	ImGui::Checkbox(lang.translate(LangKey::SettingsShowCommander).c_str(), &settings.settings.showCommander);
+	ImGui::Checkbox("Show linked totals in username instead within the tree popup", &Settings::instance().settings.showLinkedTotalsOnUser);
 
 	// input for data private
 	ImGui::PushItemWidth(50);

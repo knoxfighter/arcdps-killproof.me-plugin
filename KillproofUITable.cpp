@@ -142,20 +142,28 @@ void KillproofUITable::openInBrowser(const std::string& username) {
 }
 
 void KillproofUITable::DrawRows(TableColumnIdx pFirstColumnIndex) {
+	const auto& settingsObject = Settings::instance().settings;
+	bool showPrivateAccounts = settingsObject.showPrivateAccounts;
+	bool showLinkedTotalsOnUser = settingsObject.showLinkedTotalsOnUser;
+
 	// List of all players
 	for (const std::string& trackedPlayer : trackedPlayers) {
 		const Player& player = cachedPlayers.at(trackedPlayer);
 
 		// hide player without data, when setting is active
-		if (!(!Settings::instance().settings.showPrivateAccounts && player.status == LoadingStatus::NoDataAvailable)) {
-			bool open = drawRow(pFirstColumnIndex, player, !player.linkedAccounts.empty());
+		if (!(!showPrivateAccounts && player.status == LoadingStatus::NoDataAvailable)) {
+			bool open = drawRow(pFirstColumnIndex, player, !player.linkedAccounts.empty(), showLinkedTotalsOnUser);
 			if (open) {
 				for (const std::string& linkedAccount : player.linkedAccounts) {
 					Player& linkedPlayer = cachedPlayers.at(linkedAccount);
 					drawRow<true>(pFirstColumnIndex, linkedPlayer, false);
 				}
 				// draw Row for overall amount
-				drawRow<true>(pFirstColumnIndex, player, false, true, true);
+				if (!showLinkedTotalsOnUser) {
+					drawRow<true>(pFirstColumnIndex, player, false, true, true);
+				} else {
+					drawRow<true>(pFirstColumnIndex, player, false);
+				}
 
 				ImGui::TreePop();
 			}
