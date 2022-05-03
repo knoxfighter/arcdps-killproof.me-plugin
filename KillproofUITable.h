@@ -97,6 +97,7 @@ protected:
 	TableSettings& getTableSettings() override;
 	bool& getHighlightHoveredRows() override;
 	const char* getCategoryName(const std::string& pCat) override;
+	void MigrateSettings() override;
 
 private:
 	template<bool Linked = false>

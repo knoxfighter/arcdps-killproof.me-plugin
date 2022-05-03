@@ -288,3 +288,23 @@ const char* KillproofUITable::getCategoryName(const std::string& pCat) {
 	if (pCat == "1.7") return "W7";
 	return "";
 }
+
+void KillproofUITable::MigrateSettings() {
+	auto& tableSettings = Settings::instance().settings.tableSettings;
+	if (tableSettings.Version == 1) {
+		// heighten everything >= 5
+		for (auto& column : tableSettings.Columns) {
+			if (column.DisplayOrder < 5) {
+				++column.DisplayOrder;
+			}
+		}
+
+		// add new 5th element
+		const auto& columnSettings = tableSettings.Columns.emplace(
+			std::next(tableSettings.Columns.begin(), 5)
+		);
+		columnSettings->DisplayOrder = 5;
+
+		tableSettings.Version = 2;
+	} 
+}
