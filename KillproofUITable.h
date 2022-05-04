@@ -119,6 +119,7 @@ protected:
 	void MigrateSettings() override;
 	bool getCustomColumnsFeatureActive() override { return true; }
 	bool& getCustomColumnsActive() override;
+	int getCustomColumnsFirstColumn() override { return 5; }
 
 private:
 	template<bool Linked = false>
