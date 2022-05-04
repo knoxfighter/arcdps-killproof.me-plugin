@@ -28,6 +28,8 @@
 #include "extension/Windows/Demo/DemoTableWindow.h" 
 #endif
 
+#include "extension/MumbleLink.h"
+
 #include "imgui/imgui.h"
 
 // globals
@@ -38,6 +40,7 @@ HMODULE self_dll;
 IDirect3DDevice9* d3d9Device;
 ID3D11Device* d3d11Device;
 UINT directxVersion;
+LPVOID mapViewOfMumbleFile = nullptr;
 
 // define `extern`s of other files
 arc_export_func_u64 ARC_EXPORT_E6;
@@ -56,6 +59,9 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	switch (ul_reason_for_call) {
 		case DLL_PROCESS_ATTACH:
 			self_dll = hModule;
+		if (HANDLE mumbleFileHandle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(LinkedMem), L"MumbleLink"); mumbleFileHandle) {
+			mapViewOfMumbleFile = MapViewOfFile(mumbleFileHandle, FILE_MAP_READ, 0, 0, 0);
+		}
 		case DLL_THREAD_ATTACH:
 		case DLL_THREAD_DETACH:
 		case DLL_PROCESS_DETACH:
@@ -206,7 +212,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 						}
 
 						// Tell the UI to resort, cause we added a player
-						KillproofUI::instance().RequestSort();
+						KillproofUI::instance().GetTable()->RequestSort();
 					}
 					/* remove */
 					else {
@@ -363,6 +369,47 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	return 0;
 }
 
+uintptr_t mod_combat_local(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t id, uint64_t revision) {
+	/* ev is null. dst will only be valid on tracking add. skillname will also be null */
+	if (!ev) {
+		/* notify tracking change */
+		if (!src->elite) {
+			// only run, when names are set and not null
+			if (src->name != nullptr && src->name[0] != '\0' && dst->name != nullptr && dst->name[0] != '\0') {
+				std::string username(dst->name);
+
+				// remove ':' at the beginning of the name.
+				if (username.at(0) == ':') {
+					username.erase(0, 1);
+				}
+
+				/* add */
+				if (src->prof) {
+					ARC_LOG("adding track!");
+
+					if (dst->self) {
+						ARC_LOG("self added!");
+
+						if (mapViewOfMumbleFile) {
+							LinkedMem* linkedMem = static_cast<LinkedMem*>(mapViewOfMumbleFile);
+							uint32_t mapId = linkedMem->getMumbleContext()->mapId;
+
+							const auto& setup = mapIdToColumnSetup.find(mapId);
+							if (setup == mapIdToColumnSetup.end()) {
+								KillproofUI::instance().GetTable()->ResetSpecificColumnSetup();
+							} else {
+								KillproofUI::instance().GetTable()->SetSpecificColumnSetup(setup->second);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
 /* initialize mod -- return table that arcdps will use for callbacks */
 arcdps_exports* mod_init() {
 	bool loading_successful = true;
@@ -421,6 +468,7 @@ arcdps_exports* mod_init() {
 		arc_exports.imgui = mod_imgui;
 		arc_exports.options_end = mod_options;
 		arc_exports.options_windows = mod_windows;
+		arc_exports.combat_local = mod_combat_local;
 	} else {
 		initFailed = true;
 		arc_exports.sig = 0;
@@ -565,7 +613,7 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 			}
 
 			// Tell the UI to resort, cause we added a player
-			KillproofUI::instance().RequestSort();
+			KillproofUI::instance().GetTable()->RequestSort();
 		} else // User removed
 		{
 			if (username == selfAccountName) {

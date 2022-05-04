@@ -80,6 +80,25 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{36, [] {return to_string(Killproof::maiTrinCM);}, []{return iconLoader.getTexture(icons.at(Killproof::maiTrinCM));}, "3", false},
 };
 
+// Key is the mapId found in the mumbleLink
+// Value is a vector of columns that should be shown for that map. The Values are the UserIds from the ColumnSetup.
+// TODO: update this when the above vector changes!
+static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetup = {
+	{1155, {0, 1, 2, 20, 23, 26}}, // Aerodrome
+	{1062, {0, 1, 2, 5, 6, 7}}, // W1
+	{1149, {0, 1, 2, 8, 9}}, // W2
+	{1156, {0, 1, 2, 10, 11, 12}}, // W3
+	{1188, {0, 1, 2, 13, 14, 15, 16}}, // W4
+	{1264, {0, 1, 2, 17, 18, 19, 20}}, // W5
+	{1303, {0, 1, 2, 21, 22, 23}}, // W6
+	{1323, {0, 1, 2, 24, 25, 26}}, // W7
+	{1370, {0, 1, 2, 27}}, // Eye of the north
+	{1432, {0, 1, 2, 35, 36}}, // MaiTrin strike
+	{1451, {0, 1, 2, 37}}, // MinisterLi strike
+	{1437, {0, 1, 2, 34}}, // HarvestTemple strike
+	{1428, {0, 1, 2, 33, 34, 35, 36, 37}}, // Arborstone
+};
+
 class KillproofUITable : public MainTable<> {
 public:
 	KillproofUITable(MainWindow* pMainWindow, MainTableFlags pFlags)
@@ -98,6 +117,8 @@ protected:
 	bool& getHighlightHoveredRows() override;
 	const char* getCategoryName(const std::string& pCat) override;
 	void MigrateSettings() override;
+	bool getCustomColumnsFeatureActive() override { return true; }
+	bool& getCustomColumnsActive() override;
 
 private:
 	template<bool Linked = false>

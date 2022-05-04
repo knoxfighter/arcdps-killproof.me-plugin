@@ -316,3 +316,7 @@ void KillproofUITable::MigrateSettings() {
 		tableSettings.Version = 2;
 	} 
 }
+
+bool& KillproofUITable::getCustomColumnsActive() {
+	return Settings::instance().settings.showBasedOnMap;
+}

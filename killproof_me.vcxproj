@@ -195,6 +195,7 @@
     <ClInclude Include="extension\arcdps_structs_slim.h" />
     <ClInclude Include="extension\Icon.h" />
     <ClInclude Include="extension\map.h" />
+    <ClInclude Include="extension\MumbleLink.h" />
     <ClInclude Include="extension\nlohmannJsonExtension.h" />
     <ClInclude Include="extension\Singleton.h" />
     <ClInclude Include="extension\UpdateCheckerBase.h" />

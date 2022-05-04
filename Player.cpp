@@ -127,7 +127,7 @@ void Player::loadKillproofs() {
 		}
 
 		// say UI to reload sorting
-		KillproofUI::instance().RequestSort();
+		KillproofUI::instance().GetTable()->RequestSort();
 	};
 
 	// create the link for getting by accountname/kpid

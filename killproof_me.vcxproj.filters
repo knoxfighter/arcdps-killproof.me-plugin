@@ -281,6 +281,9 @@
     <ClInclude Include="KillproofUITable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="extension\MumbleLink.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="killproof_me.rc">

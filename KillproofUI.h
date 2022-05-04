@@ -21,8 +21,8 @@ public:
 		imGuiWindowFlags |= ImGuiWindowFlags_NoScrollbar;
 		MainWindow::Draw(imGuiWindowFlags, mainWindowFlags);
 	}
-	void RequestSort() {
-		mTable->RequestSort();
+	const auto& GetTable() {
+		return mTable;
 	}
 
 protected:
