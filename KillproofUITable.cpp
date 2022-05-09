@@ -115,12 +115,12 @@ void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, con
 		actualText.append("###");
 		actualText.append(pUsername);
 
-		pOpen = ImGuiEx::TreeNodeEx(actualText.c_str(), treeNodeFlags, pIsCommander && Settings::instance().settings.showCommander ? iconLoader.getTexture(ID_Commander_White) : nullptr);
+		pOpen = ImGuiEx::TreeNodeEx(actualText.c_str(), treeNodeFlags, pIsCommander && Settings::instance().settings.showCommander ? KillproofIconLoader::instance().GetTexture(IconId::Commander_White, ID_Commander_White) : nullptr);
 		ImGui::PopStyleVar();
 	} else {
 		if (pIsCommander && Settings::instance().settings.showCommander) {
 			float size = ImGui::GetFontSize();
-			ImGui::Image(iconLoader.getTexture(ID_Commander_White), ImVec2(size, size));
+			ImGui::Image(KillproofIconLoader::instance().GetTexture(IconId::Commander_White, ID_Commander_White), ImVec2(size, size));
 			ImGui::SameLine();
 		}
 		ImGui::TextUnformatted(pText.c_str());

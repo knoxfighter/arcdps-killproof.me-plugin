@@ -84,9 +84,6 @@
     <ClCompile Include="Lang.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="extension\Icon.cpp">
-      <Filter>Source Files\extension</Filter>
-    </ClCompile>
     <ClCompile Include="extension\Widgets.cpp">
       <Filter>Source Files\extension</Filter>
     </ClCompile>
@@ -194,7 +191,7 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="extension\Icon.h">
+    <ClInclude Include="extension\IconLoader.h">
       <Filter>Header Files\extension</Filter>
     </ClInclude>
     <ClInclude Include="extension\Widgets.h">
@@ -283,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="extension\MumbleLink.h">
       <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="KillproofIconLoader.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

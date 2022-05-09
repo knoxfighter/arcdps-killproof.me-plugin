@@ -24,7 +24,6 @@ extern std::mutex cachedPlayersMutex;
 extern std::vector<std::string> instancePlayers;
 extern std::mutex instancePlayersMutex;
 extern HMODULE self_dll;
-extern std::map<Killproof, UINT> icons;
 extern std::string selfAccountName;
 extern bool extrasLoaded;
 

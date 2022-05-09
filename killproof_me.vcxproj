@@ -102,7 +102,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>atls.lib;crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Mock|x64'">
@@ -121,7 +121,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>atls.lib;crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,7 +144,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>atls.lib;crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -157,7 +157,6 @@
     <ClCompile Include="extension\KeyBindHandler.cpp" />
     <ClCompile Include="extension\KeyInput.cpp" />
     <ClCompile Include="extension\arcdps_structs.cpp" />
-    <ClCompile Include="extension\Icon.cpp" />
     <ClCompile Include="extension\Singleton.cpp" />
     <ClCompile Include="extension\UpdateCheckerBase.cpp" />
     <ClCompile Include="extension\Widgets.cpp" />
@@ -193,7 +192,7 @@
     <ClInclude Include="extension\KeyInput.h" />
     <ClInclude Include="extension\arcdps_structs.h" />
     <ClInclude Include="extension\arcdps_structs_slim.h" />
-    <ClInclude Include="extension\Icon.h" />
+    <ClInclude Include="extension\IconLoader.h" />
     <ClInclude Include="extension\map.h" />
     <ClInclude Include="extension\MumbleLink.h" />
     <ClInclude Include="extension\nlohmannJsonExtension.h" />
@@ -218,6 +217,7 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="json.hpp" />
+    <ClInclude Include="KillproofIconLoader.h" />
     <ClInclude Include="Killproofs.h" />
     <ClInclude Include="KillproofUIKeyBindComponent.h" />
     <ClInclude Include="KillproofUIPositioningComponent.h" />

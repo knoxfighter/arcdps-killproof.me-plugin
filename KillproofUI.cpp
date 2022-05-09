@@ -7,7 +7,7 @@
 #include "Player.h"
 #include "Settings.h"
 
-#include "extension/Icon.h"
+#include "extension/IconLoader.h"
 #include "extension/imgui_stdlib.h"
 #include "extension/Widgets.h"
 

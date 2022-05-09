@@ -17,7 +17,7 @@
 #include "UpdateChecker.h"
 #include "unofficial_extras/Definitions.h"
 #include "extension/arcdps_structs.h"
-#include "extension/Icon.h" // this import is needed for the icons map
+#include "extension/IconLoader.h" // this import is needed for the icons map
 #include "extension/KeyBindHandler.h"
 #include "extension/KeyInput.h"
 #include "extension/Singleton.h"
@@ -421,7 +421,7 @@ arcdps_exports* mod_init() {
 
 	try {
 		// Setup iconLoader
-		iconLoader.Setup(self_dll, d3d9Device, d3d11Device);
+		KillproofIconLoader::instance().Setup(self_dll, d3d9Device, d3d11Device);
 
 		// Clear old Files
 		GlobalObjects::UPDATE_CHECKER->ClearFiles(self_dll);
@@ -476,8 +476,6 @@ arcdps_exports* mod_init() {
 		char* buffer = new char[size + 1]; //we need extra char for NUL
 		memcpy(buffer, error_message.c_str(), size + 1);
 		arc_exports.size = (uintptr_t)buffer;
-
-		icons.clear();
 	}
 	return &arc_exports;
 }
@@ -524,15 +522,11 @@ uintptr_t mod_release() {
 		GlobalObjects::UPDATE_STATE.reset(nullptr);
 	}
 
-	icons.clear();
-
 	Settings::instance().unload();
 
 #if _DEBUG
 	lang.saveToFile();
 #endif
-
-	iconLoader.Shutdown();
 
 	g_singletonManagerInstance.Shutdown();
 
