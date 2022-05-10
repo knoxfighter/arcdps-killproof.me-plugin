@@ -68,6 +68,7 @@ BUILD_ENUM_SERIALIZED(
 	Harvest, "Harvest Tempel",
 	MaiTrin, "Mai Trin",
 	MaiTrinCM, "Mai Trin CM",
+	AnkkaCM, "Ankka CM",
 	DefaultKp, "Unknown",
 	Accountname, "Account",
 	Charactername, "Character",

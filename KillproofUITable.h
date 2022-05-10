@@ -79,6 +79,7 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{37, [] {return to_string(Killproof::ministerLi);}, []{return KillproofIconLoader::instance().GetTexture(IconId::MinisterLi, ID_Minister_Li);}, "3", false},
 	{34, [] {return to_string(Killproof::harvest);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Harvest, ID_Harvest);}, "3", false},
 	{36, [] {return to_string(Killproof::maiTrinCM);}, []{return KillproofIconLoader::instance().GetTexture(IconId::MaiTrin, ID_Mai_Trin);}, "3", false},
+	{38, [] {return to_string(Killproof::ankkaCM);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Ankka, ID_Ankka);}, "3", false},
 };
 
 // Key is the mapId found in the mumbleLink
@@ -97,7 +98,7 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 	{1432, {0, 1, 2, 35, 36}}, // MaiTrin strike
 	{1451, {0, 1, 2, 37}}, // MinisterLi strike
 	{1437, {0, 1, 2, 34}}, // HarvestTemple strike
-	{1428, {0, 1, 2, 33, 34, 35, 36, 37}}, // Arborstone
+	{1428, {0, 1, 2, 33, 34, 35, 36, 37, 38}}, // Arborstone
 };
 
 class KillproofUITable : public MainTable<> {

@@ -73,6 +73,7 @@ std::string toString(Killproof e) {
 	case Killproof::harvest: return lang.translate(LangKey::Harvest);
 	case Killproof::maiTrin: return lang.translate(LangKey::MaiTrin);
 	case Killproof::maiTrinCM: return lang.translate(LangKey::MaiTrinCM);
+	case Killproof::ankkaCM: return lang.translate(LangKey::AnkkaCM);
 	default: return lang.translate(LangKey::DefaultKp);
 	}
 }
