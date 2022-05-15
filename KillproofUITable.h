@@ -20,10 +20,10 @@ constexpr ImU32 SUBGROUP_ID = 64;
 static const std::vector<MainTableColumn> COLUMN_SETUP {
 	// general stuff
 	{JOIN_TIME_ID, [] {return "#"s;}, []{return nullptr;}, "0", true},
-	{ACCOUNT_NAME_ID, [] {return lang.translate(LangKey::Accountname);}, []{return nullptr;}, "0", true},
-	{CHARACTER_NAME_ID, [] {return lang.translate(LangKey::Charactername);}, []{return nullptr;}, "0", true},
-	{KILLPROOF_ID_ID, [] {return lang.translate(LangKey::KillproofId);}, []{return nullptr;}, "0", true},
-	{SUBGROUP_ID, [] {return lang.translate(LangKey::SubgroupText);}, []{return nullptr;}, "0", false},
+	{ACCOUNT_NAME_ID, [] {return Localization::STranslate(KMT_AccountName);}, []{return nullptr;}, "0", true},
+	{CHARACTER_NAME_ID, [] {return Localization::STranslate(KMT_CharacterName);}, []{return nullptr;}, "0", true},
+	{KILLPROOF_ID_ID, [] {return Localization::STranslate(KMT_KillproofId);}, []{return nullptr;}, "0", true},
+	{SUBGROUP_ID, [] {return Localization::STranslate(KMT_SubgroupText);}, []{return nullptr;}, "0", false},
 
 	// Raids
 	{0, [] {return to_string(Killproof::li);}, []{return KillproofIconLoader::instance().GetTexture(IconId::LI, ID_LI);}, "1", true},
@@ -122,6 +122,7 @@ protected:
 	bool getCustomColumnsFeatureActive() override { return true; }
 	bool& getCustomColumnsActive() override;
 	int getCustomColumnsFirstColumn() override { return 5; }
+	bool& getShowHeaderAsText() override;
 
 private:
 	template<bool Linked = false>

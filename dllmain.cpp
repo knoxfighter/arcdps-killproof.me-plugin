@@ -1,7 +1,7 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include <cstdint>
-#include <d3d9.h>
 #include <d3d11.h>
+#include <d3d9.h>
 #include <mutex>
 #include <ranges>
 #include <sstream>
@@ -14,18 +14,18 @@
 #include "Player.h"
 #include "Settings.h"
 #include "SettingsUI.h"
-#include "UpdateChecker.h"
-#include "unofficial_extras/Definitions.h"
 #include "extension/arcdps_structs.h"
-#include "extension/IconLoader.h" // this import is needed for the icons map
+#include "extension/IconLoader.h"
 #include "extension/KeyBindHandler.h"
 #include "extension/KeyInput.h"
 #include "extension/Singleton.h"
+#include "extension/UpdateChecker.h"
 #include "extension/Widgets.h"
 #include "extension/Windows/PositioningComponent.h"
+#include "unofficial_extras/Definitions.h"
 #ifdef _DEBUG
-#include "extension/Windows/Demo/DemoWindow.h"
 #include "extension/Windows/Demo/DemoTableWindow.h" 
+#include "extension/Windows/Demo/DemoWindow.h"
 #endif
 
 #include "extension/MumbleLink.h"
@@ -311,7 +311,7 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 }
 
 uintptr_t mod_options() {
-	settingsUI.Draw();
+	SettingsUI::instance().Draw();
 
 	return 0;
 }
@@ -342,7 +342,7 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	// try {
 	// ImGui::ShowMetricsWindow();
 
-	GlobalObjects::UPDATE_CHECKER->Draw();
+	GlobalObjects::UPDATE_CHECKER->Draw(GlobalObjects::UPDATE_STATE, KILLPROOF_ME_PLUGIN_NAME, "https://github.com/knoxfighter/arcdps-killproof.me-plugin/releases/latest");
 
 	if (not_charsel_or_loading) {
 		KillproofUI::instance().Draw(!GlobalObjects::CanMoveWindows() ? ImGuiWindowFlags_NoMove : 0);
@@ -435,7 +435,7 @@ arcdps_exports* mod_init() {
 
 		Settings::instance().load();
 
-		lang.readFromFile();
+		LoadAdditionalTranslations();
 
 		// windows init
 #if _DEBUG
@@ -523,10 +523,6 @@ uintptr_t mod_release() {
 	}
 
 	Settings::instance().unload();
-
-#if _DEBUG
-	lang.saveToFile();
-#endif
 
 	g_singletonManagerInstance.Shutdown();
 
@@ -636,6 +632,10 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 
 void language_changed_callback(Language pNewLanguage) {
 	GlobalObjects::CURRENT_LANGUAGE = pNewLanguage;
+
+	if (Settings::instance().settings.language == LanguageSetting::LikeGame) {
+		Localization::SChangeLanguage(static_cast<gwlanguage>(GlobalObjects::CURRENT_LANGUAGE));
+	}
 }
 
 /**

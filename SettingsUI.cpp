@@ -13,25 +13,41 @@
 #include "imgui/imgui.h"
 #include "extension/Widgets.h"
 
-SettingsUI settingsUI;
+namespace {
+	const std::map<LanguageSetting, std::function<const std::string&()>> PopupText = {
+		{LanguageSetting::LikeGame, []() -> const std::string& { return Localization::STranslate(KMT_LanguageAsIngameTooltip); }},
+		{LanguageSetting::German, []() -> const std::string& { return Localization::STranslate(KMT_LanguageGermanTooltip); }},
+		{LanguageSetting::French, []() -> const std::string& { return Localization::STranslate(KMT_LanguageFrenchTooltip); }},
+		{LanguageSetting::Spanish, []() -> const std::string& { return Localization::STranslate(KMT_LanguageSpanishTooltip); }},
+	};
+}
 
 void SettingsUI::Draw() {
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0.f, 0.f});
 
 	Settings& settings = Settings::instance();
 
+	
+	if (ImGuiEx::EnumCombo(Localization::STranslate(ET_Language).c_str(), settings.settings.language, magic_enum::enum_values<LanguageSetting>(), PopupText)) {
+		if (settings.settings.language == LanguageSetting::LikeGame) {
+			Localization::SChangeLanguage(static_cast<gwlanguage>(GlobalObjects::CURRENT_LANGUAGE));
+		} else {
+			Localization::SChangeLanguage(static_cast<gwlanguage>(settings.settings.language));
+		}
+	}
+
 	// Setting to select, which key is used to open the killproofs menu (will also close it)
 	KeyBinds::Modifier arcdpsModifier = KeyBindHandler::GetArcdpsModifier();
 	KeyBinds::Key oldKey = settings.settings.windowKey;
-	if (ImGuiEx::KeyCodeInput(lang.translate(LangKey::SettingsShortcutText).c_str(), settings.settings.windowKey,
+	if (ImGuiEx::KeyCodeInput(Localization::STranslate(ET_Shortcut).c_str(), settings.settings.windowKey,
 	                          GlobalObjects::CURRENT_LANGUAGE, GlobalObjects::CURRENT_HKL,
 	                          ImGuiEx::KeyCodeInputFlags_FixedModifier, arcdpsModifier)) {
 		KeyBindHandler::instance().UpdateKeys(oldKey, settings.settings.windowKey);
 	}
 
-	ImGui::Checkbox(lang.translate(LangKey::SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
+	ImGui::Checkbox(Localization::STranslate(KMT_SettingsDisableESCText).c_str(), &settings.settings.disableEscClose);
 	int& cofferValue = settings.settings.cofferValue;
-	if (ImGui::InputInt(lang.translate(LangKey::SettingsCofferValue).c_str(), &cofferValue)) {
+	if (ImGui::InputInt(Localization::STranslate(KMT_SettingsCofferValue).c_str(), &cofferValue)) {
 		if (cofferValue < 0) {
 			cofferValue = 0;
 		}
@@ -40,9 +56,9 @@ void SettingsUI::Draw() {
 		}
 	}
 
-	ImGui::Checkbox(lang.translate(LangKey::SettingsHideExtrasMessage).c_str(), &settings.settings.hideExtrasMessage);
+	ImGui::Checkbox(Localization::STranslate(KMT_SettingsHideExtrasMessage).c_str(), &settings.settings.hideExtrasMessage);
 
-	if (ImGui::Button(lang.translate(LangKey::SettingsClearCacheText).c_str())) {
+	if (ImGui::Button(Localization::STranslate(KMT_SettingsClearCacheText).c_str())) {
 		std::scoped_lock<std::mutex, std::mutex> guard(cachedPlayersMutex, trackedPlayersMutex);
 
 		// get all accountnames and charnames
@@ -65,7 +81,7 @@ void SettingsUI::Draw() {
 		}
 	}
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip(lang.translate(LangKey::SettingsClearCacheTooltip).c_str());
+		ImGui::SetTooltip(Localization::STranslate(KMT_SettingsClearCacheTooltip).c_str());
 
 	ImGui::PopStyleVar();
 }

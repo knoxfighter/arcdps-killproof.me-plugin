@@ -81,9 +81,6 @@
     <ClCompile Include="imgui\imgui_demo.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Lang.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="extension\Widgets.cpp">
       <Filter>Source Files\extension</Filter>
     </ClCompile>
@@ -92,9 +89,6 @@
     </ClCompile>
     <ClCompile Include="extension\UpdateCheckerBase.cpp">
       <Filter>Source Files\extension</Filter>
-    </ClCompile>
-    <ClCompile Include="UpdateChecker.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="extension\imgui_stdlib.cpp">
       <Filter>Source Files\extension</Filter>
@@ -143,6 +137,12 @@
     </ClCompile>
     <ClCompile Include="KillproofUITable.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\Localization.cpp">
+      <Filter>Source Files\extension</Filter>
+    </ClCompile>
+    <ClCompile Include="extension\UpdateChecker.cpp">
+      <Filter>Source Files\extension</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,9 +205,6 @@
     </ClInclude>
     <ClInclude Include="extension\UpdateCheckerBase.h">
       <Filter>Header Files\extension</Filter>
-    </ClInclude>
-    <ClInclude Include="UpdateChecker.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="extension\arcdps_structs_slim.h">
       <Filter>Header Files\extension</Filter>
@@ -283,6 +280,15 @@
     </ClInclude>
     <ClInclude Include="KillproofIconLoader.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\ExtensionTranslations.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\Localization.h">
+      <Filter>Header Files\extension</Filter>
+    </ClInclude>
+    <ClInclude Include="extension\UpdateChecker.h">
+      <Filter>Header Files\extension</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

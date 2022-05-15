@@ -6,8 +6,8 @@
 #include <d3d9.h>
 
 #include "Killproofs.h"
-#include "UpdateChecker.h"
 
+#include "extension/UpdateChecker.h"
 #include "extension/UpdateCheckerBase.h"
 #include "unofficial_extras/Definitions.h"
 

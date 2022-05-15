@@ -2,6 +2,8 @@
 
 #include "Lang.h"
 
+#include "extension/Localization.h"
+
 bool defaultHidden(const Killproof& kp) {
 	switch (kp) {
 	case Killproof::li:
@@ -38,43 +40,43 @@ bool defaultHidden(const Killproof& kp) {
 	}
 }
 
-std::string toString(Killproof e) {
+const std::string& toString(Killproof e) {
 	switch (e) {
-	case Killproof::li: return lang.translate(LangKey::LI);
-	case Killproof::ld: return lang.translate(LangKey::Ld);
-	case Killproof::liLd: return lang.translate(LangKey::LiLd);
-	case Killproof::uce: return lang.translate(LangKey::Uce);
-	case Killproof::ufe: return lang.translate(LangKey::Ufe);
-	case Killproof::vg: return lang.translate(LangKey::Vg);
-	case Killproof::gorse: return lang.translate(LangKey::Gorse);
-	case Killproof::sabetha: return lang.translate(LangKey::Sabetha);
-	case Killproof::sloth: return lang.translate(LangKey::Sloth);
-	case Killproof::matthias: return lang.translate(LangKey::Matthias);
-	case Killproof::escort: return lang.translate(LangKey::Escort);
-	case Killproof::kc: return lang.translate(LangKey::Kc);
-	case Killproof::xera: return lang.translate(LangKey::Xera);
-	case Killproof::cairn: return lang.translate(LangKey::Cairn);
-	case Killproof::mo: return lang.translate(LangKey::Mo);
-	case Killproof::samarog: return lang.translate(LangKey::Samarog);
-	case Killproof::deimos: return lang.translate(LangKey::Deimos);
-	case Killproof::desmina: return lang.translate(LangKey::Desmina);
-	case Killproof::river: return lang.translate(LangKey::River);
-	case Killproof::statues: return lang.translate(LangKey::Statues);
-	case Killproof::dhuum: return lang.translate(LangKey::Dhuum);
-	case Killproof::ca: return lang.translate(LangKey::Ca);
-	case Killproof::twins: return lang.translate(LangKey::Twins);
-	case Killproof::qadim: return lang.translate(LangKey::Qadim);
-	case Killproof::sabir: return lang.translate(LangKey::Sabir);
-	case Killproof::adina: return lang.translate(LangKey::Adina);
-	case Killproof::qadim2: return lang.translate(LangKey::Qadim2);
-	case Killproof::boneskinnerVial: return lang.translate(LangKey::BoneskinnerVial);
-	case Killproof::ankka: return lang.translate(LangKey::Ankka);
-	case Killproof::ministerLi: return lang.translate(LangKey::MinisterLi);
-	case Killproof::harvest: return lang.translate(LangKey::Harvest);
-	case Killproof::maiTrin: return lang.translate(LangKey::MaiTrin);
-	case Killproof::maiTrinCM: return lang.translate(LangKey::MaiTrinCM);
-	case Killproof::ankkaCM: return lang.translate(LangKey::AnkkaCM);
-	default: return lang.translate(LangKey::DefaultKp);
+	case Killproof::li: return Localization::STranslate(KMT_LI);
+	case Killproof::ld: return Localization::STranslate(KMT_Ld);
+	case Killproof::liLd: return Localization::STranslate(KMT_LiLd);
+	case Killproof::uce: return Localization::STranslate(KMT_Uce);
+	case Killproof::ufe: return Localization::STranslate(KMT_Ufe);
+	case Killproof::vg: return Localization::STranslate(KMT_Vg);
+	case Killproof::gorse: return Localization::STranslate(KMT_Gorse);
+	case Killproof::sabetha: return Localization::STranslate(KMT_Sabetha);
+	case Killproof::sloth: return Localization::STranslate(KMT_Sloth);
+	case Killproof::matthias: return Localization::STranslate(KMT_Matthias);
+	case Killproof::escort: return Localization::STranslate(KMT_Escort);
+	case Killproof::kc: return Localization::STranslate(KMT_Kc);
+	case Killproof::xera: return Localization::STranslate(KMT_Xera);
+	case Killproof::cairn: return Localization::STranslate(KMT_Cairn);
+	case Killproof::mo: return Localization::STranslate(KMT_Mo);
+	case Killproof::samarog: return Localization::STranslate(KMT_Samarog);
+	case Killproof::deimos: return Localization::STranslate(KMT_Deimos);
+	case Killproof::desmina: return Localization::STranslate(KMT_Desmina);
+	case Killproof::river: return Localization::STranslate(KMT_River);
+	case Killproof::statues: return Localization::STranslate(KMT_Statues);
+	case Killproof::dhuum: return Localization::STranslate(KMT_Dhuum);
+	case Killproof::ca: return Localization::STranslate(KMT_Ca);
+	case Killproof::twins: return Localization::STranslate(KMT_Twins);
+	case Killproof::qadim: return Localization::STranslate(KMT_Qadim);
+	case Killproof::sabir: return Localization::STranslate(KMT_Sabir);
+	case Killproof::adina: return Localization::STranslate(KMT_Adina);
+	case Killproof::qadim2: return Localization::STranslate(KMT_Qadim2);
+	case Killproof::boneskinnerVial: return Localization::STranslate(KMT_BoneskinnerVial);
+	case Killproof::ankka: return Localization::STranslate(KMT_Ankka);
+	case Killproof::ministerLi: return Localization::STranslate(KMT_MinisterLi);
+	case Killproof::harvest: return Localization::STranslate(KMT_Harvest);
+	case Killproof::maiTrin: return Localization::STranslate(KMT_MaiTrin);
+	case Killproof::maiTrinCM: return Localization::STranslate(KMT_MaiTrinCM);
+	case Killproof::ankkaCM: return Localization::STranslate(KMT_AnkkaCM);
+	default: return Localization::STranslate(ET_Unknown);
 	}
 }
 

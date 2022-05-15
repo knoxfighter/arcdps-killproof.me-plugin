@@ -2,12 +2,9 @@
 
 #include "Settings.h"
 
-class SettingsUI
-{
+class SettingsUI : public Singleton<SettingsUI> {
 public:
 	SettingsUI() = default;
 
 	void Draw();
 };
-
-extern SettingsUI settingsUI;

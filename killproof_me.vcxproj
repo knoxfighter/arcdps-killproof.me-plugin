@@ -97,6 +97,9 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <ShowIncludes>false</ShowIncludes>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -116,6 +119,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,7 +161,9 @@
     <ClCompile Include="extension\KeyBindHandler.cpp" />
     <ClCompile Include="extension\KeyInput.cpp" />
     <ClCompile Include="extension\arcdps_structs.cpp" />
+    <ClCompile Include="extension\Localization.cpp" />
     <ClCompile Include="extension\Singleton.cpp" />
+    <ClCompile Include="extension\UpdateChecker.cpp" />
     <ClCompile Include="extension\UpdateCheckerBase.cpp" />
     <ClCompile Include="extension\Widgets.cpp" />
     <ClCompile Include="extension\Windows\Demo\DemoKeyBindComponent.cpp" />
@@ -178,25 +184,26 @@
     <ClCompile Include="KillproofUI.cpp" />
     <ClCompile Include="KillproofUIKeyBindComponent.cpp" />
     <ClCompile Include="KillproofUITable.cpp" />
-    <ClCompile Include="Lang.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsUI.cpp" />
     <ClCompile Include="unofficial_extras\KeyBindHelper.cpp" />
     <ClCompile Include="unofficial_extras\KeyBindsTranslation.cpp" />
-    <ClCompile Include="UpdateChecker.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="extension\ExtensionTranslations.h" />
     <ClInclude Include="extension\imgui_stdlib.h" />
     <ClInclude Include="extension\KeyBindHandler.h" />
     <ClInclude Include="extension\KeyInput.h" />
     <ClInclude Include="extension\arcdps_structs.h" />
     <ClInclude Include="extension\arcdps_structs_slim.h" />
     <ClInclude Include="extension\IconLoader.h" />
+    <ClInclude Include="extension\Localization.h" />
     <ClInclude Include="extension\map.h" />
     <ClInclude Include="extension\MumbleLink.h" />
     <ClInclude Include="extension\nlohmannJsonExtension.h" />
     <ClInclude Include="extension\Singleton.h" />
+    <ClInclude Include="extension\UpdateChecker.h" />
     <ClInclude Include="extension\UpdateCheckerBase.h" />
     <ClInclude Include="extension\Widgets.h" />
     <ClInclude Include="extension\Windows\ComponentBase.h" />
@@ -232,7 +239,6 @@
     <ClInclude Include="unofficial_extras\KeyBindHelper.h" />
     <ClInclude Include="unofficial_extras\KeyBindsTranslation.h" />
     <ClInclude Include="unofficial_extras\KeyBindStructs.h" />
-    <ClInclude Include="UpdateChecker.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="killproof_me.rc" />

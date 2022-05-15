@@ -41,7 +41,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 				if (!pTotalText) {
 					drawTextColumn<true>(open, pPlayer.username, pPlayer.username, pPlayer.status, first && pHasLinked, first, pPlayer.commander && accountNameEnabled);
 				} else if (accountNameEnabled) {
-					drawTextColumn(open, lang.translate(LangKey::Overall), pPlayer.username, pPlayer.status, first && pHasLinked, first, pPlayer.commander && accountNameEnabled);
+					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, first, pPlayer.commander && accountNameEnabled);
 				}
 				continue;
 			}
@@ -49,7 +49,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 				if (!pTotalText) {
 					drawTextColumn<true>(open, pPlayer.characterName, pPlayer.username, pPlayer.status, first && pHasLinked, first, pPlayer.commander && !accountNameEnabled);
 				} else if (!accountNameEnabled) {
-					drawTextColumn(open, lang.translate(LangKey::Overall), pPlayer.username, pPlayer.status, first && pHasLinked, first, pPlayer.commander && accountNameEnabled);
+					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, first, pPlayer.commander && accountNameEnabled);
 				}
 				continue;
 			}
@@ -78,11 +78,11 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 
 					if (IsCurrentColumnHovered()) {
 						ImGui::BeginTooltip();
-						std::string kpText = std::format("{}: {}", lang.translate(LangKey::Killproofs), (pTotal ? pPlayer.getKillproofsTotal(kp) : pPlayer.getKillproofs(kp)).value());
+						std::string kpText = std::format("{}: {}", Localization::STranslate(KMT_Killproofs), (pTotal ? pPlayer.getKillproofsTotal(kp) : pPlayer.getKillproofs(kp)).value());
 						ImGui::TextUnformatted(kpText.c_str());
 						const std::optional<amountVal> coffers = pTotal ? pPlayer.getCoffersTotal(kp) : pPlayer.getCoffers(kp);
 						if (coffers.has_value()) {
-							std::string cofferText = std::format("{}: {}", lang.translate(LangKey::Coffers), coffers.value());
+							std::string cofferText = std::format("{}: {}", Localization::STranslate(KMT_Coffers), coffers.value());
 							ImGui::TextUnformatted(cofferText.c_str());
 						}
 						ImGui::EndTooltip();
@@ -284,9 +284,9 @@ bool& KillproofUITable::getHighlightHoveredRows() {
 }
 
 const char* KillproofUITable::getCategoryName(const std::string& pCat) {
-	if (pCat == "1") return "Raids";
-	if (pCat == "2") return "Fractals";
-	if (pCat == "3") return "Strikes";
+	if (pCat == "1") return Localization::STranslate(KMT_Raids).c_str();
+	if (pCat == "2") return Localization::STranslate(KMT_Fractals).c_str();
+	if (pCat == "3") return Localization::STranslate(KMT_Strikes).c_str();
 	if (pCat == "1.1") return "W1";
 	if (pCat == "1.2") return "W2";
 	if (pCat == "1.3") return "W3";
@@ -319,4 +319,8 @@ void KillproofUITable::MigrateSettings() {
 
 bool& KillproofUITable::getCustomColumnsActive() {
 	return Settings::instance().settings.showBasedOnMap;
+}
+
+bool& KillproofUITable::getShowHeaderAsText() {
+	return Settings::instance().settings.showHeaderText;
 }

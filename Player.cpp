@@ -2,7 +2,6 @@
 
 #include "global.h"
 #include "KillproofUI.h"
-#include "UpdateChecker.h"
 #include "Settings.h"
 
 #include "extension/arcdps_structs.h"
