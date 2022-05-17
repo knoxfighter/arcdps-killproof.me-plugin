@@ -86,7 +86,7 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 // Value is a vector of columns that should be shown for that map. The Values are the UserIds from the ColumnSetup.
 // TODO: update this when the above vector changes!
 static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetup = {
-	{1155, {0, 1, 2, 20, 23, 26}}, // Aerodrome
+	{1155, {0, 1, 2, 7, 9, 12, 16, 20, 23, 26}}, // Aerodrome
 	{1062, {0, 1, 2, 5, 6, 7}}, // W1
 	{1149, {0, 1, 2, 8, 9}}, // W2
 	{1156, {0, 1, 2, 10, 11, 12}}, // W3
