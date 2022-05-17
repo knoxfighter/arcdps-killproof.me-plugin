@@ -1,73 +1,97 @@
-// dllmain.cpp : Defines the entry point for the DLL application.
-#include <cstdint>
-#include <d3d11.h>
-#include <d3d9.h>
-#include <mutex>
-#include <ranges>
-#include <sstream>
-#include <string>
-#include <Windows.h>
-
 #include "global.h"
-#include "KillproofUI.h"
-#include "Lang.h"
-#include "Player.h"
 #include "Settings.h"
+#include "KillproofUI.h"
 #include "SettingsUI.h"
-#include "extension/arcdps_structs.h"
-#include "extension/IconLoader.h"
-#include "extension/KeyBindHandler.h"
-#include "extension/KeyInput.h"
-#include "extension/Singleton.h"
-#include "extension/UpdateChecker.h"
-#include "extension/Widgets.h"
-#include "extension/Windows/PositioningComponent.h"
-#include "unofficial_extras/Definitions.h"
-#ifdef _DEBUG
-#include "extension/Windows/Demo/DemoTableWindow.h" 
-#include "extension/Windows/Demo/DemoWindow.h"
-#endif
 
+#include "extension/arcdps_structs.h"
+#include "extension/KeyBindHandler.h"
+#include "extension/Windows/Demo/DemoTableWindow.h"
+#include "extension/Windows/Demo/DemoWindow.h"
+#include "extension/KeyInput.h"
 #include "extension/MumbleLink.h"
+#include "extension/UpdateChecker.h"
+#include "extension/windows/PositioningComponent.h"
 
 #include "imgui/imgui.h"
 
-// globals
-char* arcvers;
-arcdps_exports arc_exports = {};
-HMODULE arc_dll;
-HMODULE self_dll;
-IDirect3DDevice9* d3d9Device;
-ID3D11Device* d3d11Device;
-UINT directxVersion;
-LPVOID mapViewOfMumbleFile = nullptr;
+#include <d3d11.h>
+#include <d3d9.h>
+#include <Windows.h>
+#include <format>
+#include <mutex>
 
-// define `extern`s of other files
-arc_export_func_u64 ARC_EXPORT_E6;
-arc_export_func_u64 ARC_EXPORT_E7;
-e3_func_ptr ARC_LOG_FILE;
-e3_func_ptr ARC_LOG;
+namespace {
+	HMODULE SELF_DLL;
+	HMODULE ARC_DLL;
+	IDirect3DDevice9* d3d9Device = nullptr;
+	ID3D11Device* d3d11Device = nullptr;
+	arcdps_exports arc_exports = {};
+	LPVOID mapViewOfMumbleFile = nullptr;
 
-bool showSettings = false;
-bool initFailed = false;
-bool extrasLoaded = false;
+	bool lastFrameShow = false;
+	bool initFailed = false;
+}
 
-BOOL APIENTRY DllMain(HMODULE hModule,
-					  DWORD ul_reason_for_call,
-					  LPVOID lpReserved
+BOOL APIENTRY DllMain(HMODULE pModule,
+					  DWORD pReasonForCall,
+					  LPVOID pReserved
 ) {
-	switch (ul_reason_for_call) {
+	switch (pReasonForCall) {
 		case DLL_PROCESS_ATTACH:
-			self_dll = hModule;
-		if (HANDLE mumbleFileHandle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(LinkedMem), L"MumbleLink"); mumbleFileHandle) {
-			mapViewOfMumbleFile = MapViewOfFile(mumbleFileHandle, FILE_MAP_READ, 0, 0, 0);
-		}
+			SELF_DLL = pModule;
+			if (HANDLE mumbleFileHandle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(LinkedMem), L"MumbleLink"); mumbleFileHandle) {
+				mapViewOfMumbleFile = MapViewOfFile(mumbleFileHandle, FILE_MAP_READ, 0, 0, 0);
+			}
+			break;
 		case DLL_THREAD_ATTACH:
 		case DLL_THREAD_DETACH:
 		case DLL_PROCESS_DETACH:
 			break;
 	}
 	return TRUE;
+}
+
+uintptr_t mod_windows(const char* windowname) {
+	if (!windowname) {
+		KillproofUI::instance().DrawOptionCheckbox();
+#if _DEBUG
+		DemoWindow::instance().DrawOptionCheckbox();
+		DemoTableWindow::instance().DrawOptionCheckbox();
+#endif
+	}
+	return 0;
+}
+
+uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
+#if PERFORMANCE_LOG
+	const auto& beforePoint = std::chrono::high_resolution_clock::now();
+#endif
+
+#if _DEBUG
+	DemoWindow::instance().Draw();
+	DemoTableWindow::instance().Draw();
+#endif
+
+	GlobalObjects::UPDATE_CHECKER->Draw(GlobalObjects::UPDATE_STATE, KILLPROOF_ME_PLUGIN_NAME, "https://github.com/knoxfighter/arcdps-killproof.me-plugin/releases/latest");
+
+	if (not_charsel_or_loading) {
+		KillproofUI::instance().Draw(!GlobalObjects::CanMoveWindows() ? ImGuiWindowFlags_NoMove : 0);
+
+		// load killproofs if window was just opened
+		bool& showKillproof = Settings::instance().settings.showKillproof;
+		if (!lastFrameShow && showKillproof) {
+			loadAllKillproofs();
+		}
+		lastFrameShow = showKillproof;
+	}
+
+#if PERFORMANCE_LOG
+	const auto& afterPoint = std::chrono::high_resolution_clock::now();
+	const auto& diff = afterPoint - beforePoint;
+	ARC_LOG_FILE(std::format("mod_imgui: {}", diff.count()).c_str());
+#endif
+
+	return 0;
 }
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
@@ -310,65 +334,6 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 	return 0;
 }
 
-uintptr_t mod_options() {
-	SettingsUI::instance().Draw();
-
-	return 0;
-}
-
-uintptr_t mod_windows(const char* windowname) {
-	if (!windowname) {
-		KillproofUI::instance().DrawOptionCheckbox();
-#if _DEBUG
-		DemoWindow::instance().DrawOptionCheckbox();
-		DemoTableWindow::instance().DrawOptionCheckbox();
-#endif
-	}
-	return 0;
-}
-
-bool lastFrameShow = false;
-
-uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
-#if PERFORMANCE_LOG
-	const auto& beforePoint = std::chrono::high_resolution_clock::now();
-#endif
-
-#if _DEBUG
-	DemoWindow::instance().Draw();
-	DemoTableWindow::instance().Draw();
-#endif
-
-	// try {
-	// ImGui::ShowMetricsWindow();
-
-	GlobalObjects::UPDATE_CHECKER->Draw(GlobalObjects::UPDATE_STATE, KILLPROOF_ME_PLUGIN_NAME, "https://github.com/knoxfighter/arcdps-killproof.me-plugin/releases/latest");
-
-	if (not_charsel_or_loading) {
-		KillproofUI::instance().Draw(!GlobalObjects::CanMoveWindows() ? ImGuiWindowFlags_NoMove : 0);
-
-		// load killproofs if window was just opened
-		bool& showKillproof = Settings::instance().settings.showKillproof;
-		if (!lastFrameShow && showKillproof) {
-			loadAllKillproofs();
-		}
-		lastFrameShow = showKillproof;
-	}
-
-	// } catch (const std::exception& e) {
-	// 	arc_log_file(e.what());
-	// 	throw e;
-	// }
-
-#if PERFORMANCE_LOG
-	const auto& afterPoint = std::chrono::high_resolution_clock::now();
-	const auto& diff = afterPoint - beforePoint;
-	ARC_LOG_FILE(std::format("mod_imgui: {}", diff.count()).c_str());
-#endif
-
-	return 0;
-}
-
 uintptr_t mod_combat_local(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t id, uint64_t revision) {
 	/* ev is null. dst will only be valid on tracking add. skillname will also be null */
 	if (!ev) {
@@ -410,6 +375,12 @@ uintptr_t mod_combat_local(cbtevent* ev, ag* src, ag* dst, const char* skillname
 	return 0;
 }
 
+uintptr_t mod_options() {
+	SettingsUI::instance().Draw();
+
+	return 0;
+}
+
 /* initialize mod -- return table that arcdps will use for callbacks */
 arcdps_exports* mod_init() {
 	bool loading_successful = true;
@@ -417,19 +388,19 @@ arcdps_exports* mod_init() {
 
 	GlobalObjects::UPDATE_CHECKER = std::make_unique<UpdateChecker>();
 
-	const auto& currentVersion = GlobalObjects::UPDATE_CHECKER->GetCurrentVersion(self_dll);
+	const auto& currentVersion = GlobalObjects::UPDATE_CHECKER->GetCurrentVersion(SELF_DLL);
 
 	try {
 		// Setup iconLoader
-		KillproofIconLoader::instance().Setup(self_dll, d3d9Device, d3d11Device);
+		KillproofIconLoader::instance().Setup(SELF_DLL, d3d9Device, d3d11Device);
 
 		// Clear old Files
-		GlobalObjects::UPDATE_CHECKER->ClearFiles(self_dll);
+		GlobalObjects::UPDATE_CHECKER->ClearFiles(SELF_DLL);
 
 		// check for new version on github
 		if (currentVersion) {
 			GlobalObjects::UPDATE_STATE = std::move(
-				GlobalObjects::UPDATE_CHECKER->CheckForUpdate(self_dll, currentVersion.value(),
+				GlobalObjects::UPDATE_CHECKER->CheckForUpdate(SELF_DLL, currentVersion.value(),
 															  "knoxfighter/arcdps-killproof.me-plugin", false));
 		}
 
@@ -484,28 +455,21 @@ arcdps_exports* mod_init() {
 extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, ImGuiContext* imguicontext, void* dxptr,
 													 HMODULE new_arcdll, void* mallocfn,
 													 void* freefn, UINT dxver) {
-	arcvers = arcversionstr;
 	ImGui::SetCurrentContext(imguicontext);
 	ImGui::SetAllocatorFunctions((void* (*)(size_t, void*))mallocfn, (void (*)(void*, void*))freefn);
 
-	arc_dll = new_arcdll;
-	ARC_EXPORT_E6 = (arc_export_func_u64)GetProcAddress(arc_dll, "e6");
-	ARC_EXPORT_E7 = (arc_export_func_u64)GetProcAddress(arc_dll, "e7");
-	ARC_LOG_FILE = (e3_func_ptr)GetProcAddress(arc_dll, "e3");
-	ARC_LOG = (e3_func_ptr)GetProcAddress(arc_dll, "e8");
+	ARC_DLL = new_arcdll;
+	ARC_EXPORT_E6 = (arc_export_func_u64)GetProcAddress(ARC_DLL, "e6");
+	ARC_EXPORT_E7 = (arc_export_func_u64)GetProcAddress(ARC_DLL, "e7");
+	ARC_LOG_FILE = (e3_func_ptr)GetProcAddress(ARC_DLL, "e3");
+	ARC_LOG = (e3_func_ptr)GetProcAddress(ARC_DLL, "e8");
 
 	// dx11 not available in older arcdps versions
-	std::string arcVersion = arcversionstr;
-	auto firstDot = arcVersion.find_first_of('.');
-	arcVersion = arcVersion.substr(0, firstDot);
-	int arcVersionNum = std::stoi(arcVersion);
-	if (arcVersionNum > 20210828 && dxver == 11) {
+	if (dxver == 11) {
 		auto swapChain = static_cast<IDXGISwapChain*>(dxptr);
 		swapChain->GetDevice(__uuidof(d3d11Device), reinterpret_cast<void**>(&d3d11Device));
-		directxVersion = 11;
 	} else {
 		d3d9Device = static_cast<IDirect3DDevice9*>(dxptr);
-		directxVersion = 9;
 	}
 
 	// install imgui hooks
@@ -531,7 +495,6 @@ uintptr_t mod_release() {
 
 /* export -- arcdps looks for this exported function and calls the address it returns on client exit */
 extern "C" __declspec(dllexport) void* get_release_addr() {
-	arcvers = nullptr;
 	return mod_release;
 }
 

@@ -10,6 +10,10 @@
 #include "resource.h"
 #include "Settings.h"
 
+#include "extension/arcdps_structs.h"
+
+#include "imgui/imgui.h"
+
 std::vector<std::string> trackedPlayers;
 std::mutex trackedPlayersMutex;
 std::map<std::string, Player> cachedPlayers;
@@ -17,6 +21,7 @@ std::mutex cachedPlayersMutex;
 std::vector<std::string> instancePlayers;
 std::mutex instancePlayersMutex;
 std::string selfAccountName;
+bool extrasLoaded;
 
 void loadAllKillproofs() {
 	if (trackedPlayers.size() <= 10 && Settings::instance().settings.showKillproof) {

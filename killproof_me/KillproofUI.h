@@ -12,7 +12,7 @@
 
 typedef std::function<amountVal(const Killproof&)> kpFunction;
 
-class KillproofUI : public MainWindow, public Singleton<KillproofUI> {
+class KillproofUI final : public MainWindow, public Singleton<KillproofUI> {
 public:
 	KillproofUI();
 	bool& GetOpenVar() override;

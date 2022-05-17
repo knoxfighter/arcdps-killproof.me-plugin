@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{ced1256c-bc5c-44a8-a319-b45e0ee480b0}</ProjectGuid>
+    <RootNamespace>killproof_me</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>d3d9_arcdps_killproof_me.dll</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>d3d9_arcdps_killproof_me.dll</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>MAGIC_ENUM_RANGE_MAX=256;NOMINMAX;_DEBUG;IMGUI_DEFINE_MATH_OPERATORS;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)modules\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <AdditionalDependencies>atls.lib;crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>MAGIC_ENUM_RANGE_MAX=256;NOMINMAX;NDEBUG;IMGUI_DEFINE_MATH_OPERATORS;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)modules\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)$(Platform)\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <AdditionalDependencies>atls.lib;crypt32.lib;Ws2_32.lib;Wldap32.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="global.cpp" />
+    <ClCompile Include="Killproofs.cpp" />
+    <ClCompile Include="KillproofUI.cpp" />
+    <ClCompile Include="KillproofUIKeyBindComponent.cpp" />
+    <ClCompile Include="KillproofUITable.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="SettingsUI.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\modules\extension\arcdps_extension.vcxproj">
+      <Project>{5aff3fc8-8e6f-4fda-9867-93bb861ab635}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\modules\imgui\imgui.vcxproj">
+      <Project>{34ec5a9c-750c-4e6e-bc1a-3090ad360b7e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\modules\unofficial_extras\unofficial_extras.vcxproj">
+      <Project>{dab9bae4-7c01-4d28-90fe-b49387e9fb24}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="global.h" />
+    <ClInclude Include="KillproofIconLoader.h" />
+    <ClInclude Include="Killproofs.h" />
+    <ClInclude Include="KillproofUI.h" />
+    <ClInclude Include="KillproofUIKeyBindComponent.h" />
+    <ClInclude Include="KillproofUIPositioningComponent.h" />
+    <ClInclude Include="KillproofUITable.h" />
+    <ClInclude Include="Lang.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="SettingsUI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="killproof_me.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icons\Ankka.png" />
+    <Image Include="icons\Boneskinner_Ritual_Vial.png" />
+    <Image Include="icons\Cairn_the_Indomitable_Shard.png" />
+    <Image Include="icons\Cardinal_Adina%27s_Token.png" />
+    <Image Include="icons\Cardinal_Sabir%27s_Token.png" />
+    <Image Include="icons\Commander_tag_(white).png" />
+    <Image Include="icons\Conjured_Amalgamate_Token.png" />
+    <Image Include="icons\Desmina%27s_Token.png" />
+    <Image Include="icons\Dhuum%27s_Token.png" />
+    <Image Include="icons\Ether_Djinn%27s_Token.png" />
+    <Image Include="icons\Fragment_of_Saul%27s_Burden.png" />
+    <Image Include="icons\Gorseval_Tentacle_Piece.png" />
+    <Image Include="icons\Harvest.png" />
+    <Image Include="icons\Impaled_Prisoner.png" />
+    <Image Include="icons\Keep_Construct_Rubble_(trophy).png" />
+    <Image Include="icons\Legendary_Divination.png" />
+    <Image Include="icons\Legendary_Insight.png" />
+    <Image Include="icons\lild.png" />
+    <Image Include="icons\MaiTrin.png" />
+    <Image Include="icons\MinisterLi.png" />
+    <Image Include="icons\Qadim%27s_Token.png" />
+    <Image Include="icons\Rec_Room_Floor_Tile.png" />
+    <Image Include="icons\Ribbon_Scrap.png" />
+    <Image Include="icons\River_of_Souls_Token.png" />
+    <Image Include="icons\Sabetha_Flamethrower_Fragment_Piece.png" />
+    <Image Include="icons\Slothasor_Mushroom_(trophy).png" />
+    <Image Include="icons\Statue_Token.png" />
+    <Image Include="icons\Turret_Fragment.png" />
+    <Image Include="icons\Twin_Largos_Token.png" />
+    <Image Include="icons\Unstable_Fractal_Essence.png" />
+    <Image Include="icons\Vale_Guardian_Fragment.png" />
+    <Image Include="icons\White_Mantle_Abomination_Crystal_(trophy).png" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
