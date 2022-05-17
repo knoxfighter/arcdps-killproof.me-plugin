@@ -36,7 +36,7 @@ jobs:
     - name: Update version
       shell: pwsh
       run: |
-        $file = "./killproof_me.rc"
+        $file = "./killproof_me/killproof_me.rc"
         $regex = '(.*(?:(?:FILEVERSION)|(?:FileVersion)|(?:PRODUCTVERSION)|(?:ProductVersion)).*?(?:\d*[.,]){3})(\d*)(.*)'
         $tmp = Get-Content $file | Foreach {
           [regex]::replace($_, $regex, 
