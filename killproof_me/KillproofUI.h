@@ -16,7 +16,6 @@ class KillproofUI final : public MainWindow, public Singleton<KillproofUI> {
 public:
 	KillproofUI();
 	bool& GetOpenVar() override;
-	void SetMaxHeightCursorPos(float pNewCursorPos = ImGui::GetCursorPosY()) override;
 	void Draw(ImGuiWindowFlags imGuiWindowFlags = 0, MainWindowFlags mainWindowFlags = 0) override {
 		imGuiWindowFlags |= ImGuiWindowFlags_NoScrollbar;
 		MainWindow::Draw(imGuiWindowFlags, mainWindowFlags);
@@ -36,7 +35,6 @@ protected:
 	bool& getShowBackground() override;
 	bool& GetShowScrollbar() override;
 	std::optional<ImVec2>& getPadding() override;
-	bool getMaxHeightActive() override;
 
 	void DrawContextMenu() override;
 	void DrawStyleSettingsSubMenu() override;
@@ -44,7 +42,5 @@ protected:
 
 private:
 	char userAddBuf[1024]{};
-	int mCurrentRow = 0;
-	float mCurrentCursorPos = 0;
 	std::unique_ptr<KillproofUITable> mTable;
 };

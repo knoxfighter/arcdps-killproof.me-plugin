@@ -30,19 +30,6 @@ bool& KillproofUI::GetOpenVar() {
 	return Settings::instance().settings.showKillproof;
 }
 
-void KillproofUI::SetMaxHeightCursorPos(float pNewCursorPos) {
-	// Table border size is hardcoded within ImGui `TABLE_BORDER_SIZE = 1.0f;`
-
-	// [ DEBUG ]
-	// ImGuiWindow* subWindow = ImGui::GetCurrentWindow();
-	// ImGui::GetForegroundDrawList(mThisWindow)->AddRect(subWindow->Pos, subWindow->Pos + subWindow->Size, 0xff00ff00);
-	// ImVec2 imVec2 = ;
-	// imVec2.y -= pNewCursorPos;
-	// ImGui::GetForegroundDrawList(mThisWindow)->AddRect(subWindow->Pos, subWindow->Pos + ImGui::GetCursorPos(), 0xffffff00);
-
-	mCurrentCursorPos = pNewCursorPos;
-}
-
 SizingPolicy& KillproofUI::getSizingPolicy() {
 	return Settings::instance().settings.sizingPolicy;
 }
@@ -83,10 +70,6 @@ std::optional<ImVec2>& KillproofUI::getPadding() {
 	return Settings::instance().settings.windowPadding;
 }
 
-bool KillproofUI::getMaxHeightActive() {
-	return Settings::instance().settings.maxDisplayed > 0;
-}
-
 void KillproofUI::DrawContextMenu() {
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 
@@ -116,9 +99,6 @@ void KillproofUI::DrawStyleSettingsSubMenu() {
 void KillproofUI::DrawContent() {
 	// lock the mutexes, before we access sensible data
 	std::scoped_lock<std::mutex, std::mutex> lock(trackedPlayersMutex, cachedPlayersMutex);
-
-	// Reset Row counter
-	mCurrentRow = 0;
 
 	auto& settings = Settings::instance();
 
