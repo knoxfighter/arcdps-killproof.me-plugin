@@ -32,36 +32,36 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 					// #
 					SYSTEMTIME joinedTime = pPlayer.joinedTime;
 					drawTextColumn(open, std::format("{:02d}:{:02d}:{:02d}", joinedTime.wHour, joinedTime.wMinute, joinedTime.wSecond), pPlayer.username, pPlayer.status,
-						   first && pHasLinked, first, false);
+					               first && pHasLinked, false);
 					
 				}
 				continue;
 			}
 			if (column.UserId == ACCOUNT_NAME_ID) {
 				if (!pTotalText) {
-					drawTextColumn<true>(open, pPlayer.username, pPlayer.username, pPlayer.status, first && pHasLinked, first, pPlayer.commander && accountNameEnabled);
+					drawTextColumn<true>(open, pPlayer.username, pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && accountNameEnabled);
 				} else if (accountNameEnabled) {
-					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, first, pPlayer.commander && accountNameEnabled);
+					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && accountNameEnabled);
 				}
 				continue;
 			}
 			if (column.UserId == CHARACTER_NAME_ID) {
 				if (!pTotalText) {
-					drawTextColumn<true>(open, pPlayer.characterName, pPlayer.username, pPlayer.status, first && pHasLinked, first, pPlayer.commander && !accountNameEnabled);
+					drawTextColumn<true>(open, pPlayer.characterName, pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && !accountNameEnabled);
 				} else if (!accountNameEnabled) {
-					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, first, pPlayer.commander && accountNameEnabled);
+					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && accountNameEnabled);
 				}
 				continue;
 			}
 
 			if (column.UserId == KILLPROOF_ID_ID) {
-				drawTextColumn<true>(open, pPlayer.killproofId, pPlayer.username, pPlayer.status, first && pHasLinked, first , false);
+				drawTextColumn<true>(open, pPlayer.killproofId, pPlayer.username, pPlayer.status, first && pHasLinked, false);
 				continue;
 			}
 
 			if (column.UserId == SUBGROUP_ID) {
 				// subgroups are zero based and ui is one based
-				drawTextColumn(open, std::to_string(pPlayer.subgroup + 1), pPlayer.username, pPlayer.status, first && pHasLinked, first , false);
+				drawTextColumn(open, std::to_string(pPlayer.subgroup + 1), pPlayer.username, pPlayer.status, first && pHasLinked, false);
 			}
 
 			const auto& killproof = magic_enum::enum_cast<Killproof>(column.UserId);
@@ -70,11 +70,11 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 				const std::optional<amountVal> totalAmount = pTotal ? pPlayer.getKpOverallTotal(kp) : pPlayer.getKpOverall(kp);
 
 				if (pPlayer.status == LoadingStatus::LoadingById || pPlayer.status == LoadingStatus::LoadingByChar) {
-					ImGuiEx::SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), Settings::instance().settings.alignment);
+					SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), Settings::instance().settings.alignment);
 				} else if (!totalAmount.has_value() || (pPlayer.status != LoadingStatus::Loaded && pPlayer.status != LoadingStatus::LoadedByLinked)) {
-					drawTextColumn(open, Settings::instance().settings.blockedDataText, pPlayer.username, pPlayer.status, first && pHasLinked, first , false);
+					drawTextColumn<false, true>(open, Settings::instance().settings.blockedDataText, pPlayer.username, pPlayer.status, first && pHasLinked, false);
 				} else {
-					drawTextColumn(open, std::to_string(totalAmount.value()), pPlayer.username, pPlayer.status, first && pHasLinked, first , false);
+					drawTextColumn<false, true>(open, std::to_string(totalAmount.value()), pPlayer.username, pPlayer.status, first && pHasLinked, false);
 
 					if (IsCurrentColumnHovered()) {
 						ImGui::BeginTooltip();
@@ -100,8 +100,8 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 	return open;
 }
 
-template<bool OpenBrowser>
-void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool pFirst, bool
+template<bool OpenBrowser, bool AlignmentActive>
+void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool
                                       pIsCommander) {
 	if (pTreeNode) {
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
@@ -123,7 +123,11 @@ void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, con
 			ImGui::Image(KillproofIconLoader::instance().GetTexture(IconId::Commander_White, ID_Commander_White), ImVec2(size, size));
 			ImGui::SameLine();
 		}
-		ImGui::TextUnformatted(pText.c_str());
+		if constexpr (AlignmentActive) {
+			AlignedTextColumn(pText);
+		} else {
+			ImGui::TextUnformatted(pText.c_str());
+		}
 
 		if constexpr (OpenBrowser) {
 			if (pStatus == LoadingStatus::Loaded && ImGui::IsItemClicked()) {

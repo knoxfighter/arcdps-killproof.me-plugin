@@ -72,7 +72,7 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	DemoTableWindow::instance().Draw();
 #endif
 
-	GlobalObjects::UPDATE_CHECKER->Draw(GlobalObjects::UPDATE_STATE, KILLPROOF_ME_PLUGIN_NAME, "https://github.com/knoxfighter/arcdps-killproof.me-plugin/releases/latest");
+	UpdateChecker::instance().Draw(GlobalObjects::UPDATE_STATE, KILLPROOF_ME_PLUGIN_NAME, "https://github.com/knoxfighter/arcdps-killproof.me-plugin/releases/latest");
 
 	if (not_charsel_or_loading) {
 		KillproofUI::instance().Draw(!GlobalObjects::CanMoveWindows() ? ImGuiWindowFlags_NoMove : 0);
@@ -386,21 +386,20 @@ arcdps_exports* mod_init() {
 	bool loading_successful = true;
 	std::string error_message = "Unknown error";
 
-	GlobalObjects::UPDATE_CHECKER = std::make_unique<UpdateChecker>();
-
-	const auto& currentVersion = GlobalObjects::UPDATE_CHECKER->GetCurrentVersion(SELF_DLL);
+	UpdateChecker& updateChecker = UpdateChecker::instance();
+	const auto& currentVersion = updateChecker.GetCurrentVersion(SELF_DLL);
 
 	try {
 		// Setup iconLoader
 		KillproofIconLoader::instance().Setup(SELF_DLL, d3d9Device, d3d11Device);
 
 		// Clear old Files
-		GlobalObjects::UPDATE_CHECKER->ClearFiles(SELF_DLL);
+		updateChecker.ClearFiles(SELF_DLL);
 
 		// check for new version on github
 		if (currentVersion) {
 			GlobalObjects::UPDATE_STATE = std::move(
-				GlobalObjects::UPDATE_CHECKER->CheckForUpdate(SELF_DLL, currentVersion.value(),
+				updateChecker.CheckForUpdate(SELF_DLL, currentVersion.value(),
 															  "knoxfighter/arcdps-killproof.me-plugin", false));
 		}
 
@@ -424,7 +423,7 @@ arcdps_exports* mod_init() {
 	arc_exports.imguivers = IMGUI_VERSION_NUM;
 	arc_exports.out_name = KILLPROOF_ME_PLUGIN_NAME;
 	const std::string& version = currentVersion
-									 ? GlobalObjects::UPDATE_CHECKER->GetVersionAsString(currentVersion.value())
+									 ? updateChecker.GetVersionAsString(currentVersion.value())
 									 : "Unknown";
 	char* version_c_str = new char[version.length() + 1];
 	strcpy_s(version_c_str, version.length() + 1, version.c_str());

@@ -128,8 +128,8 @@ private:
 	template<bool Linked = false>
 	bool drawRow(TableColumnIdx pFirstColumnIndex, const Player& pPlayer, bool pHasLinked, bool pTotal = false, bool pTotalText = false);
 
-	template<bool OpenBrowser = false>
-	void drawTextColumn(bool& pOpen, const std::string& pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool pFirst, bool pIsCommander);
+	template<bool OpenBrowser = false, bool AlignmentActive = false>
+	void drawTextColumn(bool& pOpen, const std::string& pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool pIsCommander);
 
 	void openInBrowser(const std::string& username);
 };

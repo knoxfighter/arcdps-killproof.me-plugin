@@ -28,7 +28,7 @@ void Player::loadKillproofs() {
 
 	// download it in a new thread (fire and forget)
 	const auto call = [this](const auto& self, const std::string& link) -> void {
-		std::string version = GlobalObjects::UPDATE_CHECKER->GetVersionAsString(
+		std::string version = UpdateChecker::instance().GetVersionAsString(
 			*GlobalObjects::UPDATE_STATE->CurrentVersion);
 		std::string userAgent = "arcdps-killproof.me-plugin/";
 		userAgent.append(version);

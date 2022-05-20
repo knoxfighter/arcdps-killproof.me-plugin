@@ -47,7 +47,6 @@ void updateCommander(const std::string& commanderName);
 class GlobalObjects {
 public:
 	// Updating myself stuff
-	static inline std::unique_ptr<UpdateChecker> UPDATE_CHECKER = nullptr;
 	static inline std::unique_ptr<UpdateCheckerBase::UpdateState> UPDATE_STATE = nullptr;
 
 	// arc keyboard modifier
