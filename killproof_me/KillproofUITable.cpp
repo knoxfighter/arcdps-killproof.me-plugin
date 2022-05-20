@@ -67,7 +67,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 			const auto& killproof = magic_enum::enum_cast<Killproof>(column.UserId);
 			if (killproof.has_value()) {
 				Killproof kp = killproof.value();
-				const std::optional<amountVal> totalAmount = pTotal ? pPlayer.getKpOverallTotal(kp) : pPlayer.getKpOverall(kp);
+				const std::optional<amountVal> totalAmount = pTotal && pHasLinked ? pPlayer.getKpOverallTotal(kp) : pPlayer.getKpOverall(kp);
 
 				if (pPlayer.status == LoadingStatus::LoadingById || pPlayer.status == LoadingStatus::LoadingByChar) {
 					SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text));
