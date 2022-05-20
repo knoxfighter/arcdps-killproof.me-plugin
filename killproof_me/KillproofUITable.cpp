@@ -70,7 +70,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 				const std::optional<amountVal> totalAmount = pTotal ? pPlayer.getKpOverallTotal(kp) : pPlayer.getKpOverall(kp);
 
 				if (pPlayer.status == LoadingStatus::LoadingById || pPlayer.status == LoadingStatus::LoadingByChar) {
-					SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text), Settings::instance().settings.alignment);
+					SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text));
 				} else if (!totalAmount.has_value() || (pPlayer.status != LoadingStatus::Loaded && pPlayer.status != LoadingStatus::LoadedByLinked)) {
 					drawTextColumn<false, true>(open, Settings::instance().settings.blockedDataText, pPlayer.username, pPlayer.status, first && pHasLinked, false);
 				} else {
