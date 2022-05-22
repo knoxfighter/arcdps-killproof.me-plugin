@@ -318,7 +318,17 @@ void KillproofUITable::MigrateSettings() {
 		columnSettings->DisplayOrder = 5;
 
 		tableSettings.Version = 2;
-	} 
+	}
+
+	// migrate missing columns
+	if (size_t columnSize = tableSettings.Columns.size(); columnSize < COLUMN_SETUP.size()) {
+		tableSettings.Columns.resize(COLUMN_SETUP.size());
+
+		for (size_t i = columnSize - 1; i < COLUMN_SETUP.size(); ++i) {
+			tableSettings.Columns[i].IsEnabled = COLUMN_SETUP[i].DefaultVisibility;
+			tableSettings.Columns[i].UserID = COLUMN_SETUP[i].UserId;
+		}
+	}
 }
 
 bool& KillproofUITable::getCustomColumnsActive() {
