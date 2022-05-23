@@ -54,8 +54,7 @@ cd vcpkg
 ```
 
 Then download this project and open it with Visual Studio. Everything should be set up and you should be able to compile it.  
-The default output directory is `C:\Program Files\Guild Wars 2\bin64\`, you can change that in `Properties -> Configuration Properties -> General -> Output Directory`.
-Also, running the Local Windows Debugger, will start `C:\Program Files\Guild Wars 2\Gw2-64.exe` and attaches the debugger to it. Make sure to NOT use your normal account, cause you could get banned for it!
+To change the default output directory, use a `Directory.Build.props` file. An example is in the `killproof_me` directory.
 
 ## LICENSE
 
