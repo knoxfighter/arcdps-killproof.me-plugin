@@ -93,10 +93,6 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 		}
 	}
 
-	if constexpr (!Linked) {
-		EndMaxHeightRow();
-	}
-
 	return open;
 }
 
@@ -171,6 +167,8 @@ void KillproofUITable::DrawRows(TableColumnIdx pFirstColumnIndex) {
 
 				ImGui::TreePop();
 			}
+
+			EndMaxHeightRow();
 		}
 	}
 }
