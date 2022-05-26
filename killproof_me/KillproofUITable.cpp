@@ -237,13 +237,16 @@ void KillproofUITable::Sort(const ImGuiTableColumnSortSpecs* mColumnSortSpecs) {
 	if (killproof.has_value()) {
 		// sort by any amount of KP
 		const auto kp = killproof.value();
-		std::ranges::sort(trackedPlayers, [&kp, descend](const std::string& playerAName, const std::string& playerBName) {
+		bool showLinkedTotalsOnUser = Settings::instance().settings.showLinkedTotalsOnUser;
+		std::ranges::sort(trackedPlayers, [&kp, descend, showLinkedTotalsOnUser](const std::string& playerAName, const std::string& playerBName) {
 			// get player object of name
 			const Player& playerA = cachedPlayers.at(playerAName);
 			const Player& playerB = cachedPlayers.at(playerBName);
 
-			const auto& amountAOpt = playerA.getKpOverall(kp);
-			const auto& amountBOpt = playerB.getKpOverall(kp);
+			
+			// const auto& amountAOpt = playerA.getKpOverall(kp);
+			const auto& amountAOpt = showLinkedTotalsOnUser && !playerA.linkedAccounts.empty() ? playerA.getKpOverallTotal(kp) : playerA.getKpOverall(kp);
+			const auto& amountBOpt = showLinkedTotalsOnUser && !playerB.linkedAccounts.empty() ? playerB.getKpOverallTotal(kp) : playerB.getKpOverall(kp);
 
 			amountVal amountA = amountAOpt ? amountAOpt.value() : -1;
 			amountVal amountB = amountBOpt ? amountBOpt.value() : -1;

@@ -84,7 +84,10 @@ void KillproofUI::DrawStyleSettingsSubMenu() {
 	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowControls).c_str(), &settings.settings.showControls);
 	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowLinkedByDefault).c_str(), &settings.settings.showLinkedByDefault);
 	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowCommander).c_str(), &settings.settings.showCommander);
-	ImGui::Checkbox(Localization::STranslate(KMT_ShowLinkedTotals).c_str(), &Settings::instance().settings.showLinkedTotalsOnUser);
+	if (ImGui::Checkbox(Localization::STranslate(KMT_ShowLinkedTotals).c_str(), &Settings::instance().settings.showLinkedTotalsOnUser)) {
+		// trigger resort when this option is changed
+		mTable->RequestSort();
+	}
 
 	// input for data private
 	ImGui::PushItemWidth(50);
