@@ -585,6 +585,11 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 
 				const auto& instanceSub = std::ranges::remove_if(instancePlayers, pred);
 				instancePlayers.erase(instanceSub.begin(), instanceSub.end());
+
+				const auto& actualSelfPlayer = cachedPlayers.find(username);
+				if (actualSelfPlayer != cachedPlayers.end()) {
+					actualSelfPlayer->second.commander = false;
+				}
 			} else {
 				removePlayer(username, AddedBy::Extras);
 			}
