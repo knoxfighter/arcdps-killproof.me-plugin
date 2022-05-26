@@ -80,6 +80,7 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{34, [] {return to_string(Killproof::harvest);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Harvest, ID_Harvest);}, "3", false},
 	{36, [] {return to_string(Killproof::maiTrinCM);}, []{return KillproofIconLoader::instance().GetTexture(IconId::MaiTrin, ID_Mai_Trin);}, "3", false},
 	{38, [] {return to_string(Killproof::ankkaCM);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Ankka, ID_Ankka);}, "3", false},
+	{39, [] {return to_string(Killproof::ministerLiCM);}, []{return KillproofIconLoader::instance().GetTexture(IconId::MinisterLi, ID_Minister_Li);}, "3", false},
 };
 
 // Key is the mapId found in the mumbleLink

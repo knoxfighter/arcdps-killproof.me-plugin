@@ -76,6 +76,7 @@ const std::string& toString(Killproof e) {
 	case Killproof::maiTrin: return Localization::STranslate(KMT_MaiTrin);
 	case Killproof::maiTrinCM: return Localization::STranslate(KMT_MaiTrinCM);
 	case Killproof::ankkaCM: return Localization::STranslate(KMT_AnkkaCM);
+	case Killproof::ministerLiCM: return Localization::STranslate(KMT_MinisterLiCM);
 	default: return Localization::STranslate(ET_Unknown);
 	}
 }
