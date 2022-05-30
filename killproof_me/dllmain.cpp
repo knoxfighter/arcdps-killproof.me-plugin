@@ -1,24 +1,24 @@
 #include "global.h"
-#include "Settings.h"
 #include "KillproofUI.h"
+#include "Settings.h"
 #include "SettingsUI.h"
 
 #include "extension/arcdps_structs.h"
 #include "extension/KeyBindHandler.h"
-#include "extension/Windows/Demo/DemoTableWindow.h"
-#include "extension/Windows/Demo/DemoWindow.h"
 #include "extension/KeyInput.h"
 #include "extension/MumbleLink.h"
 #include "extension/UpdateChecker.h"
-#include "extension/windows/PositioningComponent.h"
+#include "extension/Windows/PositioningComponent.h"
+#include "extension/Windows/Demo/DemoTableWindow.h"
+#include "extension/Windows/Demo/DemoWindow.h"
 
 #include "imgui/imgui.h"
 
 #include <d3d11.h>
 #include <d3d9.h>
-#include <Windows.h>
 #include <format>
 #include <mutex>
+#include <Windows.h>
 
 namespace {
 	HMODULE SELF_DLL;
@@ -391,7 +391,7 @@ arcdps_exports* mod_init() {
 
 	try {
 		// Setup iconLoader
-		KillproofIconLoader::instance().Setup(SELF_DLL, d3d9Device, d3d11Device);
+		IconLoader::instance().Setup(SELF_DLL, d3d9Device, d3d11Device);
 
 		// Clear old Files
 		updateChecker.ClearFiles(SELF_DLL);

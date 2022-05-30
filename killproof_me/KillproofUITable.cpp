@@ -96,6 +96,9 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 	return open;
 }
 
+namespace {
+	static std::optional<size_t> COMMANDER_TAG_TEXTURE;
+}
 template<bool OpenBrowser, bool AlignmentActive>
 void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool
                                       pIsCommander) {
@@ -111,12 +114,12 @@ void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, con
 		actualText.append("###");
 		actualText.append(pUsername);
 
-		pOpen = ImGuiEx::TreeNodeEx(actualText.c_str(), treeNodeFlags, pIsCommander && Settings::instance().settings.showCommander ? KillproofIconLoader::instance().GetTexture(IconId::Commander_White, ID_Commander_White) : nullptr);
+		pOpen = ImGuiEx::TreeNodeEx(actualText.c_str(), treeNodeFlags, pIsCommander && Settings::instance().settings.showCommander ? GET_TEXTURE_CUSTOM(COMMANDER_TAG_TEXTURE, ID_Commander_White) : nullptr);
 		ImGui::PopStyleVar();
 	} else {
 		if (pIsCommander && Settings::instance().settings.showCommander) {
 			float size = ImGui::GetFontSize();
-			ImGui::Image(KillproofIconLoader::instance().GetTexture(IconId::Commander_White, ID_Commander_White), ImVec2(size, size));
+			ImGui::Image(GET_TEXTURE_CUSTOM(COMMANDER_TAG_TEXTURE, ID_Commander_White), ImVec2(size, size));
 			ImGui::SameLine();
 		}
 		if constexpr (AlignmentActive) {
@@ -305,18 +308,18 @@ const char* KillproofUITable::getCategoryName(const std::string& pCat) {
 void KillproofUITable::MigrateSettings() {
 	auto& tableSettings = Settings::instance().settings.tableSettings;
 	if (tableSettings.Version == 1) {
-		// heighten everything >= 5
-		for (auto& column : tableSettings.Columns) {
-			if (column.DisplayOrder < 5) {
-				++column.DisplayOrder;
+		if (!tableSettings.Columns.empty()) {
+			// heighten everything >= 5
+			for (auto& column : tableSettings.Columns) {
+				if (column.DisplayOrder < 5) {
+					++column.DisplayOrder;
+				}
 			}
-		}
 
-		// add new 5th element
-		const auto& columnSettings = tableSettings.Columns.emplace(
-			std::next(tableSettings.Columns.begin(), 5)
-		);
-		columnSettings->DisplayOrder = 5;
+			// add new 5th element
+			const auto& columnSettings = tableSettings.Columns.insert(tableSettings.Columns.begin() + 5, TableColumnSettings());
+			columnSettings->DisplayOrder = 5;
+		}
 
 		tableSettings.Version = 2;
 	}

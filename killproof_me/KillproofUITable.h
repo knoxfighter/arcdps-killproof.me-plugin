@@ -1,12 +1,12 @@
 #pragma once
 
 #include "global.h"
-#include "KillproofIconLoader.h"
 #include "Lang.h"
 #include "Killproofs.h"
 #include "Player.h"
 #include "resource.h"
 
+#include "extension/IconLoader.h"
 #include "extension/Windows/MainTable.h"
 
 using std::string_literals::operator ""s;
@@ -17,6 +17,21 @@ constexpr ImU32 CHARACTER_NAME_ID = 30;
 constexpr ImU32 KILLPROOF_ID_ID = 31;
 constexpr ImU32 SUBGROUP_ID = 64;
 
+static std::optional<size_t> UCE_TEXTURE;
+static std::optional<size_t> MAI_TRIN_TEXTURE;
+static std::optional<size_t> ANKKA_TEXTURE;
+static std::optional<size_t> LI_TEXTURE;
+static std::optional<size_t> HARVEST_TEXTURE;
+
+
+#define GET_TEXTURE_CUSTOM(optional, id) \
+	std::invoke([] { \
+		auto& iconLoader = IconLoader::instance(); \
+		if (!optional) \
+			optional = iconLoader.LoadTexture(id); \
+		return iconLoader.GetTexture(optional.value()); \
+	})
+
 static const std::vector<MainTableColumn> COLUMN_SETUP {
 	// general stuff
 	{JOIN_TIME_ID, [] {return "#"s;}, []{return nullptr;}, "0", true},
@@ -26,61 +41,61 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{SUBGROUP_ID, [] {return Localization::STranslate(KMT_SubgroupText);}, []{return nullptr;}, "0", false},
 
 	// Raids
-	{0, [] {return to_string(Killproof::li);}, []{return KillproofIconLoader::instance().GetTexture(IconId::LI, ID_LI);}, "1", true},
-	{1, [] {return to_string(Killproof::ld);}, []{return KillproofIconLoader::instance().GetTexture(IconId::LD, ID_LD);}, "1", true},
-	{2, [] {return to_string(Killproof::liLd);}, []{return KillproofIconLoader::instance().GetTexture(IconId::LiLd, ID_LILD);}, "1", true},
+	{0, [] {return to_string(Killproof::li);}, []{ return GET_TEXTURE(LI, ID_LI); }, "1", true},
+	{1, [] {return to_string(Killproof::ld);}, []{ return GET_TEXTURE(LD, ID_LD); }, "1", true},
+	{2, [] {return to_string(Killproof::liLd);}, []{ return GET_TEXTURE(LILD, ID_LILD); }, "1", true},
 
 	// fractals
-	{3, [] {return to_string(Killproof::uce);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Uce, ID_UFE);}, "2", true},
-	{4, [] {return to_string(Killproof::ufe);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Ufe, ID_UFE);}, "2", true},
+	{3, [] {return to_string(Killproof::uce);}, []{ return GET_TEXTURE_CUSTOM(UCE_TEXTURE, ID_UFE); }, "2", true},
+	{4, [] {return to_string(Killproof::ufe);}, []{ return GET_TEXTURE_CUSTOM(UCE_TEXTURE, ID_UFE); }, "2", true},
 
 	// W1
-	{5, [] {return to_string(Killproof::vg);}, []{return KillproofIconLoader::instance().GetTexture(IconId::VG, ID_VG);}, "1.1", false},
-	{6, [] {return to_string(Killproof::gorse);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Gorse, ID_Gorse);}, "1.1", false},
-	{7, [] {return to_string(Killproof::sabetha);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Sabetha, ID_Sabetha);}, "1.1", false},
+	{5, [] {return to_string(Killproof::vg);}, []{ return GET_TEXTURE(VG, ID_VG); }, "1.1", false},
+	{6, [] {return to_string(Killproof::gorse);}, []{ return GET_TEXTURE(Gorse, ID_Gorse); }, "1.1", false},
+	{7, [] {return to_string(Killproof::sabetha);}, []{ return GET_TEXTURE(Sabetha, ID_Sabetha); }, "1.1", false},
 
 	// W2
-	{8, [] {return to_string(Killproof::sloth);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Sloth, ID_Sloth);}, "1.2", false},
-	{9, [] {return to_string(Killproof::matthias);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Matthias, ID_Matt);}, "1.2", false},
+	{8, [] {return to_string(Killproof::sloth);}, []{ return GET_TEXTURE(Sloth, ID_Sloth); }, "1.2", false},
+	{9, [] {return to_string(Killproof::matthias);}, []{ return GET_TEXTURE(Matt, ID_Matt); }, "1.2", false},
 
 	// W3
-	{10, [] {return to_string(Killproof::escort);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Escort, ID_Escort);}, "1.3", false},
-	{11, [] {return to_string(Killproof::kc);}, []{return KillproofIconLoader::instance().GetTexture(IconId::KC, ID_KC);}, "1.3", false},
-	{12, [] {return to_string(Killproof::xera);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Xera, ID_Xera);}, "1.3", false},
+	{10, [] {return to_string(Killproof::escort);}, []{ return GET_TEXTURE(Escort, ID_Escort); }, "1.3", false},
+	{11, [] {return to_string(Killproof::kc);}, []{ return GET_TEXTURE(KC, ID_KC); }, "1.3", false},
+	{12, [] {return to_string(Killproof::xera);}, []{ return GET_TEXTURE(Xera, ID_Xera); }, "1.3", false},
 
 	// W4
-	{13, [] {return to_string(Killproof::cairn);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Cairn, ID_Cairn);}, "1.4", false},
-	{14, [] {return to_string(Killproof::mo);}, []{return KillproofIconLoader::instance().GetTexture(IconId::MO, ID_MO);}, "1.4", false},
-	{15, [] {return to_string(Killproof::samarog);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Samarog, ID_Samarog);}, "1.4", false},
-	{16, [] {return to_string(Killproof::deimos);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Deimos, ID_Deimos);}, "1.4", false},
+	{13, [] {return to_string(Killproof::cairn);}, []{ return GET_TEXTURE(Cairn, ID_Cairn); }, "1.4", false},
+	{14, [] {return to_string(Killproof::mo);}, []{ return GET_TEXTURE(MO, ID_MO); }, "1.4", false},
+	{15, [] {return to_string(Killproof::samarog);}, []{ return GET_TEXTURE(Samarog, ID_Samarog); }, "1.4", false},
+	{16, [] {return to_string(Killproof::deimos);}, []{ return GET_TEXTURE(Deimos, ID_Deimos); }, "1.4", false},
 
 	// W5
-	{17, [] {return to_string(Killproof::desmina);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Desmina, ID_Desmina);}, "1.5", false},
-	{18, [] {return to_string(Killproof::river);}, []{return KillproofIconLoader::instance().GetTexture(IconId::River, ID_River);}, "1.5", false},
-	{19, [] {return to_string(Killproof::statues);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Statues, ID_Statues);}, "1.5", false},
-	{20, [] {return to_string(Killproof::dhuum);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Dhuum, ID_Dhuum);}, "1.5", true},
+	{17, [] {return to_string(Killproof::desmina);}, []{ return GET_TEXTURE(Desmina, ID_Desmina); }, "1.5", false},
+	{18, [] {return to_string(Killproof::river);}, []{ return GET_TEXTURE(River, ID_River); }, "1.5", false},
+	{19, [] {return to_string(Killproof::statues);}, []{ return GET_TEXTURE(Statues, ID_Statues); }, "1.5", false},
+	{20, [] {return to_string(Killproof::dhuum);}, []{ return GET_TEXTURE(Dhuum, ID_Dhuum); }, "1.5", true},
 
 	// W6
-	{21, [] {return to_string(Killproof::ca);}, []{return KillproofIconLoader::instance().GetTexture(IconId::CA, ID_CA);}, "1.6", false},
-	{22, [] {return to_string(Killproof::twins);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Twins, ID_Twins);}, "1.6", false},
-	{23, [] {return to_string(Killproof::qadim);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Qadim, ID_Qadim1);}, "1.6", true},
+	{21, [] {return to_string(Killproof::ca);}, []{ return GET_TEXTURE(CA, ID_CA); }, "1.6", false},
+	{22, [] {return to_string(Killproof::twins);}, []{ return GET_TEXTURE(Twins, ID_Twins); }, "1.6", false},
+	{23, [] {return to_string(Killproof::qadim);}, []{ return GET_TEXTURE(Qadim1, ID_Qadim1); }, "1.6", true},
 
 	// W7
-	{24, [] {return to_string(Killproof::sabir);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Sabir, ID_Sabir);}, "1.7", false},
-	{25, [] {return to_string(Killproof::adina);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Adina, ID_Adina);}, "1.7", false},
-	{26, [] {return to_string(Killproof::qadim2);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Qadim2, ID_Qadim2);}, "1.7", true},
+	{24, [] {return to_string(Killproof::sabir);}, []{ return GET_TEXTURE(Sabir, ID_Sabir); }, "1.7", false},
+	{25, [] {return to_string(Killproof::adina);}, []{ return GET_TEXTURE(Adina, ID_Adina); }, "1.7", false},
+	{26, [] {return to_string(Killproof::qadim2);}, []{ return GET_TEXTURE(Qadim2, ID_Qadim2); }, "1.7", true},
 
 	// Strikes
-	{27, [] {return to_string(Killproof::boneskinnerVial);}, []{return KillproofIconLoader::instance().GetTexture(IconId::BoneskinnerVial, ID_Boneskinner_Vial);}, "3", true},
+	{27, [] {return to_string(Killproof::boneskinnerVial);}, []{ return GET_TEXTURE(Vial, ID_Boneskinner_Vial); }, "3", true},
 	
 	// EOD strikes
-	{35, [] {return to_string(Killproof::maiTrin);}, []{return KillproofIconLoader::instance().GetTexture(IconId::MaiTrin, ID_Mai_Trin);}, "3", false},
-	{33, [] {return to_string(Killproof::ankka);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Ankka, ID_Ankka);}, "3", false},
-	{37, [] {return to_string(Killproof::ministerLi);}, []{return KillproofIconLoader::instance().GetTexture(IconId::MinisterLi, ID_Minister_Li);}, "3", false},
-	{34, [] {return to_string(Killproof::harvest);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Harvest, ID_Harvest);}, "3", false},
-	{36, [] {return to_string(Killproof::maiTrinCM);}, []{return KillproofIconLoader::instance().GetTexture(IconId::MaiTrin, ID_Mai_Trin);}, "3", false},
-	{38, [] {return to_string(Killproof::ankkaCM);}, []{return KillproofIconLoader::instance().GetTexture(IconId::Ankka, ID_Ankka);}, "3", false},
-	{39, [] {return to_string(Killproof::ministerLiCM);}, []{return KillproofIconLoader::instance().GetTexture(IconId::MinisterLi, ID_Minister_Li);}, "3", false},
+	{35, [] {return to_string(Killproof::maiTrin);}, []{ return GET_TEXTURE_CUSTOM(MAI_TRIN_TEXTURE, ID_Mai_Trin); }, "3", false},
+	{33, [] {return to_string(Killproof::ankka);}, []{ return GET_TEXTURE_CUSTOM(ANKKA_TEXTURE, ID_Ankka); }, "3", false},
+	{37, [] {return to_string(Killproof::ministerLi);}, []{ return GET_TEXTURE_CUSTOM(LI_TEXTURE, ID_Minister_Li); }, "3", false},
+	{34, [] {return to_string(Killproof::harvest);}, []{ return GET_TEXTURE_CUSTOM(HARVEST_TEXTURE, ID_Harvest); }, "3", false},
+	{36, [] {return to_string(Killproof::maiTrinCM);}, []{ return GET_TEXTURE_CUSTOM(MAI_TRIN_TEXTURE, ID_Mai_Trin);  }, "3", false},
+	{38, [] {return to_string(Killproof::ankkaCM);}, []{ return GET_TEXTURE_CUSTOM(ANKKA_TEXTURE, ID_Ankka); }, "3", false},
+	{39, [] {return to_string(Killproof::ministerLiCM);}, []{ return GET_TEXTURE_CUSTOM(LI_TEXTURE, ID_Minister_Li); }, "3", false},
 };
 
 // Key is the mapId found in the mumbleLink

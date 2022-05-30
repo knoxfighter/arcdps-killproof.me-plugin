@@ -47,9 +47,6 @@
     <ClInclude Include="global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KillproofIconLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Killproofs.h">
       <Filter>Header Files</Filter>
     </ClInclude>

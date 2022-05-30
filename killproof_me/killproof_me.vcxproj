@@ -162,7 +162,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h" />
-    <ClInclude Include="KillproofIconLoader.h" />
     <ClInclude Include="Killproofs.h" />
     <ClInclude Include="KillproofUI.h" />
     <ClInclude Include="KillproofUIKeyBindComponent.h" />
