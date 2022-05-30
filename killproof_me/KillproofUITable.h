@@ -112,9 +112,9 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 	{1323, {0, 1, 2, 24, 25, 26}}, // W7
 	{1370, {0, 1, 2, 27}}, // Eye of the north
 	{1432, {0, 1, 2, 35, 36}}, // MaiTrin strike
-	{1451, {0, 1, 2, 37}}, // MinisterLi strike
+	{1451, {0, 1, 2, 37, 39}}, // MinisterLi strike
 	{1437, {0, 1, 2, 34}}, // HarvestTemple strike
-	{1428, {0, 1, 2, 33, 34, 35, 36, 37, 38}}, // Arborstone
+	{1428, {0, 1, 2, 33, 34, 35, 36, 37, 38, 39}}, // Arborstone
 };
 
 class KillproofUITable : public MainTable<> {
