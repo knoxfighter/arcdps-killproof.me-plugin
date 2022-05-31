@@ -67,10 +67,16 @@ enum class Killproof : int {
 
 bool defaultHidden(const Killproof& kp);
 
-const std::string& toString(Killproof e);
+const std::string& toStringShort(Killproof e);
 
-inline const std::string& to_string(Killproof e) {
-	return toString(e);
+inline const std::string& to_string_short(Killproof e) {
+	return toStringShort(e);
+}
+
+const std::string& toStringLong(Killproof e);
+
+inline const std::string& to_string_long(Killproof e) {
+	return toStringLong(e);
 }
 
 class Killproofs {
