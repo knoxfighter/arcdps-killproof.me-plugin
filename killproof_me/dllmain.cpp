@@ -406,6 +406,8 @@ arcdps_exports* mod_init() {
 		Settings::instance().load();
 
 		LoadAdditionalTranslations();
+		// load current language
+		Localization::instance().ChangeLanguage(static_cast<gwlanguage>(Settings::instance().GetLanguage()));
 
 		// windows init
 #if _DEBUG
