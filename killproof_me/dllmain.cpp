@@ -201,9 +201,6 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 							selfAccountName = username;
 						}
 
-						// add to tracking and instance
-						addPlayerAll(username);
-
 						auto playerIt = cachedPlayers.find(username);
 						if (playerIt == cachedPlayers.end()) {
 							// no element found, create it
@@ -217,6 +214,9 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 
 								// load killproofs
 								loadKillproofsSizeChecked(player);
+
+								// add to tracking and instance
+								addPlayerAll(username);
 							}
 						} else {
 							Player& player = playerIt->second;
@@ -232,6 +232,9 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 
 							if (player.addedBy == AddedBy::Arcdps && !player.self) {
 								player.resetJoinedTime();
+
+								// add to tracking and instance
+								addPlayerAll(username);
 							}
 						}
 
