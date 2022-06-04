@@ -68,7 +68,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 			const auto& killproof = magic_enum::enum_cast<Killproof>(column.UserId);
 			if (killproof.has_value()) {
 				Killproof kp = killproof.value();
-				const std::optional<amountVal> totalAmount = pTotal && pHasLinked ? pPlayer.getKpOverallTotal(kp) : pPlayer.getKpOverall(kp);
+				const std::optional<amountVal> totalAmount = pTotal && pHasLinked || pTotalText ? pPlayer.getKpOverallTotal(kp) : pPlayer.getKpOverall(kp);
 
 				if (pPlayer.status == LoadingStatus::LoadingById || pPlayer.status == LoadingStatus::LoadingByChar) {
 					SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text));
@@ -79,9 +79,9 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 
 					if (IsCurrentColumnHovered()) {
 						ImGui::BeginTooltip();
-						std::string kpText = std::format("{}: {}", Localization::STranslate(KMT_Killproofs), (pTotal && pHasLinked ? pPlayer.getKillproofsTotal(kp) : pPlayer.getKillproofs(kp)).value());
+						std::string kpText = std::format("{}: {}", Localization::STranslate(KMT_Killproofs), (pTotal && pHasLinked || pTotalText ? pPlayer.getKillproofsTotal(kp) : pPlayer.getKillproofs(kp)).value());
 						ImGui::TextUnformatted(kpText.c_str());
-						const std::optional<amountVal> coffers = pTotal && pHasLinked ? pPlayer.getCoffersTotal(kp) : pPlayer.getCoffers(kp);
+						const std::optional<amountVal> coffers = pTotal && pHasLinked || pTotalText ? pPlayer.getCoffersTotal(kp) : pPlayer.getCoffers(kp);
 						if (coffers.has_value()) {
 							std::string cofferText = std::format("{}: {}", Localization::STranslate(KMT_Coffers), coffers.value());
 							ImGui::TextUnformatted(cofferText.c_str());
