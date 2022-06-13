@@ -7,8 +7,8 @@
 #include "extension/Windows/MainWindow.h"
 #include "extension/Singleton.h"
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_internal.h"
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 
 typedef std::function<amountVal(const Killproof&)> kpFunction;
 

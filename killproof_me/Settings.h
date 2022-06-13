@@ -6,7 +6,7 @@
 #include "extension/nlohmannJsonExtension.h"
 #include "extension/Singleton.h"
 
-#include "imgui/imgui.h"
+#include <imgui/imgui.h>
 
 #include "unofficial_extras/Definitions.h"
 #include "unofficial_extras/KeyBindStructs.h"

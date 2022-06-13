@@ -12,11 +12,10 @@
 #include "extension/Windows/Demo/DemoTableWindow.h"
 #include "extension/Windows/Demo/DemoWindow.h"
 
-#include "imgui/imgui.h"
-
 #include <d3d11.h>
 #include <d3d9.h>
 #include <format>
+#include <imgui/imgui.h>
 #include <mutex>
 #include <Windows.h>
 
