@@ -3,7 +3,13 @@
   "name": "arcdps-killproof-me-plugin",
   "version-string": "2.8.2",
   "dependencies": [
-    "cpr",
+    {
+      "name": "cpr",
+      "default-features": false,
+      "features": [
+        "ssl"
+      ]
+    },
     "nlohmann-json",
 	"magic-enum"
   ]
