@@ -96,6 +96,7 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{36, [] {return to_string_short(Killproof::maiTrinCM);}, []{ return GET_TEXTURE_CUSTOM(MAI_TRIN_TEXTURE, ID_Mai_Trin);  }, "3", [] {return to_string_long(Killproof::maiTrinCM);}, false},
 	{38, [] {return to_string_short(Killproof::ankkaCM);}, []{ return GET_TEXTURE_CUSTOM(ANKKA_TEXTURE, ID_Ankka); }, "3", [] {return to_string_long(Killproof::ankkaCM);}, false},
 	{39, [] {return to_string_short(Killproof::ministerLiCM);}, []{ return GET_TEXTURE_CUSTOM(LI_TEXTURE, ID_Minister_Li); }, "3", [] {return to_string_long(Killproof::ministerLiCM);}, false},
+	{40, [] {return to_string_short(Killproof::harvestCM);}, []{ return GET_TEXTURE_CUSTOM(HARVEST_TEXTURE, ID_Harvest); }, "3", [] {return to_string_long(Killproof::harvestCM);}, false},
 };
 
 // Key is the mapId found in the mumbleLink
@@ -113,8 +114,8 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 	{1370, {0, 1, 2, 27}}, // Eye of the north
 	{1432, {0, 1, 2, 35, 36}}, // MaiTrin strike
 	{1451, {0, 1, 2, 37, 39}}, // MinisterLi strike
-	{1437, {0, 1, 2, 34}}, // HarvestTemple strike
-	{1428, {0, 1, 2, 33, 34, 35, 36, 37, 38, 39}}, // Arborstone
+	{1437, {0, 1, 2, 34, 40}}, // HarvestTemple strike
+	{1428, {0, 1, 2, 33, 34, 35, 36, 37, 38, 39, 40}}, // Arborstone
 };
 
 class KillproofUITable : public MainTable<> {

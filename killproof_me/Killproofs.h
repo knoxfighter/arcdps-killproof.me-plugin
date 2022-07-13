@@ -61,6 +61,7 @@ enum class Killproof : int {
 	ministerLi = 37,
 	ankkaCM = 38,
 	ministerLiCM = 39,
+	harvestCM = 40,
 
 	// no final entry anymore, use `magic_enum` to iterate over the enum.
 };
@@ -279,6 +280,9 @@ public:
 					break;
 				case 96419:
 					killproofs[Killproof::ministerLiCM] = amount;
+					break;
+				case 95986:
+					killproofs[Killproof::harvestCM] = amount;
 					break;
 				default: break;
 			}

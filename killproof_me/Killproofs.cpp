@@ -77,6 +77,7 @@ const std::string& toStringShort(Killproof e) {
 	case Killproof::maiTrinCM: return Localization::STranslate(KMT_MaiTrinCM_Short);
 	case Killproof::ankkaCM: return Localization::STranslate(KMT_AnkkaCM_Short);
 	case Killproof::ministerLiCM: return Localization::STranslate(KMT_MinisterLiCM_Short);
+	case Killproof::harvestCM: return Localization::STranslate(KMT_HarvestCM_Short);
 	default: return Localization::STranslate(ET_Unknown);
 	}
 }
@@ -103,6 +104,7 @@ const std::string& toStringLong(Killproof e) {
 	case Killproof::maiTrinCM: return Localization::STranslate(KMT_MaiTrinCM_Long);
 	case Killproof::ankkaCM: return Localization::STranslate(KMT_AnkkaCM_Long);
 	case Killproof::ministerLiCM: return Localization::STranslate(KMT_MinisterLiCM_Long);
+	case Killproof::harvestCM: return Localization::STranslate(KMT_HarvestCM_Long);
 	default: return Localization::STranslate(ET_Unknown);
 	}
 }
