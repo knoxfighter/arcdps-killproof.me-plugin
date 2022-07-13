@@ -180,5 +180,8 @@
     <Image Include="icons\White_Mantle_Abomination_Crystal_(trophy).png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="icons\Banana.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

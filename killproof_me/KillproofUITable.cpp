@@ -296,6 +296,7 @@ const char* KillproofUITable::getCategoryName(const std::string& pCat) {
 	if (pCat == "1") return Localization::STranslate(KMT_Raids).c_str();
 	if (pCat == "2") return Localization::STranslate(KMT_Fractals).c_str();
 	if (pCat == "3") return Localization::STranslate(KMT_Strikes).c_str();
+	if (pCat == "4") return Localization::STranslate(KMT_Misc).c_str();
 	if (pCat == "1.1") return "W1";
 	if (pCat == "1.2") return "W2";
 	if (pCat == "1.3") return "W3";

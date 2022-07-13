@@ -63,10 +63,11 @@ enum class Killproof : int {
 	ministerLiCM = 39,
 	harvestCM = 40,
 
+	// MISC
+	bananas = 41,
+
 	// no final entry anymore, use `magic_enum` to iterate over the enum.
 };
-
-bool defaultHidden(const Killproof& kp);
 
 const std::string& toStringShort(Killproof e);
 
@@ -283,6 +284,9 @@ public:
 					break;
 				case 95986:
 					killproofs[Killproof::harvestCM] = amount;
+					break;
+				case 12251:
+					killproofs[Killproof::bananas] = amount;
 					break;
 				default: break;
 			}

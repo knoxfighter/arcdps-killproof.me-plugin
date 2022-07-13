@@ -4,42 +4,6 @@
 
 #include "extension/Localization.h"
 
-bool defaultHidden(const Killproof& kp) {
-	switch (kp) {
-	case Killproof::li:
-	case Killproof::ld:
-	case Killproof::liLd:
-	case Killproof::uce:
-	case Killproof::ufe:
-	case Killproof::dhuum:
-	case Killproof::qadim:
-	case Killproof::qadim2:
-	case Killproof::boneskinnerVial:
-		return false;
-	case Killproof::vg:
-	case Killproof::gorse:
-	case Killproof::sabetha:
-	case Killproof::sloth:
-	case Killproof::matthias:
-	case Killproof::escort:
-	case Killproof::kc:
-	case Killproof::xera:
-	case Killproof::cairn:
-	case Killproof::mo:
-	case Killproof::samarog:
-	case Killproof::deimos:
-	case Killproof::desmina:
-	case Killproof::river:
-	case Killproof::statues:
-	case Killproof::ca:
-	case Killproof::twins:
-	case Killproof::sabir:
-	case Killproof::adina:
-		return true;
-	default: return false;
-	}
-}
-
 const std::string& toStringShort(Killproof e) {
 	switch (e) {
 	case Killproof::li: return Localization::STranslate(KMT_Li_Short);
@@ -78,6 +42,7 @@ const std::string& toStringShort(Killproof e) {
 	case Killproof::ankkaCM: return Localization::STranslate(KMT_AnkkaCM_Short);
 	case Killproof::ministerLiCM: return Localization::STranslate(KMT_MinisterLiCM_Short);
 	case Killproof::harvestCM: return Localization::STranslate(KMT_HarvestCM_Short);
+	case Killproof::bananas: return Localization::STranslate(KMT_Bananas);
 	default: return Localization::STranslate(ET_Unknown);
 	}
 }

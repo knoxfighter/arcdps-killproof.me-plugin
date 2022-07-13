@@ -178,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="icons\Ankka.png" />
+    <Image Include="icons\Banana.png" />
     <Image Include="icons\Boneskinner_Ritual_Vial.png" />
     <Image Include="icons\Cairn_the_Indomitable_Shard.png" />
     <Image Include="icons\Cardinal_Adina%27s_Token.png" />

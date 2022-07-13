@@ -97,13 +97,15 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{38, [] {return to_string_short(Killproof::ankkaCM);}, []{ return GET_TEXTURE_CUSTOM(ANKKA_TEXTURE, ID_Ankka); }, "3", [] {return to_string_long(Killproof::ankkaCM);}, false},
 	{39, [] {return to_string_short(Killproof::ministerLiCM);}, []{ return GET_TEXTURE_CUSTOM(LI_TEXTURE, ID_Minister_Li); }, "3", [] {return to_string_long(Killproof::ministerLiCM);}, false},
 	{40, [] {return to_string_short(Killproof::harvestCM);}, []{ return GET_TEXTURE_CUSTOM(HARVEST_TEXTURE, ID_Harvest); }, "3", [] {return to_string_long(Killproof::harvestCM);}, false},
+
+	{41, [] {return to_string_short(Killproof::bananas);}, []{ return GET_TEXTURE(Bananas, ID_Bananas); }, "4", [] {return to_string_long(Killproof::bananas);}, false},
 };
 
 // Key is the mapId found in the mumbleLink
 // Value is a vector of columns that should be shown for that map. The Values are the UserIds from the ColumnSetup.
 // TODO: update this when the above vector changes!
 static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetup = {
-	{1155, {0, 1, 2, 7, 9, 12, 16, 20, 23, 26}}, // Aerodrome
+	{1155, {0, 1, 2, 7, 9, 12, 16, 20, 23, 26, 41}}, // Aerodrome
 	{1062, {0, 1, 2, 5, 6, 7}}, // W1
 	{1149, {0, 1, 2, 8, 9}}, // W2
 	{1156, {0, 1, 2, 10, 11, 12}}, // W3
