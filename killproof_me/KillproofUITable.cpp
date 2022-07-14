@@ -41,7 +41,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 				if (!pTotalText) {
 					drawTextColumn<true>(open, pPlayer.username, pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && accountNameEnabled);
 				} else if (accountNameEnabled) {
-					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && accountNameEnabled);
+					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, false);
 				}
 				continue;
 			}
@@ -49,7 +49,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 				if (!pTotalText) {
 					drawTextColumn<true>(open, pPlayer.characterName, pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && !accountNameEnabled);
 				} else if (!accountNameEnabled) {
-					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && accountNameEnabled);
+					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, false);
 				}
 				continue;
 			}
@@ -98,7 +98,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 }
 
 namespace {
-	static std::optional<size_t> COMMANDER_TAG_TEXTURE;
+	std::optional<size_t> COMMANDER_TAG_TEXTURE;
 }
 template<bool OpenBrowser, bool AlignmentActive>
 void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool
@@ -115,7 +115,12 @@ void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, con
 		actualText.append("###");
 		actualText.append(pUsername);
 
-		pOpen = ImGuiEx::TreeNodeEx(actualText.c_str(), treeNodeFlags, pIsCommander && Settings::instance().settings.showCommander ? GET_TEXTURE_CUSTOM(COMMANDER_TAG_TEXTURE, ID_Commander_White) : nullptr);
+		if (pIsCommander && Settings::instance().settings.showCommander) {
+			float size = ImGui::GetFontSize();
+			ImGui::Image(GET_TEXTURE_CUSTOM(COMMANDER_TAG_TEXTURE, ID_Commander_White), ImVec2(size, size));
+			ImGui::SameLine();
+		}
+		pOpen = ImGuiEx::TreeNodeEx(actualText.c_str(), treeNodeFlags, nullptr);
 		ImGui::PopStyleVar();
 	} else {
 		if (pIsCommander && Settings::instance().settings.showCommander) {

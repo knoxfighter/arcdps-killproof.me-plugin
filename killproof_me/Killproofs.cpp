@@ -70,6 +70,7 @@ const std::string& toStringLong(Killproof e) {
 	case Killproof::ankkaCM: return Localization::STranslate(KMT_AnkkaCM_Long);
 	case Killproof::ministerLiCM: return Localization::STranslate(KMT_MinisterLiCM_Long);
 	case Killproof::harvestCM: return Localization::STranslate(KMT_HarvestCM_Long);
+	case Killproof::bananas: return Localization::STranslate(KMT_Bananas);
 	default: return Localization::STranslate(ET_Unknown);
 	}
 }
