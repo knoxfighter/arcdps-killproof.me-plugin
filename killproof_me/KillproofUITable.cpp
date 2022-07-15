@@ -338,8 +338,11 @@ void KillproofUITable::MigrateSettings() {
 		for (size_t i = columnSize - 1; i < COLUMN_SETUP.size(); ++i) {
 			tableSettings.Columns[i].IsEnabled = COLUMN_SETUP[i].DefaultVisibility;
 			tableSettings.Columns[i].UserID = COLUMN_SETUP[i].UserId;
+			tableSettings.Columns[i].DisplayOrder = i;
 		}
 	}
+
+	tableSettings.SaveFlags |= ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable | ImGuiTableFlags_Sortable;
 }
 
 bool& KillproofUITable::getCustomColumnsActive() {
