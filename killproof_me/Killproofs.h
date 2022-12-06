@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <map>
 #include <mutex>
+#include <optional>
 #include <string>
 
 #define amountVal int32_t
@@ -62,6 +63,8 @@ enum class Killproof : int {
 	ankkaCM = 38,
 	ministerLiCM = 39,
 	harvestCM = 40,
+	olc = 42,
+	olcCM = 43,
 
 	// MISC
 	bananas = 41,
@@ -284,6 +287,12 @@ public:
 					break;
 				case 95986:
 					killproofs[Killproof::harvestCM] = amount;
+					break;
+				case 99165:
+					killproofs[Killproof::olc] = amount;
+					break;
+				case 99204:
+					killproofs[Killproof::olcCM] = amount;
 					break;
 				case 12251:
 					killproofs[Killproof::bananas] = amount;

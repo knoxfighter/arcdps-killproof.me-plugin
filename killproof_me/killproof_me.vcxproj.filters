@@ -183,5 +183,8 @@
     <Image Include="icons\Banana.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="icons\OLC.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

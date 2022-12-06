@@ -198,6 +198,7 @@
     <Image Include="icons\lild.png" />
     <Image Include="icons\MaiTrin.png" />
     <Image Include="icons\MinisterLi.png" />
+    <Image Include="icons\OLC.png" />
     <Image Include="icons\Qadim%27s_Token.png" />
     <Image Include="icons\Rec_Room_Floor_Tile.png" />
     <Image Include="icons\Ribbon_Scrap.png" />

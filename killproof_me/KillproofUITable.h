@@ -22,7 +22,7 @@ static std::optional<size_t> MAI_TRIN_TEXTURE;
 static std::optional<size_t> ANKKA_TEXTURE;
 static std::optional<size_t> LI_TEXTURE;
 static std::optional<size_t> HARVEST_TEXTURE;
-
+static std::optional<size_t> OLC_TEXTURE;
 
 #define GET_TEXTURE_CUSTOM(optional, id) \
 	std::invoke([] { \
@@ -97,6 +97,8 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{38, [] {return to_string_short(Killproof::ankkaCM);}, []{ return GET_TEXTURE_CUSTOM(ANKKA_TEXTURE, ID_Ankka); }, "3", [] {return to_string_long(Killproof::ankkaCM);}, false},
 	{39, [] {return to_string_short(Killproof::ministerLiCM);}, []{ return GET_TEXTURE_CUSTOM(LI_TEXTURE, ID_Minister_Li); }, "3", [] {return to_string_long(Killproof::ministerLiCM);}, false},
 	{40, [] {return to_string_short(Killproof::harvestCM);}, []{ return GET_TEXTURE_CUSTOM(HARVEST_TEXTURE, ID_Harvest); }, "3", [] {return to_string_long(Killproof::harvestCM);}, false},
+	{42, [] {return to_string_short(Killproof::olc);}, []{ return GET_TEXTURE_CUSTOM(OLC_TEXTURE, ID_OLC); }, "3", [] {return to_string_long(Killproof::olc);}, false},
+	{43, [] {return to_string_short(Killproof::olcCM);}, []{ return GET_TEXTURE_CUSTOM(OLC_TEXTURE, ID_OLC); }, "3", [] {return to_string_long(Killproof::olcCM);}, false},
 
 	{41, [] {return to_string_short(Killproof::bananas);}, []{ return GET_TEXTURE(Bananas, ID_Bananas); }, "4", [] {return to_string_long(Killproof::bananas);}, false},
 };
@@ -115,9 +117,11 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 	{1323, {0, 1, 2, 24, 25, 26}}, // W7
 	{1370, {0, 1, 2, 27}}, // Eye of the north
 	{1432, {0, 1, 2, 35, 36}}, // MaiTrin strike
+	{1450, {0, 1, 2, 33, 38}}, // Ankka strike
 	{1451, {0, 1, 2, 37, 39}}, // MinisterLi strike
 	{1437, {0, 1, 2, 34, 40}}, // HarvestTemple strike
-	{1428, {0, 1, 2, 33, 34, 35, 36, 37, 38, 39, 40}}, // Arborstone
+	{1485, {0, 1, 2, 42, 43}}, // OLC Strike
+	{1428, {0, 1, 2, 33, 34, 35, 36, 37, 38, 39, 40, 42, 43}}, // Arborstone
 };
 
 class KillproofUITable : public MainTable<> {
