@@ -14,9 +14,9 @@
  */
 enum class Killproof : int {
 	// raid
-	li,
-	ld,
-	liLd,
+	// li,
+	// ld,
+	liLd = 2,
 	// added li and ld
 	// fractal
 	uce,
@@ -180,14 +180,14 @@ public:
 		} else {
 			switch (id) {
 				case 77302:
-					killproofs[Killproof::li] = amount;
+					// killproofs[Killproof::li] = amount;
 					// set li/ld amount
-					killproofs[Killproof::liLd] = killproofs[Killproof::ld] + amount;
+					killproofs[Killproof::liLd] += amount;
 					break;
 				case 88485:
-					killproofs[Killproof::ld] = amount;
+					// killproofs[Killproof::ld] = amount;
 					// set li/ld amount
-					killproofs[Killproof::liLd] = killproofs[Killproof::li] + amount;
+					killproofs[Killproof::liLd] += amount;
 					break;
 				case 81743: 
 					killproofs[Killproof::uce] = amount;

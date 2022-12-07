@@ -150,7 +150,7 @@ std::optional<amountVal> Player::getKpOverall(const Killproof& kp) const {
 	amountVal totalAmount = killproofAmount ? killproofAmount.value() : 0;
 
 	if (cofferAmount) {
-		if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
+		if (kp == Killproof::liLd) {
 			totalAmount += cofferAmount.value();
 		} else {
 			totalAmount += cofferAmount.value() * Settings::instance().settings.cofferValue;
@@ -176,7 +176,7 @@ std::optional<amountVal> Player::getKpOverallTotal(const Killproof& kp) const {
 	amountVal totalAmount = killproofAmount ? killproofAmount.value() : 0;
 
 	if (cofferAmount) {
-		if (kp == Killproof::li || kp == Killproof::ld || kp == Killproof::liLd) {
+		if (kp == Killproof::liLd) {
 			totalAmount += cofferAmount.value();
 		} else {
 			totalAmount += cofferAmount.value() * Settings::instance().settings.cofferValue;

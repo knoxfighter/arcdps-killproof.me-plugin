@@ -67,8 +67,8 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 #endif
 
 #if _DEBUG
-	DemoWindow::instance().Draw();
-	DemoTableWindow::instance().Draw();
+	// DemoWindow::instance().Draw();
+	// DemoTableWindow::instance().Draw();
 #endif
 
 	UpdateChecker::instance().Draw(GlobalObjects::UPDATE_STATE, KILLPROOF_ME_PLUGIN_NAME, "https://github.com/knoxfighter/arcdps-killproof.me-plugin/releases/latest");

@@ -32,6 +32,7 @@ static std::optional<size_t> OLC_TEXTURE;
 		return iconLoader.GetTexture(optional.value()); \
 	})
 
+// the index is used for the order 
 static const std::vector<MainTableColumn> COLUMN_SETUP {
 	// general stuff
 	{JOIN_TIME_ID, [] {return "#"s;}, []{return nullptr;}, "0", true},
@@ -41,9 +42,9 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{SUBGROUP_ID, [] {return Localization::STranslate(KMT_SubgroupText);}, []{return nullptr;}, "0", false},
 
 	// Raids
-	{0, [] {return to_string_short(Killproof::li);}, []{ return GET_TEXTURE(LI, ID_LI); }, "1", true},
-	{1, [] {return to_string_short(Killproof::ld);}, []{ return GET_TEXTURE(LD, ID_LD); }, "1", true},
-	{2, [] {return to_string_short(Killproof::liLd);}, []{ return GET_TEXTURE(LILD, ID_LILD); }, "1", true},
+	// {0, [] {return to_string_short(Killproof::li);}, []{ return GET_TEXTURE(LI, ID_LI); }, "1", true},
+	// {1, [] {return to_string_short(Killproof::ld);}, []{ return GET_TEXTURE(LD, ID_LD); }, "1", true},
+	{2, [] {return to_string_short(Killproof::liLd);}, []{ return GET_TEXTURE(LI, ID_LI); }, "1", true},
 
 	// fractals
 	{3, [] {return to_string_short(Killproof::uce);}, []{ return GET_TEXTURE_CUSTOM(UCE_TEXTURE, ID_UFE); }, "2", true},

@@ -315,34 +315,15 @@ const char* KillproofUITable::getCategoryName(const std::string& pCat) {
 void KillproofUITable::MigrateSettings() {
 	auto& tableSettings = Settings::instance().settings.tableSettings;
 	if (tableSettings.Version == 1) {
-		if (!tableSettings.Columns.empty()) {
-			// heighten everything >= 5
-			for (auto& column : tableSettings.Columns) {
-				if (column.DisplayOrder < 5) {
-					++column.DisplayOrder;
-				}
-			}
-
-			// add new 5th element
-			const auto& columnSettings = tableSettings.Columns.insert(tableSettings.Columns.begin() + 5, TableColumnSettings());
-			columnSettings->DisplayOrder = 5;
-		}
-
 		tableSettings.Version = 2;
 	}
 
-	// migrate missing columns
-	if (size_t columnSize = tableSettings.Columns.size(); columnSize < COLUMN_SETUP.size()) {
-		tableSettings.Columns.resize(COLUMN_SETUP.size());
-
-		for (size_t i = columnSize - 1; i < COLUMN_SETUP.size(); ++i) {
-			tableSettings.Columns[i].IsEnabled = COLUMN_SETUP[i].DefaultVisibility;
-			tableSettings.Columns[i].UserID = COLUMN_SETUP[i].UserId;
-			tableSettings.Columns[i].DisplayOrder = i;
-		}
+	if (tableSettings.Version == 2) {
+		tableSettings.Columns.clear();
+		tableSettings.Version = 3;
+		tableSettings.RefScale = 0;
+		tableSettings.SaveFlags = 0;
 	}
-
-	tableSettings.SaveFlags |= ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable | ImGuiTableFlags_Sortable;
 }
 
 bool& KillproofUITable::getCustomColumnsActive() {

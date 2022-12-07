@@ -6,8 +6,8 @@
 
 const std::string& toStringShort(Killproof e) {
 	switch (e) {
-	case Killproof::li: return Localization::STranslate(KMT_Li_Short);
-	case Killproof::ld: return Localization::STranslate(KMT_Ld_Short);
+	// case Killproof::li: return Localization::STranslate(KMT_Li_Short);
+	// case Killproof::ld: return Localization::STranslate(KMT_Ld_Short);
 	case Killproof::liLd: return Localization::STranslate(KMT_LiLd_Short);
 	case Killproof::uce: return Localization::STranslate(KMT_Uce_Short);
 	case Killproof::ufe: return Localization::STranslate(KMT_Ufe_Short);
