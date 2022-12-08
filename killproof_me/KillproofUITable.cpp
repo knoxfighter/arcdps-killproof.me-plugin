@@ -249,9 +249,9 @@ void KillproofUITable::Sort(const ImGuiTableColumnSortSpecs* mColumnSortSpecs) {
 			uint8_t playerBGroup = cachedPlayers.at(playerBName).subgroup;
 
 			if (descend) {
-				return playerAGroup < playerBGroup;
+				return playerAGroup > playerBGroup;
 			}
-			return playerAGroup > playerBGroup;
+			return playerAGroup < playerBGroup;
 		});
 		return;
 	}

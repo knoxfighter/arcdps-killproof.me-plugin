@@ -520,10 +520,7 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 
 			// add to tracking
 			// addPlayerTracking(username);
-			if (!addPlayerAll(username)) {
-				// player already tracked, do nothing
-				continue;
-			}
+			addPlayerAll(username);
 
 			auto playerIt = cachedPlayers.find(username);
 			if (playerIt == cachedPlayers.end()) {
