@@ -242,6 +242,19 @@ void KillproofUITable::Sort(const ImGuiTableColumnSortSpecs* mColumnSortSpecs) {
 		});
 		return;
 	}
+	if (mColumnSortSpecs->ColumnUserID == SUBGROUP_ID) {
+		// sort by subgroup
+		std::ranges::sort(trackedPlayers, [descend](const std::string& playerAName, const std::string& playerBName) {
+			uint8_t playerAGroup = cachedPlayers.at(playerAName).subgroup;
+			uint8_t playerBGroup = cachedPlayers.at(playerBName).subgroup;
+
+			if (descend) {
+				return playerAGroup < playerBGroup;
+			}
+			return playerAGroup > playerBGroup;
+		});
+		return;
+	}
 	const auto& killproof = magic_enum::enum_cast<Killproof>(mColumnSortSpecs->ColumnUserID);
 	if (killproof.has_value()) {
 		// sort by any amount of KP
