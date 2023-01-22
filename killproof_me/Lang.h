@@ -354,9 +354,9 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_FRENCH = std::to_array({
 	u8"Ankka", // KMT_Ankka_Short
 	u8"Décharge de Xunlai Jade (Ankka)", // KMT_Ankka_Long
 	u8"KO", // KMT_MinisterLi_Short
-	u8"Belvédère de Kaineng (Ministère  Li)", // KMT_MinisterLi_Long
+	u8"Belvédère de Kaineng (Ministre  Li)", // KMT_MinisterLi_Long
 	u8"Temple des moissons", // KMT_Harvest_Short
-	u8"Temple des moissons (Dragonvoid)", // KMT_Harvest_Short
+	u8"Temple des moissons (Vide draconique)", // KMT_Harvest_Short
 	u8"Mai", // KMT_MaiTrin_Short
 	u8"Cachette des Étherlames (Mai Trin)", // KMT_MaiTrin_Long
 	u8"Mai CM", // KMT_MaiTrinCM_Short
