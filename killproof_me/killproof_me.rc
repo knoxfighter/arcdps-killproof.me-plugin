@@ -163,6 +163,10 @@ ID_Harvest              PNG                     "icons\\Harvest.png"
 
 ID_Bananas              PNG                     "icons\\Banana.png"
 
+ID_Cerus                PNG                     "icons\\Cerus.png"
+
+ID_Dagda                PNG                     "icons\\Dagda.png"
+
 #endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 

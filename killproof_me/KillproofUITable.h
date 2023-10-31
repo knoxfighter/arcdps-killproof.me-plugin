@@ -23,6 +23,8 @@ static std::optional<size_t> ANKKA_TEXTURE;
 static std::optional<size_t> LI_TEXTURE;
 static std::optional<size_t> HARVEST_TEXTURE;
 static std::optional<size_t> OLC_TEXTURE;
+static std::optional<size_t> DAGDA_TEXTURE;
+static std::optional<size_t> CERUS_TEXTURE;
 
 #define GET_TEXTURE_CUSTOM(optional, id) \
 	std::invoke([] { \
@@ -100,6 +102,9 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{40, [] {return to_string_short(Killproof::harvestCM);}, []{ return GET_TEXTURE_CUSTOM(HARVEST_TEXTURE, ID_Harvest); }, "3", [] {return to_string_long(Killproof::harvestCM);}, false},
 	{42, [] {return to_string_short(Killproof::olc);}, []{ return GET_TEXTURE_CUSTOM(OLC_TEXTURE, ID_OLC); }, "3", [] {return to_string_long(Killproof::olc);}, false},
 	{43, [] {return to_string_short(Killproof::olcCM);}, []{ return GET_TEXTURE_CUSTOM(OLC_TEXTURE, ID_OLC); }, "3", [] {return to_string_long(Killproof::olcCM);}, false},
+	{44, [] {return to_string_short(Killproof::co);}, []{ return GET_TEXTURE_CUSTOM(DAGDA_TEXTURE, ID_Dagda); }, "3", [] {return to_string_long(Killproof::co);}, false},
+	{45, [] {return to_string_short(Killproof::coCM);}, []{ return GET_TEXTURE_CUSTOM(DAGDA_TEXTURE, ID_Dagda); }, "3", [] {return to_string_long(Killproof::coCM);}, false},
+	{46, [] {return to_string_short(Killproof::febe);}, []{ return GET_TEXTURE_CUSTOM(CERUS_TEXTURE, ID_Cerus); }, "3", [] {return to_string_long(Killproof::febe);}, false},
 
 	{41, [] {return to_string_short(Killproof::bananas);}, []{ return GET_TEXTURE(Bananas, ID_Bananas); }, "4", [] {return to_string_long(Killproof::bananas);}, false},
 };
@@ -108,21 +113,24 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 // Value is a vector of columns that should be shown for that map. The Values are the UserIds from the ColumnSetup.
 // TODO: update this when the above vector changes!
 static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetup = {
-	{1155, {0, 1, 2, 7, 9, 12, 16, 20, 23, 26, 41}}, // Aerodrome
-	{1062, {0, 1, 2, 5, 6, 7}}, // W1
-	{1149, {0, 1, 2, 8, 9}}, // W2
-	{1156, {0, 1, 2, 10, 11, 12}}, // W3
-	{1188, {0, 1, 2, 13, 14, 15, 16}}, // W4
-	{1264, {0, 1, 2, 17, 18, 19, 20}}, // W5
-	{1303, {0, 1, 2, 21, 22, 23}}, // W6
-	{1323, {0, 1, 2, 24, 25, 26}}, // W7
-	{1370, {0, 1, 2, 27}}, // Eye of the north
-	{1432, {0, 1, 2, 35, 36}}, // MaiTrin strike
-	{1450, {0, 1, 2, 33, 38}}, // Ankka strike
-	{1451, {0, 1, 2, 37, 39}}, // MinisterLi strike
-	{1437, {0, 1, 2, 34, 40}}, // HarvestTemple strike
-	{1485, {0, 1, 2, 42, 43}}, // OLC Strike
-	{1428, {0, 1, 2, 33, 34, 35, 36, 37, 38, 39, 40, 42, 43}}, // Arborstone
+	{1155, {2, 7, 9, 12, 16, 20, 23, 26, 41}}, // Aerodrome
+	{1062, {2, 5, 6, 7}}, // W1
+	{1149, {2, 8, 9}}, // W2
+	{1156, {2, 10, 11, 12}}, // W3
+	{1188, {2, 13, 14, 15, 16}}, // W4
+	{1264, {2, 17, 18, 19, 20}}, // W5
+	{1303, {2, 21, 22, 23}}, // W6
+	{1323, {2, 24, 25, 26}}, // W7
+	{1370, {2, 27}}, // Eye of the north
+	{1432, {2, 35, 36}}, // MaiTrin strike
+	{1450, {2, 33, 38}}, // Ankka strike
+	{1451, {2, 37, 39}}, // MinisterLi strike
+	{1437, {2, 34, 40}}, // HarvestTemple strike
+	{1485, {2, 42, 43}}, // OLC Strike
+	{1428, {2, 33, 34, 35, 36, 37, 38, 39, 40, 42, 43}}, // Arborstone
+	{1509, {2, 44, 45, 46}}, // Wizard's Tower
+	{1515, {2, 44, 45}}, // Cosmic Observatory
+	{1520, {2, 46}}, // Temple of Febe
 };
 
 class KillproofUITable : public MainTable<> {

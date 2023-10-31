@@ -65,6 +65,9 @@ enum class Killproof : int {
 	harvestCM = 40,
 	olc = 42,
 	olcCM = 43,
+	co = 44,
+	coCM = 45,
+	febe = 46,
 
 	// MISC
 	bananas = 41,
@@ -293,6 +296,16 @@ public:
 					break;
 				case 99204:
 					killproofs[Killproof::olcCM] = amount;
+					break;
+				case 100068:
+					killproofs[Killproof::co] = amount;
+					break;
+				// TODO: change number to actual id
+				// case 100068:
+				// 	killproofs[Killproof::cocm] = amount;
+				// 	break;
+				case 100858:
+					killproofs[Killproof::febe] = amount;
 					break;
 				case 12251:
 					killproofs[Killproof::bananas] = amount;

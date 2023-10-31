@@ -186,5 +186,11 @@
     <Image Include="icons\OLC.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="icons\Cerus.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Dagda.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

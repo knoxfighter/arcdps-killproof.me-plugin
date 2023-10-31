@@ -60,12 +60,15 @@
 #define ID_Bananas                      167
 #define IDB_PNG12                       168
 #define ID_OLC                          168
+#define ID_Cerus                        169
+#define IDB_PNG13                       170
+#define ID_Dagda                        170
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        169
+#define _APS_NEXT_RESOURCE_VALUE        171
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101
