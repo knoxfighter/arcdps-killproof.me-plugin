@@ -300,10 +300,9 @@ public:
 				case 100068:
 					killproofs[Killproof::co] = amount;
 					break;
-				// TODO: change number to actual id
-				// case 100068:
-				// 	killproofs[Killproof::cocm] = amount;
-				// 	break;
+				case 101172:
+					killproofs[Killproof::coCM] = amount;
+					break;
 				case 100858:
 					killproofs[Killproof::febe] = amount;
 					break;
