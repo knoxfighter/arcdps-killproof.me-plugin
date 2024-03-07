@@ -105,6 +105,7 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{44, [] {return to_string_short(Killproof::co);}, []{ return GET_TEXTURE_CUSTOM(DAGDA_TEXTURE, ID_Dagda); }, "3", [] {return to_string_long(Killproof::co);}, false},
 	{45, [] {return to_string_short(Killproof::coCM);}, []{ return GET_TEXTURE_CUSTOM(DAGDA_TEXTURE, ID_Dagda); }, "3", [] {return to_string_long(Killproof::coCM);}, false},
 	{46, [] {return to_string_short(Killproof::febe);}, []{ return GET_TEXTURE_CUSTOM(CERUS_TEXTURE, ID_Cerus); }, "3", [] {return to_string_long(Killproof::febe);}, false},
+	{47, [] {return to_string_short(Killproof::febeCM);}, []{ return GET_TEXTURE_CUSTOM(CERUS_TEXTURE, ID_Cerus); }, "3", [] {return to_string_long(Killproof::febeCM);}, false},
 
 	{41, [] {return to_string_short(Killproof::bananas);}, []{ return GET_TEXTURE(Bananas, ID_Bananas); }, "4", [] {return to_string_long(Killproof::bananas);}, false},
 };
@@ -128,9 +129,9 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 	{1437, {2, 34, 40}}, // HarvestTemple strike
 	{1485, {2, 42, 43}}, // OLC Strike
 	{1428, {2, 33, 34, 35, 36, 37, 38, 39, 40, 42, 43}}, // Arborstone
-	{1509, {2, 44, 45, 46}}, // Wizard's Tower
+	{1509, {2, 44, 45, 46, 47}}, // Wizard's Tower
 	{1515, {2, 44, 45}}, // Cosmic Observatory
-	{1520, {2, 46}}, // Temple of Febe
+	{1520, {2, 46, 47}}, // Temple of Febe
 };
 
 class KillproofUITable : public MainTable<> {
