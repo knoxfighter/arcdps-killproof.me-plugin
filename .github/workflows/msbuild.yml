@@ -17,17 +17,17 @@ jobs:
 
     steps:
     - name: Checkout with submodules
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         submodules: recursive
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v2
       
     - name: Restore from cache and install vcpkg
-      uses: lukka/run-vcpkg@v10
+      uses: lukka/run-vcpkg@v11
       with:
-        vcpkgGitCommitId: af2287382b1991dbdcb7e5112d236f3323b9dd7a
+        vcpkgGitCommitId: ab887c562326c686478284d9076d722c1ec4b48c
       
     - name: Setup vcpkg
       run: |
@@ -51,7 +51,7 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
       
     - name: Archive files
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: d3d9_arcdps_killproof_me
         path: |
