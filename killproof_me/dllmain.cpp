@@ -29,6 +29,8 @@ namespace {
 
 	bool lastFrameShow = false;
 	bool initFailed = false;
+
+	bool mumbleReloadMapPending = false;
 }
 
 BOOL APIENTRY DllMain(HMODULE pModule,
@@ -82,6 +84,23 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 			loadAllKillproofs();
 		}
 		lastFrameShow = showKillproof;
+
+		if (mumbleReloadMapPending) {
+			mumbleReloadMapPending = false;
+			if (mapViewOfMumbleFile) {
+				LinkedMem* linkedMem = static_cast<LinkedMem*>(mapViewOfMumbleFile);
+				uint32_t mapId = linkedMem->getMumbleContext()->mapId;
+
+				ARC_LOG(std::format("current mapId: {}", mapId).c_str());
+
+				const auto& setup = mapIdToColumnSetup.find(mapId);
+				if (setup == mapIdToColumnSetup.end()) {
+					KillproofUI::instance().GetTable()->ResetSpecificColumnSetup();
+				} else {
+					KillproofUI::instance().GetTable()->SetSpecificColumnSetup(setup->second);
+				}
+			}
+		}
 	}
 
 #if PERFORMANCE_LOG
@@ -357,17 +376,7 @@ uintptr_t mod_combat_local(cbtevent* ev, ag* src, ag* dst, const char* skillname
 					if (dst->self) {
 						ARC_LOG("self added!");
 
-						if (mapViewOfMumbleFile) {
-							LinkedMem* linkedMem = static_cast<LinkedMem*>(mapViewOfMumbleFile);
-							uint32_t mapId = linkedMem->getMumbleContext()->mapId;
-
-							const auto& setup = mapIdToColumnSetup.find(mapId);
-							if (setup == mapIdToColumnSetup.end()) {
-								KillproofUI::instance().GetTable()->ResetSpecificColumnSetup();
-							} else {
-								KillproofUI::instance().GetTable()->SetSpecificColumnSetup(setup->second);
-							}
-						}
+						mumbleReloadMapPending = true;
 					}
 				}
 			}
