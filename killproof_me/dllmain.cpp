@@ -91,8 +91,6 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 				LinkedMem* linkedMem = static_cast<LinkedMem*>(mapViewOfMumbleFile);
 				uint32_t mapId = linkedMem->getMumbleContext()->mapId;
 
-				ARC_LOG(std::format("current mapId: {}", mapId).c_str());
-
 				const auto& setup = mapIdToColumnSetup.find(mapId);
 				if (setup == mapIdToColumnSetup.end()) {
 					KillproofUI::instance().GetTable()->ResetSpecificColumnSetup();
