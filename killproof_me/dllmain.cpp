@@ -196,12 +196,12 @@ void mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t 
 			/* notify tracking change */
 			if (!src->elite) {
 				// only run, when names are set and not null
-				if (src->name != nullptr && src->name[0] != '\0' && dst->name != nullptr && dst->name[0] != '\0') {
+				if (src->name != nullptr && dst->name != nullptr) {
 
 					std::string username(dst->name);
 
 					// remove ':' at the beginning of the name.
-					if (username.at(0) == ':') {
+					if (!username.empty() && username.at(0) == ':') {
 						username.erase(0, 1);
 					}
 
@@ -257,12 +257,20 @@ void mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t 
 					}
 					/* remove */
 					else {
+						ARC_LOG(std::format("remove event for user: {}", src->id).c_str());
 						// do NOT remove yourself
-						if (username != selfAccountName) {
-							std::scoped_lock<std::mutex, std::mutex> guard(trackedPlayersMutex, instancePlayersMutex);
+						const auto& playerIt = std::ranges::find_if(cachedPlayers, [pId = src->id](const auto& pPlayer) {
+							return pPlayer.second.id == pId;
+						});
+						if (playerIt != cachedPlayers.end()) {
+							ARC_LOG(std::format("found player to remove for user [{}]: {} - {}", src->id, playerIt->second.username, playerIt->second.self).c_str());
 
-							// remove specific user
-							removePlayer(username, AddedBy::Arcdps);
+							if (!playerIt->second.self) {
+								std::scoped_lock guard(trackedPlayersMutex, instancePlayersMutex);
+
+								// remove specific user
+								removePlayer(playerIt->second, AddedBy::Arcdps);
+							}
 						}
 					}
 				}

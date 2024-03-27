@@ -36,6 +36,8 @@ inline bool fileExists(const std::string& filename) {
 	return (stat(filename.c_str(), &buffer) == 0);
 }
 
+void removePlayer(const Player& pPlayer, AddedBy pAddedByToDelete);
+void removePlayer(uintptr_t pId, AddedBy pAddedByToDelete);
 void removePlayer(const std::string& username, AddedBy addedByToDelete);
 // void removePlayerInstance(const std::string& username);
 // void removePlayerTracking(const std::string& username);

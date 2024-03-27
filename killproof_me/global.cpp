@@ -56,6 +56,34 @@ void loadKillproofs(Player& player) {
 /**
  * lock `trackedPlayersMutex` and `instancePlayersMutex` before calling this
  */
+void removePlayer(const Player& pPlayer, AddedBy pAddedByToDelete) {
+	// check if it should be removed
+	if (pAddedByToDelete == AddedBy::Miscellaneous || pPlayer.addedBy == pAddedByToDelete) {
+		// actually remove from tracking
+		const auto& trackedSub = std::ranges::remove(trackedPlayers, pPlayer.username);
+		trackedPlayers.erase(trackedSub.begin(), trackedSub.end());
+
+		const auto& instanceSub = std::ranges::remove(instancePlayers, pPlayer.username);
+		instancePlayers.erase(instanceSub.begin(), instanceSub.end());
+	}
+}
+
+/**
+ * lock `trackedPlayersMutex` and `instancePlayersMutex` before calling this
+ */
+void removePlayer(uintptr_t pId, AddedBy pAddedByToDelete) {
+	const auto& playerIt = std::ranges::find_if(cachedPlayers, [pId](const auto& pPlayer) {
+		return pPlayer.second.id == pId;
+	});
+
+	if (playerIt != cachedPlayers.end()) {
+		removePlayer(playerIt->second, pAddedByToDelete);
+	}
+}
+
+/**
+ * lock `trackedPlayersMutex` and `instancePlayersMutex` before calling this
+ */
 void removePlayer(const std::string& username, AddedBy addedByToDelete) {
 	// remove specific user
 	auto pred = [&username, addedByToDelete](const std::string& player) {
