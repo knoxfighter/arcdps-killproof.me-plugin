@@ -4,13 +4,13 @@
 #include <mutex>
 #include <vector>
 
-#include "extension/IconLoader.h"
+#include "ArcdpsExtension/IconLoader.h"
 #include "KillproofUI.h"
 #include "Player.h"
 #include "resource.h"
 #include "Settings.h"
 
-#include "extension/arcdps_structs.h"
+#include "ArcdpsExtension/arcdps_structs.h"
 
 #include <imgui/imgui.h>
 

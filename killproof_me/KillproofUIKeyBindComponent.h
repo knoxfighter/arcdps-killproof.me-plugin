@@ -3,7 +3,7 @@
 #include "global.h"
 #include "Settings.h"
 
-#include "extension/Windows/KeyBindComponent.h"
+#include "ArcdpsExtension/Windows/KeyBindComponent.h"
 
 class KillproofUIKeyBindComponent : public KeyBindComponent {
 public:

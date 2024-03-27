@@ -7,9 +7,9 @@
 
 #include "Killproofs.h"
 
-#include "extension/UpdateChecker.h"
-#include "extension/UpdateCheckerBase.h"
-#include "unofficial_extras/Definitions.h"
+#include "ArcdpsExtension/UpdateChecker.h"
+#include "ArcdpsExtension/UpdateCheckerBase.h"
+#include "ArcdpsUnofficialExtras/Definitions.h"
 
 constexpr auto KILLPROOF_ME_PLUGIN_NAME = "killproof.me";
 
@@ -47,7 +47,7 @@ void updateCommander(const std::string& commanderName);
 class GlobalObjects {
 public:
 	// Updating myself stuff
-	static inline std::unique_ptr<UpdateCheckerBase::UpdateState> UPDATE_STATE = nullptr;
+	static inline std::unique_ptr<ArcdpsExtension::UpdateCheckerBase::UpdateState> UPDATE_STATE = nullptr;
 
 	// arc keyboard modifier
 	static inline DWORD ARC_GLOBAL_MOD1 = 0;

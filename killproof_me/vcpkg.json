@@ -3,7 +3,8 @@
   "name": "arcdps-killproof-me-plugin",
   "version-string": "2.9.1",
   "dependencies": [
-    "cpr",
+    "arcdps-extension",
+	"arcdps-unofficial-extras",
     "nlohmann-json",
 	"magic-enum",
 	"imgui"

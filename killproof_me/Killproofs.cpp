@@ -2,7 +2,9 @@
 
 #include "Lang.h"
 
-#include "extension/Localization.h"
+#include "ArcdpsExtension/Localization.h"
+
+using namespace ArcdpsExtension;
 
 const std::string& toStringShort(Killproof e) {
 	switch (e) {

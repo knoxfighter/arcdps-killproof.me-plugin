@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 #include <Windows.h>
+#include <ArcdpsExtension/SimpleNetworkStack.h>
 
 #include <nlohmann/json.hpp>
 
@@ -91,4 +92,6 @@ private:
 	Killproofs coffers;
 	std::optional<Killproofs> linkedTotalKillproofs;
 	std::optional<Killproofs> linkedTotalCoffers;
+
+	static void websiteCallback(const std::string& pUsername, const ArcdpsExtension::SimpleNetworkStack::Result& pResult, const std::string& pUrl);
 };

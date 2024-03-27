@@ -2,7 +2,7 @@
 
 #include "global.h"
 
-#include "unofficial_extras/KeyBindHelper.h"
+#include "ArcdpsUnofficialExtras/KeyBindHelper.h"
 
 #include <fstream>
 

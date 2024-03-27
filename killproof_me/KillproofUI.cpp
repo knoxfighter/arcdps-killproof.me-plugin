@@ -7,11 +7,11 @@
 #include "Player.h"
 #include "Settings.h"
 
-#include "extension/ExtensionTranslations.h"
-#include "extension/IconLoader.h"
-#include "extension/imgui_stdlib.h"
-#include "extension/Localization.h"
-#include "extension/Widgets.h"
+#include "ArcdpsExtension/ExtensionTranslations.h"
+#include "ArcdpsExtension/IconLoader.h"
+#include "ArcdpsExtension/imgui_stdlib.h"
+#include "ArcdpsExtension/Localization.h"
+#include "ArcdpsExtension/Widgets.h"
 
 #include <future>
 #include <mutex>
@@ -47,7 +47,8 @@ const std::string& KillproofUI::getTitleDefault() {
 }
 
 const std::string& KillproofUI::getWindowID() {
-	return "Killproof.me"s;
+	static const std::string str = "Killproof.me";
+	return str;
 }
 
 std::optional<std::string>& KillproofUI::getAppearAsInOption() {
@@ -143,7 +144,7 @@ void KillproofUI::DrawContent() {
 			addPlayer = true;
 		}
 		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip(Localization::STranslate(KMT_AddPlayerTooltip).c_str());
+			ImGui::SetTooltip("%s", Localization::STranslate(KMT_AddPlayerTooltip).c_str());
 		ImGui::SameLine();
 		if (ImGui::Button(Localization::STranslate(KMT_AddPlayerText).c_str())) {
 			addPlayer = true;
@@ -195,7 +196,7 @@ void KillproofUI::DrawContent() {
 			trackedPlayers = instancePlayers;
 		}
 		if (ImGui::IsItemHovered()) {
-			ImGui::SetTooltip(Localization::STranslate(KMT_ClearTooltip).c_str());
+			ImGui::SetTooltip("%s", Localization::STranslate(KMT_ClearTooltip).c_str());
 		}
 
 		// get own player

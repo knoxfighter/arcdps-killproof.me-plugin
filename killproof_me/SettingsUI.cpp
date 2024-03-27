@@ -7,11 +7,11 @@
 #include "global.h"
 #include "Lang.h"
 
-#include "extension/KeyBindHandler.h"
-#include "extension/KeyInput.h"
+#include "ArcdpsExtension/KeyBindHandler.h"
+#include "ArcdpsExtension/KeyInput.h"
+#include "ArcdpsExtension/Widgets.h"
 
 #include <imgui/imgui.h>
-#include "extension/Widgets.h"
 
 namespace {
 	const std::map<LanguageSetting, std::function<const std::string&()>> PopupText = {
@@ -81,7 +81,7 @@ void SettingsUI::Draw() {
 		}
 	}
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip(Localization::STranslate(KMT_SettingsClearCacheTooltip).c_str());
+		ImGui::SetTooltip("%s", Localization::STranslate(KMT_SettingsClearCacheTooltip).c_str());
 
 	ImGui::PopStyleVar();
 }

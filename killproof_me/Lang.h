@@ -1,18 +1,18 @@
 ﻿#pragma once
 
-#include "extension/arcdps_structs.h"
+#include "ArcdpsExtension/arcdps_structs.h"
 
 #include <magic_enum.hpp>
 
-#include "extension/ExtensionTranslations.h"
-#include "extension/Localization.h"
+#include "ArcdpsExtension/ExtensionTranslations.h"
+#include "ArcdpsExtension/Localization.h"
 
 template<size_t A, size_t B> struct TAssertEquality {
   static_assert(A==B, "Not equal");
   static constexpr bool _cResult = (A==B);
 };
 
-constexpr auto enumMax = magic_enum::detail::max_v<ExtensionTranslation, magic_enum::as_common<>>;
+constexpr auto enumMax = magic_enum::detail::max_v<ArcdpsExtension::ExtensionTranslation, magic_enum::as_common<>>;
 
 static constexpr bool _cIsEqual = 
   TAssertEquality<enumMax, 47>::_cResult;
@@ -559,7 +559,7 @@ static_assert(KILLPROOF_ME_TRANSLATION_ENGLISH.size() == KILLPROOF_ME_TRANSLATIO
 static_assert(KILLPROOF_ME_TRANSLATION_ENGLISH.size() == KILLPROOF_ME_TRANSLATION_SPANISH.size());
 
 inline void LoadAdditionalTranslations() {
-	Localization& localization = Localization::instance();
+	ArcdpsExtension::Localization& localization = ArcdpsExtension::Localization::instance();
 	localization.Load(GWL_ENG, KILLPROOF_ME_TRANSLATION_ENGLISH);
 	localization.Load(GWL_GEM, KILLPROOF_ME_TRANSLATION_GERMAN);
 	localization.Load(GWL_FRE, KILLPROOF_ME_TRANSLATION_FRENCH);

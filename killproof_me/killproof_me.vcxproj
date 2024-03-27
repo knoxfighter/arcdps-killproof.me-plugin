@@ -70,15 +70,18 @@
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
-    <VcpkgAdditionalInstallOptions>--overlay-ports=$(SolutionDir)modules\extension\vcpkg-overlay-ports</VcpkgAdditionalInstallOptions>
+    <VcpkgAdditionalInstallOptions>
+    </VcpkgAdditionalInstallOptions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Mock|x64'" Label="Vcpkg">
     <VcpkgUseStatic>true</VcpkgUseStatic>
-    <VcpkgAdditionalInstallOptions>--overlay-ports=$(SolutionDir)modules\extension\vcpkg-overlay-ports</VcpkgAdditionalInstallOptions>
+    <VcpkgAdditionalInstallOptions>
+    </VcpkgAdditionalInstallOptions>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
-    <VcpkgAdditionalInstallOptions>--overlay-ports=$(SolutionDir)modules\extension\vcpkg-overlay-ports</VcpkgAdditionalInstallOptions>
+    <VcpkgAdditionalInstallOptions>
+    </VcpkgAdditionalInstallOptions>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
@@ -153,15 +156,8 @@
     <ClCompile Include="SettingsUI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\modules\extension\arcdps_extension.vcxproj">
-      <Project>{5aff3fc8-8e6f-4fda-9867-93bb861ab635}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\modules\unofficial_extras\unofficial_extras.vcxproj">
-      <Project>{dab9bae4-7c01-4d28-90fe-b49387e9fb24}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="global.h" />
+    <ClInclude Include="Icons.h" />
     <ClInclude Include="Killproofs.h" />
     <ClInclude Include="KillproofUI.h" />
     <ClInclude Include="KillproofUIKeyBindComponent.h" />

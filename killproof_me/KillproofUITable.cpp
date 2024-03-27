@@ -97,9 +97,6 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 	return open;
 }
 
-namespace {
-	std::optional<size_t> COMMANDER_TAG_TEXTURE;
-}
 template<bool OpenBrowser, bool AlignmentActive>
 void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool
                                       pIsCommander) {
@@ -117,7 +114,7 @@ void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, con
 
 		if (pIsCommander && Settings::instance().settings.showCommander) {
 			float size = ImGui::GetFontSize();
-			ImGui::Image(GET_TEXTURE_CUSTOM(COMMANDER_TAG_TEXTURE, ID_Commander_White), ImVec2(size, size));
+			ImGui::Image(draw_texture(KillproofIcons::Commander_White), ImVec2(size, size));
 			ImGui::SameLine();
 		}
 		pOpen = ImGuiEx::TreeNodeEx(actualText.c_str(), treeNodeFlags, nullptr);
@@ -125,7 +122,7 @@ void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, con
 	} else {
 		if (pIsCommander && Settings::instance().settings.showCommander) {
 			float size = ImGui::GetFontSize();
-			ImGui::Image(GET_TEXTURE_CUSTOM(COMMANDER_TAG_TEXTURE, ID_Commander_White), ImVec2(size, size));
+			ImGui::Image(draw_texture(KillproofIcons::Commander_White), ImVec2(size, size));
 			ImGui::SameLine();
 		}
 		if constexpr (AlignmentActive) {

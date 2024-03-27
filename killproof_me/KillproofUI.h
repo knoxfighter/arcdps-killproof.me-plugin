@@ -3,14 +3,16 @@
 #include "KillproofUITable.h"
 #include "Player.h"
 
-#include "extension/arcdps_structs.h"
-#include "extension/Windows/MainWindow.h"
-#include "extension/Singleton.h"
+#include "ArcdpsExtension/arcdps_structs.h"
+#include "ArcdpsExtension/Windows/MainWindow.h"
+#include "ArcdpsExtension/Singleton.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
 typedef std::function<amountVal(const Killproof&)> kpFunction;
+
+using namespace ArcdpsExtension;
 
 class KillproofUI final : public MainWindow, public Singleton<KillproofUI> {
 public:

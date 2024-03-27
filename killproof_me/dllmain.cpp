@@ -3,14 +3,15 @@
 #include "Settings.h"
 #include "SettingsUI.h"
 
-#include "extension/arcdps_structs.h"
-#include "extension/KeyBindHandler.h"
-#include "extension/KeyInput.h"
-#include "extension/MumbleLink.h"
-#include "extension/UpdateChecker.h"
-#include "extension/Windows/PositioningComponent.h"
-#include "extension/Windows/Demo/DemoTableWindow.h"
-#include "extension/Windows/Demo/DemoWindow.h"
+#include "ArcdpsExtension/arcdps_structs.h"
+#include "ArcdpsExtension/KeyBindHandler.h"
+#include "ArcdpsExtension/KeyInput.h"
+#include "ArcdpsExtension/MumbleLink.h"
+#include "ArcdpsExtension/UpdateChecker.h"
+#include "ArcdpsExtension/Windows/PositioningComponent.h"
+#include "ArcdpsExtension/Windows/Demo/DemoTableWindow.h"
+#include "ArcdpsExtension/Windows/Demo/DemoWindow.h"
+#include "ArcdpsExtension/SimpleNetworkStack.h"
 
 #include <d3d11.h>
 #include <d3d9.h>
@@ -52,7 +53,7 @@ BOOL APIENTRY DllMain(HMODULE pModule,
 	return TRUE;
 }
 
-uintptr_t mod_windows(const char* windowname) {
+void mod_windows(const char* windowname) {
 	if (!windowname) {
 		KillproofUI::instance().DrawOptionCheckbox();
 #if _DEBUG
@@ -60,10 +61,9 @@ uintptr_t mod_windows(const char* windowname) {
 		DemoTableWindow::instance().DrawOptionCheckbox();
 #endif
 	}
-	return 0;
 }
 
-uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
+void mod_imgui(uint32_t not_charsel_or_loading, uint32_t hide_if_combat_or_ooc) {
 #if PERFORMANCE_LOG
 	const auto& beforePoint = std::chrono::high_resolution_clock::now();
 #endif
@@ -106,12 +106,10 @@ uintptr_t mod_imgui(uint32_t not_charsel_or_loading) {
 	const auto& diff = afterPoint - beforePoint;
 	ARC_LOG_FILE(std::format("mod_imgui: {}", diff.count()).c_str());
 #endif
-
-	return 0;
 }
 
 /* window callback -- return is assigned to umsg (return zero to not be processed by arcdps or game) */
-uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+UINT mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 #if PERFORMANCE_LOG
 	const auto& beforePoint = std::chrono::high_resolution_clock::now();
 #endif
@@ -187,7 +185,7 @@ uintptr_t mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 /* combat callback -- may be called asynchronously. return ignored */
 /* one participant will be party/squad, or minion of. no spawn statechange events. despawn statechange only on marked boss npcs */
-uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t id, uint64_t revision) {
+void mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t id, uint64_t revision) {
 #if PERFORMANCE_LOG
 	const auto& beforePoint = std::chrono::high_resolution_clock::now();
 #endif
@@ -349,11 +347,9 @@ uintptr_t mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint
 	const auto& diff = afterPoint - beforePoint;
 	ARC_LOG_FILE(std::format("mod_combat: {}", diff.count()).c_str());
 #endif
-
-	return 0;
 }
 
-uintptr_t mod_combat_local(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t id, uint64_t revision) {
+void mod_combat_local(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t id, uint64_t revision) {
 	/* ev is null. dst will only be valid on tracking add. skillname will also be null */
 	if (!ev) {
 		/* notify tracking change */
@@ -380,14 +376,10 @@ uintptr_t mod_combat_local(cbtevent* ev, ag* src, ag* dst, const char* skillname
 			}
 		}
 	}
-
-	return 0;
 }
 
-uintptr_t mod_options() {
+void mod_options() {
 	SettingsUI::instance().Draw();
-
-	return 0;
 }
 
 /* initialize mod -- return table that arcdps will use for callbacks */
@@ -398,19 +390,33 @@ arcdps_exports* mod_init() {
 	UpdateChecker& updateChecker = UpdateChecker::instance();
 	const auto& currentVersion = updateChecker.GetCurrentVersion(SELF_DLL);
 
+	// Singleton class is not thread safe!!
+	SimpleNetworkStack::instance();
+
 	try {
 		// Setup iconLoader
-		IconLoader::instance().Setup(SELF_DLL, d3d9Device, d3d11Device);
+		IconLoader::instance().Setup(SELF_DLL, d3d11Device);
 
 		// Clear old Files
 		updateChecker.ClearFiles(SELF_DLL);
 
 		// check for new version on github
 		if (currentVersion) {
-			GlobalObjects::UPDATE_STATE = std::move(
+			GlobalObjects::UPDATE_STATE = 
 				updateChecker.CheckForUpdate(SELF_DLL, currentVersion.value(),
-															  "knoxfighter/arcdps-killproof.me-plugin", false));
+															  "knoxfighter/arcdps-killproof.me-plugin", false);
 		}
+
+		std::string version;
+		if (currentVersion) {
+			version = updateChecker.GetVersionAsString(currentVersion.value());
+		} else {
+			version = "unknown";
+		}
+
+		std::string userAgent = "arcdps-killproof.me-plugin/";
+		userAgent.append(version);
+		SimpleNetworkStack::instance().SetUserAgent(userAgent);
 
 		Settings::instance().load();
 

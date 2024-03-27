@@ -2,14 +2,14 @@
 
 #include "KillproofUITable.h"
 
-#include "extension/arcdps_structs.h"
-#include "extension/nlohmannJsonExtension.h"
-#include "extension/Singleton.h"
+#include "ArcdpsExtension/arcdps_structs.h"
+#include "ArcdpsExtension/nlohmannJsonExtension.h"
+#include "ArcdpsExtension/Singleton.h"
 
 #include <imgui/imgui.h>
 
-#include "unofficial_extras/Definitions.h"
-#include "unofficial_extras/KeyBindStructs.h"
+#include "ArcdpsUnofficialExtras/Definitions.h"
+#include "ArcdpsUnofficialExtras/KeyBindStructs.h"
 
 #include <map>
 
@@ -20,28 +20,6 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_NON_THROWING(ImVec2, x, y)
 struct SettingsKey : KeyBinds::Key {
 	NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsKey, DeviceType, Code, Modifier)
 };
-
-inline void to_json(nlohmann::json& nlohmann_json_j, const KillproofUITable::TableColumnSettings& nlohmann_json_t) {
-	nlohmann_json_j["WidthOrWeight"] = nlohmann_json_t.WidthOrWeight;
-	nlohmann_json_j["UserID"] = nlohmann_json_t.UserID;
-	nlohmann_json_j["DisplayOrder"] = nlohmann_json_t.DisplayOrder;
-	nlohmann_json_j["SortOrder"] = nlohmann_json_t.SortOrder;
-	nlohmann_json_j["SortDirection"] = nlohmann_json_t.SortDirection;
-	nlohmann_json_j["IsEnabled"] = nlohmann_json_t.IsEnabled;
-	nlohmann_json_j["IsStretch"] = nlohmann_json_t.IsStretch;
-}
-
-inline void from_json(const nlohmann::json& nlohmann_json_j, KillproofUITable::TableColumnSettings& nlohmann_json_t) {
-	nlohmann_json_j.at("WidthOrWeight").get_to(nlohmann_json_t.WidthOrWeight);
-	nlohmann_json_j.at("UserID").get_to(nlohmann_json_t.UserID);
-	nlohmann_json_j.at("DisplayOrder").get_to(nlohmann_json_t.DisplayOrder);
-	nlohmann_json_j.at("SortOrder").get_to(nlohmann_json_t.SortOrder);
-	nlohmann_json_t.SortDirection = nlohmann_json_j.at("SortDirection").get<ImU8>();
-	nlohmann_json_t.IsEnabled = nlohmann_json_j.at("IsEnabled").get<ImU8>();
-	nlohmann_json_t.IsStretch = nlohmann_json_j.at("IsStretch").get<ImU8>();
-}
-
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(KillproofUITable::TableSettings, Version, SaveFlags, RefScale, Columns)
 
 enum class LanguageSetting {
 	English = 0,

@@ -4,12 +4,10 @@
 #include "KillproofUI.h"
 #include "Settings.h"
 
-#include "extension/arcdps_structs.h"
+#include "ArcdpsExtension/arcdps_structs.h"
 
 #include <set>
-
-#include <cpr/cpr.h>
-#include <cpr/util.h>
+#include <ArcdpsExtension/SimpleNetworkStack.h>
 
 #include <nlohmann/json.hpp>
 
@@ -26,119 +24,16 @@ void Player::loadKillproofs() {
 	if (!status.compare_exchange_strong(loadingStatus, LoadingStatus::LoadingById))
 		return;
 
-	// download it in a new thread (fire and forget)
-	const auto call = [this](const auto& self, const std::string& link) -> void {
-		std::string version = UpdateChecker::instance().GetVersionAsString(
-			*GlobalObjects::UPDATE_STATE->CurrentVersion);
-		std::string userAgent = "arcdps-killproof.me-plugin/";
-		userAgent.append(version);
-		cpr::Response response = cpr::Get(cpr::Url{link}, cpr::Header{{"User-Agent", userAgent}},
-		                                  cpr::Ssl(cpr::ssl::TLSv1_2{}));
-
-		if (response.status_code == 200) {
-			auto json = nlohmann::json::parse(response.text);
-
-			// get accountname
-			std::string accountname = json.at("account_name").get<std::string>();
-
-			// replace the key in the global map, when kpid or charname was used to create this player
-			if (username != accountname) {
-				// lock the maps
-				std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(
-					trackedPlayersMutex, instancePlayersMutex, cachedPlayersMutex);
-
-				// replace the key of the cache
-				auto node = cachedPlayers.extract(username);
-				node.key() = accountname;
-				const auto insertRes = cachedPlayers.insert(std::move(node));
-
-				// When insertion of changed node fails, the key already exists and `this` gets destructed.
-				// Therefore `this` is invalid and going on further results in an UseAfterFree !
-				if (!insertRes.inserted) {
-					// last action to do: remove the wrong username from the list of tracked players
-					removePlayer(username, AddedBy::Miscellaneous);
-					// add the new accountname to display, if it is currently not shown
-					addPlayerTracking(accountname);
-					// add charactername to correct user
-					Player& actualPlayer = cachedPlayers.at(accountname);
-					if (status == LoadingStatus::LoadingByChar) {
-						actualPlayer.characterName = username;
-					}
-					if (actualPlayer.status == LoadingStatus::NoDataAvailable || actualPlayer.status == LoadingStatus::LoadedByLinked) {
-						actualPlayer.LoadAll(json);
-					}
-					return;
-				}
-
-				// replace the player in tracked players
-				std::ranges::replace(trackedPlayers, username, accountname);
-				std::ranges::replace(instancePlayers, username, accountname);
-
-				// set the username as charactername
-				if (this->status == LoadingStatus::LoadingByChar) {
-					characterName = username;
-				}
-			}
-
-			// set username AFTER the check, if it is the same as the kpid
-			username = accountname;
-
-			LoadAll(json);
-		}
-		// silently set, when user not found
-		else if (response.status_code == 404) {
-			// try again as charactername (only when manually added)
-			if (status == LoadingStatus::LoadingById && addedBy == AddedBy::Manually) {
-				std::string new_link = "https://killproof.me/api/character/";
-				new_link.append(cpr::util::urlEncode(username));
-				new_link.append("/kp?lang=en");
-				status = LoadingStatus::LoadingByChar;
-				self(self, new_link);
-			} else {
-				status = LoadingStatus::NoDataAvailable;
-			}
-		}
-		// on any other error, print verbose output into the arcdps.log file
-		else {
-			this->status = LoadingStatus::KpMeError;
-
-			std::string cs = "URL: ";
-			cs.append(response.url.str());
-			cs.append(" -- Status: ");
-			cs.append(std::to_string(response.status_code));
-			cs.append(" -- Response: ");
-			cs.append(response.text);
-			cs.append(" -- ErrorMessage: ");
-			cs.append(response.error.message);
-			cs.append(" -- Reason: ");
-			cs.append(response.reason);
-			cs.append(" -- StatusLine: ");
-			cs.append(response.status_line);
-			cs.append("\n");
-			ARC_LOG_FILE(cs.c_str());
-
-			this->errorMessage = cs;
-
-			// start 1 minute timeout until reloading
-			// we can just pause this detached thread :)
-			std::this_thread::sleep_for(1min);
-			this->loadKillproofs();
-		}
-
-		// say UI to reload sorting
-		KillproofUI::instance().GetTable()->RequestSort();
-	};
+	auto& networkStack = SimpleNetworkStack::instance();
 
 	// create the link for getting by accountname/kpid
 	std::string link = "https://killproof.me/api/kp/";
-	link.append(cpr::util::urlEncode(username));
+	link.append(networkStack.UrlEncode(username));
 	link.append("?lang=en");
 
-	// call the created lambda in a new thread
-	std::thread cprCall(call, call, link);
-
-	// we want to run async completely, so just detach
-	cprCall.detach();
+	networkStack.QueueGet(link, [username = username, url = link](const SimpleNetworkStack::Result& pResult) {
+		websiteCallback(username, pResult, url);
+	});
 }
 
 std::optional<amountVal> Player::getKpOverall(const Killproof& kp) const {
@@ -262,4 +157,153 @@ void Player::loadKPs(const nlohmann::json& json, Killproofs& killproofStorage, K
 			}
 		}
 	}
+}
+
+void Player::websiteCallback(const std::string& pUsername, const SimpleNetworkStack::Result& pResult, const std::string& pUrl) {
+	using namespace std::chrono_literals;
+	if (!pResult.has_value()) {
+		// error message - unknown error
+		const auto& error = pResult.error();
+
+		std::lock_guard guard(cachedPlayersMutex);
+		const auto& playerIt = cachedPlayers.find(pUsername);
+		if (playerIt != cachedPlayers.end()) {
+			auto& player = playerIt->second;
+			player.status = LoadingStatus::KpMeError;
+
+			std::string cs = "URL: ";
+			cs.append(pUrl);
+			cs.append(" -- Error: ");
+			cs.append(std::format("{}", error.Type));
+			cs.append(" -- ErrorStr: ");
+			cs.append(error.Message);
+			cs.append("\n");
+			ARC_LOG_FILE(cs.c_str());
+
+			player.errorMessage = cs;
+
+			// start 1 minute timeout until reloading
+			// we can just pause this detached thread :)
+			std::this_thread::sleep_for(1min);
+			player.loadKillproofs();
+		}
+
+		return;
+	}
+
+	if (pResult->Code == 200) {
+		auto json = nlohmann::json::parse(pResult->Message);
+
+		// get accountname
+		std::string accountname = json.at("account_name").get<std::string>();
+
+		// replace the key in the global map, when kpid or charname was used to create this player
+		if (pUsername != accountname) {
+			// lock the maps
+			std::scoped_lock<std::mutex, std::mutex, std::mutex> lock(
+				trackedPlayersMutex, instancePlayersMutex, cachedPlayersMutex);
+
+			// replace the key of the cache
+			// extracting invalidates the iterator!
+			auto node = cachedPlayers.extract(pUsername);
+			node.key() = accountname;
+			const auto insertRes = cachedPlayers.insert(std::move(node));
+
+			// When insertion of changed node fails, the key already exists and `this` gets destructed.
+			// Therefore `this` is invalid and going on further results in an UseAfterFree !
+			if (!insertRes.inserted) {
+				// last action to do: remove the wrong username from the list of tracked players
+				removePlayer(pUsername, AddedBy::Miscellaneous);
+				// add the new accountname to display, if it is currently not shown
+				addPlayerTracking(accountname);
+				// add charactername to correct user
+				Player& actualPlayer = cachedPlayers.at(accountname);
+				if (insertRes.node.mapped().status == LoadingStatus::LoadingByChar) {
+					actualPlayer.characterName = pUsername;
+				}
+				if (actualPlayer.status == LoadingStatus::NoDataAvailable || actualPlayer.status == LoadingStatus::LoadedByLinked) {
+					actualPlayer.LoadAll(json);
+				}
+				return;
+			}
+
+			// replace the player in tracked players
+			std::ranges::replace(trackedPlayers, pUsername, accountname);
+			std::ranges::replace(instancePlayers, pUsername, accountname);
+
+			// set the username as charactername
+			if (insertRes.position->second.status == LoadingStatus::LoadingByChar) {
+				insertRes.position->second.characterName = pUsername;
+			}
+		}
+
+		// access to player in cache, lock it
+		std::lock_guard guard(cachedPlayersMutex);
+
+		// get player from list
+		auto& player = cachedPlayers.at(accountname);
+
+		// set username AFTER the check, in the case it is the same as the kpid
+		player.username = accountname;
+
+		player.LoadAll(json);
+	}
+	// silently set, when user not found
+	else if (pResult->Code == 404) {
+		std::lock_guard guard(cachedPlayersMutex);
+		const auto& playerIt = cachedPlayers.find(pUsername);
+		if (playerIt != cachedPlayers.end()) {
+			auto& player = playerIt->second;
+
+			// try again as charactername (only when manually added)
+			if (player.status == LoadingStatus::LoadingById && player.addedBy == AddedBy::Manually) {
+				auto& networkStack = SimpleNetworkStack::instance();
+				std::string new_link = "https://killproof.me/api/character/";
+				new_link.append(networkStack.UrlEncode(pUsername));
+				new_link.append("/kp?lang=en");
+				player.status = LoadingStatus::LoadingByChar;
+
+				networkStack.QueueGet(new_link, [pUsername, url = new_link](const SimpleNetworkStack::Result& pResult) {
+					websiteCallback(pUsername, pResult, url);
+				});
+			} else {
+				player.status = LoadingStatus::NoDataAvailable;
+			}
+		}
+	}
+	// on any other error, print verbose output into the arcdps.log file
+	else {
+		std::lock_guard guard(cachedPlayersMutex);
+		const auto& playerIt = cachedPlayers.find(pUsername);
+		if (playerIt != cachedPlayers.end()) {
+			auto& player = playerIt->second;
+			player.status = LoadingStatus::KpMeError;
+
+			std::string cs = "URL: ";
+			cs.append(pUrl);
+			cs.append(" -- Status-Code: ");
+			cs.append(std::to_string(pResult->Code));
+			cs.append(" -- Response: ");
+			cs.append(pResult->Message);
+			cs.append("\n");
+			ARC_LOG_FILE(cs.c_str());
+
+			player.errorMessage = cs;
+
+			// start 1 minute timeout until reloading
+			std::thread t([pUsername] {
+				std::this_thread::sleep_for(1min);
+
+				std::lock_guard guard(cachedPlayersMutex);
+				const auto& playerIt = cachedPlayers.find(pUsername);
+				if (playerIt != cachedPlayers.end()) {
+					playerIt->second.loadKillproofs();
+				}
+			});
+			t.detach();
+		}
+	}
+
+	// say UI to reload sorting
+	KillproofUI::instance().GetTable()->RequestSort();
 }
