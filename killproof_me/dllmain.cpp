@@ -404,6 +404,7 @@ arcdps_exports* mod_init() {
 	try {
 		// Setup iconLoader
 		IconLoader::instance().Setup(SELF_DLL, d3d11Device);
+		RegisterIcons();
 
 		// Clear old Files
 		updateChecker.ClearFiles(SELF_DLL);
