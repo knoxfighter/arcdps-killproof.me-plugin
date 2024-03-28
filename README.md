@@ -66,9 +66,6 @@ This project is licensed with the MIT License.
 ### json
 [json](https://github.com/nlohmann/json) is a json library created by nlohmann and licensed with the MIT License. It is included with vcpkg.
 
-### cpr
-[cpr](https://github.com/whoshuu/cpr) is a http library, that is licensed with the MIT License. It is included with vcpkg and itself has dependencies.
-
 ### magic_enum
 [magic_enum](https://github.com/Neargye/magic_enum) is licensed with the MIT License. It is included with vcpkg.
 
