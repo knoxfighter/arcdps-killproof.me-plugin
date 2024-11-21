@@ -319,6 +319,7 @@ const char* KillproofUITable::getCategoryName(const std::string& pCat) {
 	if (pCat == "1.5") return "W5";
 	if (pCat == "1.6") return "W6";
 	if (pCat == "1.7") return "W7";
+	if (pCat == "1.8") return "W8";
 	return "";
 }
 

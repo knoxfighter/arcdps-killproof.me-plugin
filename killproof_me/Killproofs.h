@@ -19,40 +19,45 @@ enum class Killproof : int {
 	liLd = 2,
 	// added li and ld
 	// fractal
-	uce,
-	ufe,
+	uce = 3,
+	ufe = 4,
 	// w1
-	vg,
-	gorse,
-	sabetha,
+	vg = 5,
+	gorse = 6,
+	sabetha = 7,
 	// w2
-	sloth,
-	matthias,
+	sloth = 8,
+	matthias = 9,
 	// w3
-	escort,
-	kc,
-	xera,
+	escort = 10,
+	kc = 11,
+	xera = 12,
 	// w4
-	cairn,
-	mo,
-	samarog,
-	deimos,
+	cairn = 13,
+	mo = 14,
+	samarog = 15,
+	deimos = 16,
 	// w5
-	desmina,
-	river,
-	statues,
-	dhuum,
+	desmina = 17,
+	river = 18,
+	statues = 19,
+	dhuum = 20,
 	// w6
-	ca,
-	twins,
-	qadim,
+	ca = 21,
+	twins = 22,
+	qadim = 23,
 	// w7
-	sabir,
-	adina,
-	qadim2,
+	sabir = 24,
+	adina = 25,
+	qadim2 = 26,
+
+	// w8
+	greer = 48,
+	decima = 49,
+	ura = 50,
 
 	// strikes
-	boneskinnerVial,
+	boneskinnerVial = 27,
 
 	// EOD strikes
 	ankka = 33,
@@ -180,6 +185,15 @@ public:
 				case 91260:
 					killproofs[Killproof::qadim2] = amount;
 					break;
+				case 103783:
+					killproofs[Killproof::greer] = amount;
+					break;
+				case 103926:
+					killproofs[Killproof::decima] = amount;
+					break;
+				case 103946:
+					killproofs[Killproof::ura] = amount;
+					break;
 			}
 		} else {
 			switch (id) {
@@ -264,6 +278,15 @@ public:
 					break;
 				case 91175: 
 					killproofs[Killproof::qadim2] = amount;
+					break;
+				case 104047:
+					killproofs[Killproof::greer] = amount;
+					break;
+				case 103754:
+					killproofs[Killproof::decima] = amount;
+					break;
+				case 103996:
+					killproofs[Killproof::ura] = amount;
 					break;
 				case 93781: 
 					killproofs[Killproof::boneskinnerVial] = amount;

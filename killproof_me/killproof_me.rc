@@ -167,6 +167,12 @@ ID_Cerus                PNG                     "icons\\Cerus.png"
 
 ID_Dagda                PNG                     "icons\\Dagda.png"
 
+ID_Greer                PNG                     "icons\\Greer.png"
+
+ID_Decima               PNG                     "icons\\Decima.png"
+
+ID_Ura                  PNG                     "icons\\Ura.png"
+
 #endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 

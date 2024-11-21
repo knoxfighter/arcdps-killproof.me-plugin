@@ -86,6 +86,11 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{25, [] {return to_string_short(Killproof::adina);}, []{ return draw_texture(KillproofIcons::Adina); }, "1.7", false},
 	{26, [] {return to_string_short(Killproof::qadim2);}, []{ return draw_texture(KillproofIcons::Qadim2); }, "1.7", [] {return to_string_long(Killproof::qadim2);}, true},
 
+	// W8
+	{static_cast<ImU32>(Killproof::greer), []{ return to_string_short(Killproof::greer); }, []{ return draw_texture(KillproofIcons::Greer); }, "1.8", [] {return to_string_long(Killproof::greer);}, false},
+	{static_cast<ImU32>(Killproof::decima), []{ return to_string_short(Killproof::decima); }, []{ return draw_texture(KillproofIcons::Decima); }, "1.8", [] {return to_string_long(Killproof::decima);}, false},
+	{static_cast<ImU32>(Killproof::ura), []{ return to_string_short(Killproof::ura); }, []{ return draw_texture(KillproofIcons::Ura); }, "1.8", true},
+
 	// Strikes
 	{27, [] {return to_string_short(Killproof::boneskinnerVial);}, []{ return draw_texture(KillproofIcons::Boneskinner_Vial); }, "3", [] {return to_string_long(Killproof::boneskinnerVial);}, true},
 	
@@ -120,6 +125,7 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 	{1264, {2, 17, 18, 19, 20}}, // W5
 	{1303, {2, 21, 22, 23}}, // W6
 	{1323, {2, 24, 25, 26}}, // W7
+	{1564, {std::to_underlying(Killproof::greer), std::to_underlying(Killproof::decima), std::to_underlying(Killproof::ura)}},
 	{1370, {2, 27}}, // Eye of the north
 	{1432, {2, 35, 36}}, // MaiTrin strike
 	{1450, {2, 33, 38}}, // Ankka strike

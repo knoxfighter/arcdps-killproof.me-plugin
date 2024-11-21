@@ -35,6 +35,9 @@ const std::string& toStringShort(Killproof e) {
 	case Killproof::sabir: return Localization::STranslate(KMT_Sabir_Short);
 	case Killproof::adina: return Localization::STranslate(KMT_Adina_Short);
 	case Killproof::qadim2: return Localization::STranslate(KMT_Qadim2_Short);
+	case Killproof::greer: return Localization::STranslate(KMT_Greer_Short);
+	case Killproof::decima: return Localization::STranslate(KMT_Decima_Short);
+	case Killproof::ura: return Localization::STranslate(KMT_Ura_Short);
 	case Killproof::boneskinnerVial: return Localization::STranslate(KMT_BoneskinnerVial_Short);
 	case Killproof::ankka: return Localization::STranslate(KMT_Ankka_Short);
 	case Killproof::ministerLi: return Localization::STranslate(KMT_MinisterLi_Short);
@@ -69,6 +72,8 @@ const std::string& toStringLong(Killproof e) {
 	case Killproof::ca: return Localization::STranslate(KMT_Ca_Long);
 	case Killproof::twins: return Localization::STranslate(KMT_Twins_Long);
 	case Killproof::qadim2: return Localization::STranslate(KMT_Qadim2_Long);
+	case Killproof::greer: return Localization::STranslate(KMT_Greer_Long);
+	case Killproof::decima: return Localization::STranslate(KMT_Decima_Long);
 	case Killproof::boneskinnerVial: return Localization::STranslate(KMT_BoneskinnerVial_Long);
 	case Killproof::ankka: return Localization::STranslate(KMT_Ankka_Long);
 	case Killproof::ministerLi: return Localization::STranslate(KMT_MinisterLi_Long);

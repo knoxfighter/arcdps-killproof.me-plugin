@@ -62,6 +62,11 @@ enum KillproofMeTranslations {
 	KMT_Adina_Short,
 	KMT_Qadim2_Short,
 	KMT_Qadim2_Long,
+	KMT_Greer_Short,
+	KMT_Greer_Long,
+	KMT_Decima_Short,
+	KMT_Decima_Long,
+	KMT_Ura_Short,
 	KMT_BoneskinnerVial_Short,
 	KMT_BoneskinnerVial_Long,
 	KMT_Ankka_Short,
@@ -169,6 +174,11 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_ENGLISH = std::to_array({
 	u8"Adina", // KMT_Adina_Short
 	u8"Qadim2", // KMT_Qadim2_Short
 	u8"Qadim the Peerless", // KMT_Qadim2_Long
+	u8"Greer", // KMT_Greer_Short,
+	u8"Greer, the Blightbringer", // KMT_Greer_Long,
+	u8"Decima", // KMT_Decima_Short,
+	u8"Decima, the Stormsinger", // KMT_Decima_Long,
+	u8"Ura", // KMT_Ura_Short,
 	u8"Vial", // KMT_BoneskinnerVial_Short
 	u8"Boneskinner Ritual Vial", // KMT_BoneskinnerVial_Long
 	u8"Ankka", // KMT_Ankka_Short
@@ -276,6 +286,11 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_GERMAN = std::to_array({
 	u8"Adina", // KMT_Adina_Short
 	u8"Qadim2", // KMT_Qadim2_Short
 	u8"Qadim der Unvergleichliche", // KMT_Qadim2_Long
+	u8"Greer", // KMT_Greer_Short,
+	u8"Greer, der Pestilenzbringer", // KMT_Greer_Long,
+	u8"Decima", // KMT_Decima_Short,
+	u8"Decima, die Sturmsängerin ", // KMT_Decima_Long,
+	u8"Ura", // KMT_Ura_Short,
 	u8"Phiole", // KMT_BoneskinnerVial_Short
 	u8"Knochenhäuter-Ritual-Phiole", // KMT_BoneskinnerVial_Long
 	u8"Ankka", // KMT_Ankka_Short
@@ -383,6 +398,11 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_FRENCH = std::to_array({
 	u8"Adina", // KMT_Adina_Short
 	u8"Qadim2", // KMT_Qadim2_Short
 	u8"Qadim l'Inégalé", // KMT_Qadim2_Long
+	u8"Greer", // KMT_Greer_Short,
+	u8"Greer, le porte-fléau", // KMT_Greer_Long,
+	u8"Decima", // KMT_Decima_Short,
+	u8"Decima, l'antienne de la tempête", // KMT_Decima_Long,
+	u8"Ura", // KMT_Ura_Short,
 	u8"Fiole", // KMT_BoneskinnerVial_Short
 	u8"Fiole du rituel du désosseur", // KMT_BoneskinnerVial_Long
 	u8"Ankka", // KMT_Ankka_Short
@@ -490,6 +510,11 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_SPANISH = std::to_array({
 	u8"Adina", // KMT_Adina_Short
 	u8"Qadim2", // KMT_Qadim2_Short
 	u8"Qadim el Simpar", // KMT_Qadim2_Long
+	u8"Greer", // KMT_Greer_Short,
+	u8"Greer, el Portarruina",
+	u8"Decima", // KMT_Decima_Short,
+	u8"Decima, la Invocatormentas", // KMT_Decima_Long,
+	u8"Ura", // KMT_Ura_Short,
 	u8"Vial", // KMT_BoneskinnerVial_Short
 	u8"Vial del ritual del pelahuesos", // KMT_BoneskinnerVial_Long
 	u8"Ankka", // KMT_Ankka_Short
