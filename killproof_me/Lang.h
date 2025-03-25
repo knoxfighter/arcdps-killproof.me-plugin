@@ -324,14 +324,14 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_GERMAN = std::to_array({
 	u8"Bananen", // KMT_Bananas
 	u8"Killproof.me", // KMT_KpWindowNameDefault
 	u8"Killproof.me", // KMT_AppearAsInOptionDefault
-	u8"Private Accounts", // KMT_SettingsShowPrivateText
-	u8"Zeige Bedienelemente", // KMT_SettingsShowControls
-	u8"Zeige verknüpfte Account Standardmäßig", // KMT_SettingsShowLinkedByDefault
-	u8"Zeige Kommandeurssymbol", // KMT_SettingsShowCommander
+	u8"Private Accounts anzeigen", // KMT_SettingsShowPrivateText
+	u8"Bedienelemente anzeigen", // KMT_SettingsShowControls
+	u8"Verknüpfte Accounts anzeigen", // KMT_SettingsShowLinkedByDefault
+	u8"Kommandeursymbol anzeigen", // KMT_SettingsShowCommander
 	u8"Anzeigetext, wenn Daten nicht verfügbar/privat sind", // KMT_SettingsBlockedText
-	u8"Zeige verknüpfte Gesamtwerte direkt", // KMT_ShowLinkedTotals
-	u8"Das \"Unofficial extras plugin\" ist nicht installiert.\nInstalliere es, um Spiler auf anderen Instanzen sehen zu können.", // KMT_UnofficialExtrasNotInstalled
-	u8"Suche nach Accountname, killproof.me ID oder Charaktername und füge es der Tabelle hinzu", // KMT_AddPlayerTooltip
+	u8"Zeige verknüpfte Gesamtwerte", // KMT_ShowLinkedTotals
+	u8"Das \"Unofficial extras plugin\" ist nicht installiert.\nInstalliere es, um Spieler in anderen Instanzen sehen zu können.", // KMT_UnofficialExtrasNotInstalled
+	u8"Suche nach Accountnamen, killproof.me IDs oder Charakternamen um sie hinzuzufügen.", // KMT_AddPlayerTooltip
 	u8"Hinzufügen", // KMT_AddPlayerText
 	u8"Löschen", // KMT_ClearText
 	u8"Entferne alle manuell hinzugefügten Einträge", // KMT_ClearTooltip
