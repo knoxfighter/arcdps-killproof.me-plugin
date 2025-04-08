@@ -91,6 +91,10 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{static_cast<ImU32>(Killproof::decima), []{ return to_string_short(Killproof::decima); }, []{ return draw_texture(KillproofIcons::Decima); }, "1.8", [] {return to_string_long(Killproof::decima);}, false},
 	{static_cast<ImU32>(Killproof::ura), []{ return to_string_short(Killproof::ura); }, []{ return draw_texture(KillproofIcons::Ura); }, "1.8", true},
 
+	{static_cast<ImU32>(Killproof::greerCM), []{ return to_string_short(Killproof::greerCM); }, []{ return draw_texture(KillproofIcons::Greer); }, "1.8", [] {return to_string_long(Killproof::greerCM);}, false},
+	{static_cast<ImU32>(Killproof::decimaCM), []{ return to_string_short(Killproof::decimaCM); }, []{ return draw_texture(KillproofIcons::Decima); }, "1.8", [] {return to_string_long(Killproof::decimaCM);}, false},
+	{static_cast<ImU32>(Killproof::uraCM), []{ return to_string_short(Killproof::uraCM); }, []{ return draw_texture(KillproofIcons::Ura); }, "1.8", true},
+
 	// Strikes
 	{27, [] {return to_string_short(Killproof::boneskinnerVial);}, []{ return draw_texture(KillproofIcons::Boneskinner_Vial); }, "3", [] {return to_string_long(Killproof::boneskinnerVial);}, true},
 	
@@ -125,7 +129,14 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 	{1264, {2, 17, 18, 19, 20}}, // W5
 	{1303, {2, 21, 22, 23}}, // W6
 	{1323, {2, 24, 25, 26}}, // W7
-	{1564, {std::to_underlying(Killproof::greer), std::to_underlying(Killproof::decima), std::to_underlying(Killproof::ura)}},
+	{1564, {
+		std::to_underlying(Killproof::greer),
+		std::to_underlying(Killproof::decima),
+		std::to_underlying(Killproof::ura),
+		std::to_underlying(Killproof::greerCM),
+		std::to_underlying(Killproof::decimaCM),
+		std::to_underlying(Killproof::uraCM)
+	}}, // W8
 	{1370, {2, 27}}, // Eye of the north
 	{1432, {2, 35, 36}}, // MaiTrin strike
 	{1450, {2, 33, 38}}, // Ankka strike

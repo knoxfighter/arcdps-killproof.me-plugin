@@ -55,6 +55,9 @@ enum class Killproof : int {
 	greer = 48,
 	decima = 49,
 	ura = 50,
+	greerCM = 51,
+	decimaCM = 52,
+	uraCM = 53,
 
 	// strikes
 	boneskinnerVial = 27,
@@ -186,13 +189,25 @@ public:
 					killproofs[Killproof::qadim2] = amount;
 					break;
 				case 103783:
-					killproofs[Killproof::greer] = amount;
+				case 104306:
+					killproofs[Killproof::greer] += amount;
 					break;
 				case 103926:
-					killproofs[Killproof::decima] = amount;
+				case 104410:
+					killproofs[Killproof::decima] += amount;
 					break;
 				case 103946:
-					killproofs[Killproof::ura] = amount;
+				case 104439:
+					killproofs[Killproof::ura] += amount;
+					break;
+				case 104399:
+					killproofs[Killproof::greerCM] = amount;
+					break;
+				case 104246:
+					killproofs[Killproof::decimaCM] = amount;
+					break;
+				case 104355:
+					killproofs[Killproof::uraCM] = amount;
 					break;
 			}
 		} else {
