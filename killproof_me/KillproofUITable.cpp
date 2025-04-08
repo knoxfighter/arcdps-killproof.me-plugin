@@ -79,7 +79,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 
 					if (IsCurrentColumnHovered()) {
 						ImGui::BeginTooltip();
-						std::string kpText = std::format("{}: {}", Localization::STranslate(KMT_Killproofs), (pTotal && pHasLinked || pTotalText ? pPlayer.getKillproofsTotal(kp) : pPlayer.getKillproofs(kp)).value());
+						std::string kpText = std::format("{}: {}", Localization::STranslate(KMT_Killproofs), (pTotal && pHasLinked || pTotalText ? pPlayer.getKillproofsTotal(kp) : pPlayer.getKillproofs(kp)).value_or(0));
 						ImGui::TextUnformatted(kpText.c_str());
 						const std::optional<amountVal> coffers = pTotal && pHasLinked || pTotalText ? pPlayer.getCoffersTotal(kp) : pPlayer.getCoffers(kp);
 						if (coffers.has_value()) {
