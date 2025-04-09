@@ -4,7 +4,7 @@
 
 #include <ArcdpsExtension/IconLoader.h>
 #include <ArcdpsExtension/map.h>
-#include <magic_enum_all.hpp>
+#include <magic_enum/magic_enum_all.hpp>
 
 #define generate_icon_list_enum(val) val
 #define generate_icon_list_vector(val) ID_##val

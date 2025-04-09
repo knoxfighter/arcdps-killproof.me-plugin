@@ -2,7 +2,7 @@
 
 #include "ArcdpsExtension/arcdps_structs.h"
 
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 #include "ArcdpsExtension/ExtensionTranslations.h"
 #include "ArcdpsExtension/Localization.h"
