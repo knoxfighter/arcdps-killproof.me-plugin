@@ -45,10 +45,10 @@ const std::string& toStringShort(Killproof e) {
 	case Killproof::qadim2: return Localization::STranslate(KMT_Qadim2_Short);
 
 	case Killproof::greer: return Localization::STranslate(KMT_Greer_Short);
-	case Killproof::decima: return Localization::STranslate(KMT_DecimaCM_Short);
+	case Killproof::decima: return Localization::STranslate(KMT_Decima_Short);
 	case Killproof::ura: return Localization::STranslate(KMT_Ura_Short);
 	case Killproof::greerCM: return Localization::STranslate(KMT_GreerCM_Short);
-	case Killproof::decimaCM: return Localization::STranslate(KMT_Decima_Short);
+	case Killproof::decimaCM: return Localization::STranslate(KMT_DecimaCM_Short);
 	case Killproof::uraCM: return Localization::STranslate(KMT_UraCM_Short);
 
 	case Killproof::boneskinnerVial: return Localization::STranslate(KMT_BoneskinnerVial_Short);
