@@ -74,7 +74,7 @@ public:
 		                                            showKillproof,
 		                                            blockedDataText, disableEscClose,
 		                                            alignment, headerAlignment, showControls,
-		                                            showLinkedByDefault, showHeader, position,
+		                                            showLinkedByDefault, showHeaderText, showHeader, position,
 		                                            cornerPosition, cornerVector, anchorPanelCornerPosition,
 		                                            selfPanelCornerPosition, fromWindowID,
 		                                            showCommander, cofferValue, hideExtrasMessage, sizingPolicy,
