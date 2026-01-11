@@ -183,9 +183,16 @@ void Player::websiteCallback(const std::string& pUsername, const SimpleNetworkSt
 			player.errorMessage = cs;
 
 			// start 1 minute timeout until reloading
-			// we can just pause this detached thread :)
-			std::this_thread::sleep_for(1min);
-			player.loadKillproofs();
+			std::thread t([pUsername] {
+				std::this_thread::sleep_for(1min);
+
+				std::lock_guard guard(cachedPlayersMutex);
+				const auto& playerIt = cachedPlayers.find(pUsername);
+				if (playerIt != cachedPlayers.end()) {
+					playerIt->second.loadKillproofs();
+				}
+			});
+			t.detach();
 		}
 
 		return;
