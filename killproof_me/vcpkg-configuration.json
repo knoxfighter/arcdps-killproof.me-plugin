@@ -3,14 +3,14 @@
   "default-registry": {
     "kind": "git",
     "repository": "https://github.com/microsoft/vcpkg",
-    "baseline": "7e19f3c64cb636ee21f41bfe8558a6dfaae6236f"
+    "baseline": "38d805d43b955c8ea5b681f8d3daf1e03762a030"
   },
   "registries": [
     {
-	  "kind": "git",
-	  "repository": "https://github.com/Zinn-o-Matics/vcpkg-registry",
-	  "baseline": "7e811f880f2fac65a7cba10c636f911f65d58029",
-	  "packages": [ "arcdps-extension", "arcdps-unofficial-extras", "imgui" ]
-	}
+      "kind": "git",
+      "repository": "https://github.com/Zinn-o-Matics/vcpkg-registry",
+      "baseline": "ad12fd5c98f02eebfadf1814635e1cfa3e364a01",
+      "packages": [ "arcdps-extension", "arcdps-unofficial-extras", "imgui" ]
+    }
   ]
 }
