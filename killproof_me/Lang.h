@@ -603,6 +603,19 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_SPANISH = std::to_array({
 	u8"Varios", // KMT_Misc
 });
 
+constexpr std::array KILLPROOF_ME_TRANSLATION_ENGLISH_OVERRIDES = std::to_array({
+	std::make_tuple(ArcdpsExtension::ET_UseCustomColumns, "Show Columns based on map"),
+});
+constexpr std::array KILLPROOF_ME_TRANSLATION_GERMAN_OVERRIDES = std::to_array({
+	std::make_tuple(ArcdpsExtension::ET_UseCustomColumns, u8"Zeige Spalten basierend auf der aktuellen Karte"),
+});
+constexpr std::array KILLPROOF_ME_TRANSLATION_FRENCH_OVERRIDES = std::to_array({
+	std::make_tuple(ArcdpsExtension::ET_UseCustomColumns, u8"Afficher les colonnes en fonction de la carte"),
+});
+constexpr std::array KILLPROOF_ME_TRANSLATION_SPANISH_OVERRIDES = std::to_array({
+	std::make_tuple(ArcdpsExtension::ET_UseCustomColumns, u8"Mostrar columnas basadas en el mapa"),
+});
+
 static_assert(KILLPROOF_ME_TRANSLATION_ENGLISH.size() == magic_enum::enum_count<KillproofMeTranslations>());
 static_assert(KILLPROOF_ME_TRANSLATION_ENGLISH.size() == KILLPROOF_ME_TRANSLATION_GERMAN.size());
 static_assert(KILLPROOF_ME_TRANSLATION_ENGLISH.size() == KILLPROOF_ME_TRANSLATION_FRENCH.size());
@@ -614,4 +627,18 @@ inline void LoadAdditionalTranslations() {
 	localization.Load(GWL_GEM, KILLPROOF_ME_TRANSLATION_GERMAN);
 	localization.Load(GWL_FRE, KILLPROOF_ME_TRANSLATION_FRENCH);
 	localization.Load(GWL_SPA, KILLPROOF_ME_TRANSLATION_SPANISH);
+
+	// overrides
+	for (auto&& [key, value] : KILLPROOF_ME_TRANSLATION_ENGLISH_OVERRIDES) {
+		localization.OverrideTranslation(GWL_ENG, key, value);
+	}
+	for (auto&& [key, value] : KILLPROOF_ME_TRANSLATION_GERMAN_OVERRIDES) {
+		localization.OverrideTranslation(GWL_GEM, key, (const char*) value);
+	}
+	for (auto&& [key, value] : KILLPROOF_ME_TRANSLATION_FRENCH_OVERRIDES) {
+		localization.OverrideTranslation(GWL_FRE, key, (const char*) value);
+	}
+	for (auto&& [key, value] : KILLPROOF_ME_TRANSLATION_SPANISH_OVERRIDES) {
+		localization.OverrideTranslation(GWL_SPA, key, (const char*) value);
+	}
 }
