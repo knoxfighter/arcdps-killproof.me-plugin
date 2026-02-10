@@ -42,20 +42,19 @@ std::optional<std::string>& KillproofUI::getTitle() {
 	return Settings::instance().settings.headerText;
 }
 
-const std::string& KillproofUI::getTitleDefault() {
+std::string_view KillproofUI::getTitleDefault() {
 	return Localization::STranslate(KMT_KpWindowNameDefault);
 }
 
-const std::string& KillproofUI::getWindowID() {
-	static const std::string str = "Killproof.me";
-	return str;
+std::string_view KillproofUI::getWindowID() {
+	return "Killproof.me";
 }
 
 std::optional<std::string>& KillproofUI::getAppearAsInOption() {
 	return Settings::instance().settings.appearAsInOption;
 }
 
-const std::string& KillproofUI::getAppearAsInOptionDefault() {
+std::string_view KillproofUI::getAppearAsInOptionDefault() {
 	return Localization::STranslate(KMT_AppearAsInOptionDefault);
 }
 
@@ -81,18 +80,18 @@ void KillproofUI::DrawContextMenu() {
 
 void KillproofUI::DrawStyleSettingsSubMenu() {
 	Settings& settings = Settings::instance();
-	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowPrivateText).c_str(), &settings.settings.showPrivateAccounts);
-	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowControls).c_str(), &settings.settings.showControls);
-	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowLinkedByDefault).c_str(), &settings.settings.showLinkedByDefault);
-	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowCommander).c_str(), &settings.settings.showCommander);
-	if (ImGui::Checkbox(Localization::STranslate(KMT_ShowLinkedTotals).c_str(), &Settings::instance().settings.showLinkedTotalsOnUser)) {
+	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowPrivateText).data(), &settings.settings.showPrivateAccounts);
+	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowControls).data(), &settings.settings.showControls);
+	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowLinkedByDefault).data(), &settings.settings.showLinkedByDefault);
+	ImGui::Checkbox(Localization::STranslate(KMT_SettingsShowCommander).data(), &settings.settings.showCommander);
+	if (ImGui::Checkbox(Localization::STranslate(KMT_ShowLinkedTotals).data(), &Settings::instance().settings.showLinkedTotalsOnUser)) {
 		// trigger resort when this option is changed
 		mTable->RequestSort();
 	}
 
 	// input for data private
 	ImGui::PushItemWidth(50);
-	ImGui::InputText(Localization::STranslate(KMT_SettingsBlockedText).c_str(), &settings.settings.blockedDataText);
+	ImGui::InputText(Localization::STranslate(KMT_SettingsBlockedText).data(), &settings.settings.blockedDataText);
 	ImGui::PopItemWidth();
 
 	ImGui::Separator();
@@ -120,10 +119,10 @@ void KillproofUI::DrawContent() {
 	 * Unofficial Extras message
 	 */
 	if (!extrasLoaded && !settings.settings.hideExtrasMessage) {
-		ImGui::TextUnformatted(Localization::STranslate(KMT_UnofficialExtrasNotInstalled).c_str());
+		ImGui::TextUnformatted(Localization::STranslate(KMT_UnofficialExtrasNotInstalled).data());
 
 		ImGui::SameLine();
-		if (ImGui::Button(Localization::STranslate(ET_UpdateOpenPage).c_str())) {
+		if (ImGui::Button(Localization::STranslate(ET_UpdateOpenPage).data())) {
 			std::thread([] {
 				ShellExecuteA(nullptr, nullptr, "https://github.com/Krappa322/arcdps_unofficial_extras_releases/releases/latest", nullptr, nullptr, SW_SHOW);
 			}).detach();
@@ -144,9 +143,9 @@ void KillproofUI::DrawContent() {
 			addPlayer = true;
 		}
 		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("%s", Localization::STranslate(KMT_AddPlayerTooltip).c_str());
+			ImGui::SetTooltip("%s", Localization::STranslate(KMT_AddPlayerTooltip).data());
 		ImGui::SameLine();
-		if (ImGui::Button(Localization::STranslate(KMT_AddPlayerText).c_str())) {
+		if (ImGui::Button(Localization::STranslate(KMT_AddPlayerText).data())) {
 			addPlayer = true;
 		}
 
@@ -192,11 +191,11 @@ void KillproofUI::DrawContent() {
 		}
 
 		ImGui::SameLine();
-		if (ImGui::Button(Localization::STranslate(KMT_ClearText).c_str())) {
+		if (ImGui::Button(Localization::STranslate(KMT_ClearText).data())) {
 			trackedPlayers = instancePlayers;
 		}
 		if (ImGui::IsItemHovered()) {
-			ImGui::SetTooltip("%s", Localization::STranslate(KMT_ClearTooltip).c_str());
+			ImGui::SetTooltip("%s", Localization::STranslate(KMT_ClearTooltip).data());
 		}
 
 		// get own player
@@ -206,7 +205,7 @@ void KillproofUI::DrawContent() {
 			if (player.status == LoadingStatus::Loaded) {
 				ImGui::SameLine();
 
-				if (ImGui::Button(Localization::STranslate(KMT_CopyKpIdText).c_str())) {
+				if (ImGui::Button(Localization::STranslate(KMT_CopyKpIdText).data())) {
 					// create string to copy
 					std::string str;
 					str.append("Killproof.me: ");

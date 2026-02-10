@@ -31,7 +31,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 				if constexpr (!Linked) {
 					// #
 					SYSTEMTIME joinedTime = pPlayer.joinedTime;
-					drawTextColumn(open, std::format("{:02d}:{:02d}:{:02d}", joinedTime.wHour, joinedTime.wMinute, joinedTime.wSecond), pPlayer.username, pPlayer.status,
+					drawTextColumn(open, std::format("{:02d}:{:02d}:{:02d}", joinedTime.wHour, joinedTime.wMinute, joinedTime.wSecond).c_str(), pPlayer.username, pPlayer.status,
 					               first && pHasLinked, false);
 					
 				}
@@ -39,29 +39,29 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 			}
 			if (column.UserId == ACCOUNT_NAME_ID) {
 				if (!pTotalText) {
-					drawTextColumn<true>(open, pPlayer.username, pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && accountNameEnabled);
+					drawTextColumn<true>(open, pPlayer.username.c_str(), pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && accountNameEnabled);
 				} else if (accountNameEnabled) {
-					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, false);
+					drawTextColumn(open, Localization::STranslate(KMT_Overall).data(), pPlayer.username, pPlayer.status, first && pHasLinked, false);
 				}
 				continue;
 			}
 			if (column.UserId == CHARACTER_NAME_ID) {
 				if (!pTotalText) {
-					drawTextColumn<true>(open, pPlayer.characterName, pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && !accountNameEnabled);
+					drawTextColumn<true>(open, pPlayer.characterName.c_str(), pPlayer.username, pPlayer.status, first && pHasLinked, pPlayer.commander && !accountNameEnabled);
 				} else if (!accountNameEnabled) {
-					drawTextColumn(open, Localization::STranslate(KMT_Overall), pPlayer.username, pPlayer.status, first && pHasLinked, false);
+					drawTextColumn(open, Localization::STranslate(KMT_Overall).data(), pPlayer.username, pPlayer.status, first && pHasLinked, false);
 				}
 				continue;
 			}
 
 			if (column.UserId == KILLPROOF_ID_ID) {
-				drawTextColumn<true>(open, pPlayer.killproofId, pPlayer.username, pPlayer.status, first && pHasLinked, false);
+				drawTextColumn<true>(open, pPlayer.killproofId.c_str(), pPlayer.username, pPlayer.status, first && pHasLinked, false);
 				continue;
 			}
 
 			if (column.UserId == SUBGROUP_ID) {
 				// subgroups are zero based and ui is one based
-				drawTextColumn(open, std::to_string(pPlayer.subgroup + 1), pPlayer.username, pPlayer.status, first && pHasLinked, false);
+				drawTextColumn(open, std::to_string(pPlayer.subgroup + 1).c_str(), pPlayer.username, pPlayer.status, first && pHasLinked, false);
 				continue;
 			}
 
@@ -73,9 +73,9 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 				if (pPlayer.status == LoadingStatus::LoadingById || pPlayer.status == LoadingStatus::LoadingByChar) {
 					SpinnerAligned("loadingSpinner", ImGui::GetTextLineHeight() / 4.f, 1.f, ImGui::GetColorU32(ImGuiCol_Text));
 				} else if (!totalAmount.has_value() || (pPlayer.status != LoadingStatus::Loaded && pPlayer.status != LoadingStatus::LoadedByLinked)) {
-					drawTextColumn<false, true>(open, Settings::instance().settings.blockedDataText, pPlayer.username, pPlayer.status, first && pHasLinked, false);
+					drawTextColumn<false, true>(open, Settings::instance().settings.blockedDataText.c_str(), pPlayer.username, pPlayer.status, first && pHasLinked, false);
 				} else {
-					drawTextColumn<false, true>(open, std::to_string(totalAmount.value()), pPlayer.username, pPlayer.status, first && pHasLinked, false);
+					drawTextColumn<false, true>(open, std::to_string(totalAmount.value()).c_str(), pPlayer.username, pPlayer.status, first && pHasLinked, false);
 
 					if (IsCurrentColumnHovered()) {
 						ImGui::BeginTooltip();
@@ -98,7 +98,7 @@ bool KillproofUITable::drawRow(TableColumnIdx pFirstColumnIndex, const Player& p
 }
 
 template<bool OpenBrowser, bool AlignmentActive>
-void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool
+void KillproofUITable::drawTextColumn(bool& pOpen, const char* pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool
                                       pIsCommander) {
 	if (pTreeNode) {
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
@@ -108,16 +108,12 @@ void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, con
 			treeNodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 		}
 
-		std::string actualText(pText);
-		actualText.append("###");
-		actualText.append(pUsername);
-
 		if (pIsCommander && Settings::instance().settings.showCommander) {
 			float size = ImGui::GetFontSize();
 			ImGui::Image(draw_texture(KillproofIcons::Commander_White), ImVec2(size, size));
 			ImGui::SameLine();
 		}
-		pOpen = ImGuiEx::TreeNodeEx(actualText.c_str(), treeNodeFlags, nullptr);
+		pOpen = ImGuiEx::TreeNodeEx(std::format("{}###{}", pText, pUsername).c_str(), treeNodeFlags, nullptr);
 		ImGui::PopStyleVar();
 	} else {
 		if (pIsCommander && Settings::instance().settings.showCommander) {
@@ -128,7 +124,7 @@ void KillproofUITable::drawTextColumn(bool& pOpen, const std::string& pText, con
 		if constexpr (AlignmentActive) {
 			AlignedTextColumn(pText);
 		} else {
-			ImGui::TextUnformatted(pText.c_str());
+			ImGui::TextUnformatted(pText);
 		}
 
 		if constexpr (OpenBrowser) {
@@ -308,10 +304,10 @@ bool& KillproofUITable::getHighlightHoveredRows() {
 }
 
 const char* KillproofUITable::getCategoryName(const std::string& pCat) {
-	if (pCat == "1") return Localization::STranslate(KMT_Raids).c_str();
-	if (pCat == "2") return Localization::STranslate(KMT_Fractals).c_str();
-	if (pCat == "3") return Localization::STranslate(KMT_Strikes).c_str();
-	if (pCat == "4") return Localization::STranslate(KMT_Misc).c_str();
+	if (pCat == "1") return Localization::STranslate(KMT_Raids).data();
+	if (pCat == "2") return Localization::STranslate(KMT_Fractals).data();
+	if (pCat == "3") return Localization::STranslate(KMT_Strikes).data();
+	if (pCat == "4") return Localization::STranslate(KMT_Misc).data();
 	if (pCat == "1.1") return "W1";
 	if (pCat == "1.2") return "W2";
 	if (pCat == "1.3") return "W3";

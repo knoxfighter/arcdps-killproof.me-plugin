@@ -7,16 +7,17 @@
 #include "ArcdpsExtension/ExtensionTranslations.h"
 #include "ArcdpsExtension/Localization.h"
 
-template<size_t A, size_t B> struct TAssertEquality {
-  static_assert(A==B, "Not equal");
-  static constexpr bool _cResult = (A==B);
-};
+// template<size_t A, size_t B> struct TAssertEquality {
+//   static_assert(A==B, "Not equal");
+//   static constexpr bool _cResult = (A==B);
+// };
 
 constexpr auto enumMax = magic_enum::detail::max_v<ArcdpsExtension::ExtensionTranslation, magic_enum::as_common<>>;
 
-static constexpr bool _cIsEqual = 
-  TAssertEquality<enumMax, 47>::_cResult;
-// static_assert(enumMax == 48);
+// static constexpr bool _cIsEqual = 
+  // TAssertEquality<enumMax, 47>::_cResult;
+
+static_assert(enumMax == 49);
 
 enum KillproofMeTranslations {
 	KMT_AccountName = enumMax + 1,

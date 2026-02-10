@@ -35,7 +35,7 @@ static void* draw_texture(KillproofIcons id) {
 // the index is used for the order 
 static const std::vector<MainTableColumn> COLUMN_SETUP {
 	// general stuff
-	{JOIN_TIME_ID, [] {return "#"s;}, []{return nullptr;}, "0", true},
+	{JOIN_TIME_ID, [] {return "#";}, []{return nullptr;}, "0", true},
 	{ACCOUNT_NAME_ID, [] {return Localization::STranslate(KMT_AccountName);}, []{return nullptr;}, "0", true},
 	{CHARACTER_NAME_ID, [] {return Localization::STranslate(KMT_CharacterName);}, []{return nullptr;}, "0", true},
 	{KILLPROOF_ID_ID, [] {return Localization::STranslate(KMT_KillproofId);}, []{return nullptr;}, "0", true},
@@ -304,7 +304,7 @@ private:
 	bool drawRow(TableColumnIdx pFirstColumnIndex, const Player& pPlayer, bool pHasLinked, bool pTotal = false, bool pTotalText = false);
 
 	template<bool OpenBrowser = false, bool AlignmentActive = false>
-	void drawTextColumn(bool& pOpen, const std::string& pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool pIsCommander);
+	void drawTextColumn(bool& pOpen, const char* pText, const std::string& pUsername, const std::atomic<LoadingStatus>& pStatus, bool pTreeNode, bool pIsCommander);
 
 	void openInBrowser(const std::string& username);
 };

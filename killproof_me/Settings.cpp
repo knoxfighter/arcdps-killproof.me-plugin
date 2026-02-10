@@ -13,23 +13,6 @@ Language Settings::GetLanguage() {
 	return static_cast<Language>(settings.language);
 }
 
-std::string to_string(LanguageSetting pLang) {
-	switch (pLang) {
-		case LanguageSetting::English: 
-			return "English";
-		case LanguageSetting::LikeGame: 
-			return "Like ingame";
-		case LanguageSetting::French: 
-			return (const char*)u8"Français";
-		case LanguageSetting::German: 
-			return "Deutsch";
-		case LanguageSetting::Spanish: 
-			return (const char*)u8"Español";
-		// case LanguageSetting::Chinese:
-		// 	return "Chinese";
-	}
-}
-
 void Settings::load() {
 	// according to standard, this constructor is completely thread-safe
 	// read settings from file

@@ -21,17 +21,6 @@ struct SettingsKey : KeyBinds::Key {
 	NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsKey, DeviceType, Code, Modifier)
 };
 
-enum class LanguageSetting {
-	English = 0,
-	LikeGame = 1,
-	French = 2,
-	German = 3,
-	Spanish = 4,
-	// Chinese = 5
-};
-
-std::string to_string(LanguageSetting pLang);
-
 class Settings : public Singleton<Settings> {
 public:
 	struct SettingsObject {

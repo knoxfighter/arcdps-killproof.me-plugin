@@ -84,15 +84,15 @@ enum class Killproof : int {
 	// no final entry anymore, use `magic_enum` to iterate over the enum.
 };
 
-const std::string& toStringShort(Killproof e);
+std::string_view toStringShort(Killproof e);
 
-inline const std::string& to_string_short(Killproof e) {
+inline std::string_view to_string_short(Killproof e) {
 	return toStringShort(e);
 }
 
-const std::string& toStringLong(Killproof e);
+std::string_view toStringLong(Killproof e);
 
-inline const std::string& to_string_long(Killproof e) {
+inline std::string_view to_string_long(Killproof e) {
 	return toStringLong(e);
 }
 

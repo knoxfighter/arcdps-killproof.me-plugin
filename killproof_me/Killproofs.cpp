@@ -6,7 +6,7 @@
 
 using namespace ArcdpsExtension;
 
-const std::string& toStringShort(Killproof e) {
+std::string_view toStringShort(Killproof e) {
 	switch (e) {
 	// case Killproof::li: return Localization::STranslate(KMT_Li_Short);
 	// case Killproof::ld: return Localization::STranslate(KMT_Ld_Short);
@@ -71,7 +71,7 @@ const std::string& toStringShort(Killproof e) {
 	}
 }
 
-const std::string& toStringLong(Killproof e) {
+std::string_view toStringLong(Killproof e) {
 	switch (e) {
 	case Killproof::vg: return Localization::STranslate(KMT_Vg_Long);
 	case Killproof::gorse: return Localization::STranslate(KMT_Gorse_Long);

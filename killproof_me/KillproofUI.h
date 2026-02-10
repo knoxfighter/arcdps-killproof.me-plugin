@@ -30,10 +30,10 @@ protected:
 	SizingPolicy& getSizingPolicy() override;
 	bool& getShowTitleBar() override;
 	std::optional<std::string>& getTitle() override;
-	const std::string& getTitleDefault() override;
-	const std::string& getWindowID() override;
+	std::string_view getTitleDefault() override;
+	std::string_view getWindowID() override;
 	std::optional<std::string>& getAppearAsInOption() override;
-	const std::string& getAppearAsInOptionDefault() override;
+	std::string_view getAppearAsInOptionDefault() override;
 	bool& getShowBackground() override;
 	bool& GetShowScrollbar() override;
 	std::optional<ImVec2>& getPadding() override;
