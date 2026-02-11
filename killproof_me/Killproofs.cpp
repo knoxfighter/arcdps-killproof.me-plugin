@@ -66,6 +66,8 @@ std::string_view toStringShort(Killproof e) {
 	case Killproof::coCM: return Localization::STranslate(KMT_COCM_Short);
 	case Killproof::febe: return Localization::STranslate(KMT_FEBE_Short);
 	case Killproof::febeCM: return Localization::STranslate(KMT_FEBECM_Short);
+	case Killproof::kela: return Localization::STranslate(KMT_Kela_Short);
+
 	case Killproof::bananas: return Localization::STranslate(KMT_Bananas);
 	default: return Localization::STranslate(ET_Unknown);
 	}
@@ -111,6 +113,8 @@ std::string_view toStringLong(Killproof e) {
 	case Killproof::coCM: return Localization::STranslate(KMT_COCM_Long);
 	case Killproof::febe: return Localization::STranslate(KMT_FEBE_Long);
 	case Killproof::febeCM: return Localization::STranslate(KMT_FEBECM_Long);
+	case Killproof::kela: return Localization::STranslate(KMT_Kela_Long);
+
 	case Killproof::bananas: return Localization::STranslate(KMT_Bananas);
 	default: return Localization::STranslate(ET_Unknown);
 	}

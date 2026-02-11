@@ -173,6 +173,8 @@ ID_Decima               PNG                     "icons\\Decima.png"
 
 ID_Ura                  PNG                     "icons\\Ura.png"
 
+ID_Sandcastle           PNG                     "icons\\Sandcastle.png"
+
 #endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 

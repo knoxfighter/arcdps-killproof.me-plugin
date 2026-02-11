@@ -54,7 +54,8 @@ generate_icon_list(
 	Dagda ,
 	Cerus ,
 	Bananas,
-	Commander_White
+	Commander_White,
+	Sandcastle
 );
 
 static_assert(magic_enum::enum_count<KillproofIcons>() == ICON_LIST.size());

@@ -99,7 +99,10 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{Killproof::boneskinnerVial, [] {return to_string_short(Killproof::boneskinnerVial);}, []{ return draw_texture(KillproofIcons::Boneskinner_Vial); }, "3", [] {return to_string_long(Killproof::boneskinnerVial);}, true},
 	
 	// EOD strikes
-	{Killproof::maiTrin, [] {return to_string_short(Killproof::maiTrin);}, []{ return draw_texture(KillproofIcons::Mai_Trin); }, "3", [] {return to_string_long(Killproof::maiTrin);}, false},
+	{Killproof::maiTrin, []
+	{
+		return to_string_short(Killproof::maiTrin);
+	}, []{ return draw_texture(KillproofIcons::Mai_Trin); }, "3", [] {return to_string_long(Killproof::maiTrin);}, false},
 	{Killproof::ankka, [] {return to_string_short(Killproof::ankka);}, []{ return draw_texture(KillproofIcons::Ankka); }, "3", [] {return to_string_long(Killproof::ankka);}, false},
 	{Killproof::ministerLi, [] {return to_string_short(Killproof::ministerLi);}, []{ return draw_texture(KillproofIcons::Minister_Li); }, "3", [] {return to_string_long(Killproof::ministerLi);}, false},
 	{Killproof::harvest, [] {return to_string_short(Killproof::harvest);}, []{ return draw_texture(KillproofIcons::Harvest); }, "3", [] {return to_string_long(Killproof::harvest);}, false},
@@ -113,6 +116,7 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{Killproof::coCM, [] {return to_string_short(Killproof::coCM);}, []{ return draw_texture(KillproofIcons::Dagda); }, "3", [] {return to_string_long(Killproof::coCM);}, false},
 	{Killproof::febe, [] {return to_string_short(Killproof::febe);}, []{ return draw_texture(KillproofIcons::Cerus); }, "3", [] {return to_string_long(Killproof::febe);}, false},
 	{Killproof::febeCM, [] {return to_string_short(Killproof::febeCM);}, []{ return draw_texture(KillproofIcons::Cerus); }, "3", [] {return to_string_long(Killproof::febeCM);}, false},
+	{Killproof::kela, [] {return to_string_short(Killproof::kela);}, []{ return draw_texture(KillproofIcons::Sandcastle); }, "3", []{return to_string_long(Killproof::kela);}, false},
 
 	{Killproof::bananas, [] {return to_string_short(Killproof::bananas);}, []{ return draw_texture(KillproofIcons::Bananas); }, "4", [] {return to_string_long(Killproof::bananas);}, false},
 };
@@ -143,6 +147,7 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 		Killproof::qadim2,
 		Killproof::ura,
 		Killproof::uraCM,
+		Killproof::kela,
 		Killproof::bananas
 	})},
 	// W1

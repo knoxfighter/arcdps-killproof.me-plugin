@@ -77,6 +77,7 @@ enum class Killproof : int {
 	coCM = 45,
 	febe = 46,
 	febeCM = 47,
+	kela = 54,
 
 	// MISC
 	bananas = 41,
@@ -200,14 +201,8 @@ public:
 				case 104439:
 					killproofs[Killproof::ura] += amount;
 					break;
-				case 104399:
-					killproofs[Killproof::greerCM] = amount;
-					break;
-				case 104246:
-					killproofs[Killproof::decimaCM] = amount;
-					break;
-				case 104355:
-					killproofs[Killproof::uraCM] = amount;
+				case 106994:
+					killproofs[Killproof::kela] = amount;
 					break;
 			}
 		} else {
@@ -306,47 +301,76 @@ public:
 				case 93781: 
 					killproofs[Killproof::boneskinnerVial] = amount;
 					break;
-				case 95982: 
-					killproofs[Killproof::ankka] = amount;
-					break;
-				case 96638:
-					killproofs[Killproof::ankkaCM] = amount;
-					break;
-				case 97132:
-					killproofs[Killproof::harvest] = amount;
-					break;
 				case 95638:
-					killproofs[Killproof::maiTrin] = amount;
+				case 107067:
+					killproofs[Killproof::maiTrin] += amount;
 					break;
 				case 97269:
-					killproofs[Killproof::maiTrinCM] = amount;
+				case 106935:
+					killproofs[Killproof::maiTrinCM] += amount;
+					break;
+				case 95982:
+				case 106954:
+					killproofs[Killproof::ankka] += amount;
+					break;
+				case 96638:
+				case 106999:
+					killproofs[Killproof::ankkaCM] += amount;
 					break;
 				case 97451:
-					killproofs[Killproof::ministerLi] = amount;
+				case 107026:
+					killproofs[Killproof::ministerLi] += amount;
 					break;
 				case 96419:
-					killproofs[Killproof::ministerLiCM] = amount;
+				case 107028:
+					killproofs[Killproof::ministerLiCM] += amount;
+					break;
+				case 97132:
+				case 106956:
+					killproofs[Killproof::harvest] += amount;
 					break;
 				case 95986:
-					killproofs[Killproof::harvestCM] = amount;
+				case 106910:
+					killproofs[Killproof::harvestCM] += amount;
 					break;
 				case 99165:
-					killproofs[Killproof::olc] = amount;
+				case 106951:
+					killproofs[Killproof::olc] += amount;
 					break;
 				case 99204:
-					killproofs[Killproof::olcCM] = amount;
+				case 107132:
+					killproofs[Killproof::olcCM] += amount;
 					break;
 				case 100068:
-					killproofs[Killproof::co] = amount;
+				case 107087:
+					killproofs[Killproof::co] += amount;
 					break;
 				case 101172:
-					killproofs[Killproof::coCM] = amount;
+				case 106940:
+					killproofs[Killproof::coCM] += amount;
 					break;
 				case 100858:
-					killproofs[Killproof::febe] = amount;
+				case 107114:
+					killproofs[Killproof::febe] += amount;
 					break;
 				case 101542:
-					killproofs[Killproof::febeCM] = amount;
+				case 107065:
+					killproofs[Killproof::febeCM] += amount;
+					break;
+				case 104399:
+				case 107171:
+					killproofs[Killproof::greerCM] += amount;
+					break;
+				case 104246:
+				case 106934:
+					killproofs[Killproof::decimaCM] += amount;
+					break;
+				case 104355:
+				case 106938:
+					killproofs[Killproof::uraCM] += amount;
+					break;
+				case 107033:
+					killproofs[Killproof::kela] = amount;
 					break;
 				case 12251:
 					killproofs[Killproof::bananas] = amount;
