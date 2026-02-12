@@ -26,6 +26,7 @@ extern std::mutex instancePlayersMutex;
 extern HMODULE self_dll;
 extern std::string selfAccountName;
 extern bool extrasLoaded;
+extern uint32_t currentMap;
 
 void loadAllKillproofs();
 void loadKillproofsSizeChecked(Player& player);

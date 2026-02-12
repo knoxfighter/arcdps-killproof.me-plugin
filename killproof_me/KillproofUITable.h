@@ -131,12 +131,16 @@ constexpr const std::vector<size_t> Convert(const std::vector<Killproof> pVector
 	return res;
 }
 
+constexpr uint32_t AerodromeId = 1155;
+constexpr uint32_t AerodromeIdRaids = -1;
+constexpr uint32_t AerodromeIdStrikes = -2;
+
 // Key is the mapId found in the mumbleLink
 // Value is a vector of columns that should be shown for that map. The Values are the UserIds from the ColumnSetup.
 // TODO: update this when the above vector changes!
 static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetup = {
-	// Aerodrome
-	{1155, Convert({
+	// Aerodrome 
+	{AerodromeIdRaids, Convert({
 		Killproof::liLd,
 		Killproof::sabetha,
 		Killproof::matthias,
@@ -146,9 +150,26 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 		Killproof::qadim,
 		Killproof::qadim2,
 		Killproof::ura,
-		Killproof::uraCM,
-		Killproof::kela,
-		Killproof::bananas
+		Killproof::uraCM
+	})},
+	{AerodromeIdStrikes, Convert({
+		Killproof::liLd,
+		Killproof::boneskinnerVial,
+		Killproof::olc,
+		Killproof::olcCM,
+		Killproof::maiTrin,
+		Killproof::maiTrinCM,
+		Killproof::ankka,
+		Killproof::ankkaCM,
+		Killproof::ministerLi,
+		Killproof::ministerLiCM,
+		Killproof::harvest,
+		Killproof::harvestCM,
+		Killproof::co,
+		Killproof::coCM,
+		Killproof::febe,
+		Killproof::febeCM,
+		Killproof::kela
 	})},
 	// W1
 	{1062, Convert({
@@ -210,11 +231,41 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 		Killproof::decimaCM,
 		Killproof::uraCM
 	})},
+
 	// Eye of the north
 	{1370, Convert({
 		Killproof::liLd,
 		Killproof::boneskinnerVial
 	})},
+	
+	// IBS
+	// Shiverpeak
+	{1332, Convert({
+		Killproof::liLd,
+		Killproof::boneskinnerVial
+	})},
+	// Voice&Claw
+	{1346, Convert({
+		Killproof::liLd,
+		Killproof::boneskinnerVial
+	})},
+	// Jormag
+	{1341, Convert({
+		Killproof::liLd,
+		Killproof::boneskinnerVial
+	})},
+	// Boneskinner
+	{1339, Convert({
+		Killproof::liLd,
+		Killproof::boneskinnerVial
+	})},
+	// Jormag
+	{1359, Convert({
+		Killproof::liLd,
+		Killproof::boneskinnerVial
+	})},
+
+	// Strikes
 	// MaiTrin strike
 	{1432, Convert({
 		Killproof::liLd,
@@ -278,6 +329,128 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 		Killproof::liLd,
 		Killproof::febe,
 		Killproof::febeCM
+	})},
+	// Guardian's Glade
+	{1609, Convert({
+		Killproof::liLd,
+		Killproof::kela,
+	})},
+
+	// Fractals
+	// Lobby
+	{872, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Uncategorized
+	{947, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Snowblind
+	{948, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Swampland
+	{949, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Urban Battlegrounds
+	{950, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Aquatic Ruins
+	{951, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Cliffside
+	{952, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Underground
+	{953, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Volcanic
+	{954, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Molten
+	{955, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Aetherblade
+	{956, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Solid Ocean
+	{958, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Molten Boss
+	{959, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Mai Trin
+	{960, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Chaos
+	{1164, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Nightmare
+	{1177, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Shattered
+	{1205, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Twilight
+	{1267, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Deepstone
+	{1290, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Sirens Reef
+	{1309, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Sunqua Peek
+	{1384, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Lonely Tower
+	{1538, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Frozen
+	{1584, Convert({
+		Killproof::uce,
+		Killproof::ufe,
 	})},
 };
 

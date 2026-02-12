@@ -21,7 +21,8 @@ std::mutex cachedPlayersMutex;
 std::vector<std::string> instancePlayers;
 std::mutex instancePlayersMutex;
 std::string selfAccountName;
-bool extrasLoaded;
+bool extrasLoaded = false;
+uint32_t currentMap = 0;
 
 void loadAllKillproofs() {
 	if (trackedPlayers.size() <= 10 && Settings::instance().settings.showKillproof) {

@@ -136,6 +136,7 @@ enum KillproofMeTranslations {
 	KMT_Fractals,
 	KMT_Strikes,
 	KMT_Misc,
+	KMT_MapBasedStrikes,
 };
 
 constexpr std::array KILLPROOF_ME_TRANSLATION_ENGLISH = std::to_array({
@@ -255,6 +256,7 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_ENGLISH = std::to_array({
 	u8"Fractals", // KMT_Fractals
 	u8"Strikes", // KMT_Strikes
 	u8"Miscellaneous", // KMT_Misc
+	u8"Show Strikes", // KMT_MapBasedStrikes
 });
 
 constexpr std::array KILLPROOF_ME_TRANSLATION_GERMAN = std::to_array({
@@ -374,6 +376,7 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_GERMAN = std::to_array({
 	u8"Fraktale", // KMT_Fractals
 	u8"Angriffsmissionen", // KMT_Strikes
 	u8"Sonstiges", // KMT_Misc
+	u8"Strikes anzeigen", // KMT_MapBasedStrikes
 });
 
 constexpr std::array KILLPROOF_ME_TRANSLATION_FRENCH = std::to_array({
@@ -493,6 +496,7 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_FRENCH = std::to_array({
 	u8"Fractales", // KMT_Fractals
 	u8"Missions d'attaque", // KMT_Strikes
 	u8"Divers", // KMT_Misc
+	u8"Afficher les missions d’attaque", // KMT_MapBasedStrikes
 });
 
 constexpr std::array KILLPROOF_ME_TRANSLATION_SPANISH = std::to_array({
@@ -612,6 +616,7 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_SPANISH = std::to_array({
 	u8"Fractales", // KMT_Fractals
 	u8"Misión de ataque", // KMT_Strikes
 	u8"Varios", // KMT_Misc
+	u8"Mostrar misiones de ataque", // KMT_MapBasedStrikes
 });
 
 constexpr std::array KILLPROOF_ME_TRANSLATION_ENGLISH_OVERRIDES = std::to_array({

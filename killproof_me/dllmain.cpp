@@ -90,12 +90,23 @@ void mod_imgui(uint32_t not_charsel_or_loading, uint32_t hide_if_combat_or_ooc) 
 			if (mapViewOfMumbleFile) {
 				LinkedMem* linkedMem = static_cast<LinkedMem*>(mapViewOfMumbleFile);
 				uint32_t mapId = linkedMem->getMumbleContext()->mapId;
+				currentMap = mapId;
+				auto& ui = KillproofUI::instance();
+
+				// custom setup for aerodrome, based on settings
+				if (mapId == AerodromeId) {
+					if (Settings::instance().settings.showMapBasedStrikes) {
+						mapId = AerodromeIdStrikes;
+					} else {
+						mapId = AerodromeIdRaids;
+					}
+				}
 
 				const auto& setup = mapIdToColumnSetup.find(mapId);
 				if (setup == mapIdToColumnSetup.end()) {
-					KillproofUI::instance().GetTable()->ResetSpecificColumnSetup();
+					ui.GetTable()->ResetSpecificColumnSetup();
 				} else {
-					KillproofUI::instance().GetTable()->SetSpecificColumnSetup(setup->second);
+					ui.GetTable()->SetSpecificColumnSetup(setup->second);
 				}
 			}
 		}

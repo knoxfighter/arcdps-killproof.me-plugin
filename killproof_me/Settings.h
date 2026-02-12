@@ -58,6 +58,7 @@ public:
 		KillproofUITable::TableSettings tableSettings;
 		bool showLinkedTotalsOnUser = false;
 		bool showBasedOnMap = false;
+		bool showMapBasedStrikes = false;
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE_NON_THROWING(SettingsObject, version, windowKey, showPrivateAccounts,
 		                                            showKillproof,
@@ -69,7 +70,8 @@ public:
 		                                            showCommander, cofferValue, hideExtrasMessage, sizingPolicy,
 		                                            headerText, appearAsInOption, showBackground, showScrollbar,
 		                                            windowPadding, maxDisplayed, language, showAlternatingRowBackground,
-		                                            highlightHoveredRows, tableSettings, showLinkedTotalsOnUser, showBasedOnMap)
+		                                            highlightHoveredRows, tableSettings, showLinkedTotalsOnUser, 
+													showBasedOnMap, showMapBasedStrikes)
 	};
 
 	Settings() = default;

@@ -228,6 +228,21 @@ void KillproofUI::DrawContent() {
 				}
 			}
 		}
+
+		if (settings.settings.showBasedOnMap && currentMap == AerodromeId) {
+			auto& val = settings.settings.showMapBasedStrikes;
+			ImGui::SameLine();
+			if (ImGui::Checkbox(Localization::STranslate(KMT_MapBasedStrikes).data(), &val)) {
+				uint32_t mapId = val ? AerodromeIdStrikes : AerodromeIdRaids;
+
+				const auto& setup = mapIdToColumnSetup.find(mapId);
+				if (setup == mapIdToColumnSetup.end()) {
+					mTable->ResetSpecificColumnSetup();
+				} else {
+					mTable->SetSpecificColumnSetup(setup->second);
+				}
+			}
+		}
 	}
 
 	/**
