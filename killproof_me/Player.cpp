@@ -11,6 +11,19 @@
 
 #include <nlohmann/json.hpp>
 
+namespace {
+	static amountVal calculateCofferToToken(Killproof kp, amountVal cofferAmount) {
+		switch (kp) {
+		case Killproof::liLd:
+			return cofferAmount;
+		case Killproof::kela:
+			return cofferAmount * 3;
+		default:
+			return cofferAmount * Settings::instance().settings.cofferValue;
+		}
+	}
+}
+
 void Player::loadKillproofs() {
 	using namespace std::chrono_literals;
 
@@ -45,11 +58,7 @@ std::optional<amountVal> Player::getKpOverall(const Killproof& kp) const {
 	amountVal totalAmount = killproofAmount ? killproofAmount.value() : 0;
 
 	if (cofferAmount) {
-		if (kp == Killproof::liLd) {
-			totalAmount += cofferAmount.value();
-		} else {
-			totalAmount += cofferAmount.value() * Settings::instance().settings.cofferValue;
-		}
+		totalAmount += calculateCofferToToken(kp, cofferAmount.value());
 	}
 	return totalAmount;
 }
@@ -71,11 +80,7 @@ std::optional<amountVal> Player::getKpOverallTotal(const Killproof& kp) const {
 	amountVal totalAmount = killproofAmount ? killproofAmount.value() : 0;
 
 	if (cofferAmount) {
-		if (kp == Killproof::liLd) {
-			totalAmount += cofferAmount.value();
-		} else {
-			totalAmount += cofferAmount.value() * Settings::instance().settings.cofferValue;
-		}
+		totalAmount += calculateCofferToToken(kp, cofferAmount.value());
 	}
 	return totalAmount;
 }
