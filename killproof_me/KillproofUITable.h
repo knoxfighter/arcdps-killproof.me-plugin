@@ -259,7 +259,7 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 		Killproof::liLd,
 		Killproof::boneskinnerVial
 	})},
-	// Jormag
+	// ???
 	{1359, Convert({
 		Killproof::liLd,
 		Killproof::boneskinnerVial
@@ -392,6 +392,11 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 		Killproof::uce,
 		Killproof::ufe,
 	})},
+	// Thaumonova
+	{957, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
 	// Solid Ocean
 	{958, Convert({
 		Killproof::uce,
@@ -439,6 +444,11 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 	})},
 	// Sunqua Peek
 	{1384, Convert({
+		Killproof::uce,
+		Killproof::ufe,
+	})},
+	// Silent Serf
+	{1500, Convert({
 		Killproof::uce,
 		Killproof::ufe,
 	})},
