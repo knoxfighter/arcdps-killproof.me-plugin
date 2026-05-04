@@ -52,11 +52,6 @@ public:
 	// Updating myself stuff
 	static inline std::unique_ptr<ArcdpsExtension::UpdateCheckerBase::UpdateState> UPDATE_STATE = nullptr;
 
-	// arc keyboard modifier
-	static inline DWORD ARC_GLOBAL_MOD1 = 0;
-	static inline DWORD ARC_GLOBAL_MOD2 = 0;
-	static inline DWORD ARC_GLOBAL_MOD_MULTI = 0;
-
 	// Arc export Cache
 	static inline bool ARC_HIDE_ALL = false;
 	static inline bool ARC_PANEL_ALWAYS_DRAW = false;
@@ -66,7 +61,6 @@ public:
 
 	// Arc helper functions
 	static void UpdateArcExports();
-	static bool ModsPressed();
 	static bool CanMoveWindows();
 
 	// other

@@ -137,38 +137,8 @@ UINT mod_wnd(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		auto const io = &ImGui::GetIO();
 
 		switch (uMsg) {
-			case WM_KEYUP:
-			case WM_SYSKEYUP: {
-				const int vkey = (int)wParam;
-				io->KeysDown[vkey] = false;
-				if (vkey == VK_CONTROL) {
-					io->KeyCtrl = false;
-				} else if (vkey == VK_MENU) {
-					io->KeyAlt = false;
-				} else if (vkey == VK_SHIFT) {
-					io->KeyShift = false;
-				}
-				break;
-			}
-			case WM_KEYDOWN:
-			case WM_SYSKEYDOWN: {
-				const int vkey = (int)wParam;
-				if (vkey == VK_CONTROL) {
-					io->KeyCtrl = true;
-				} else if (vkey == VK_MENU) {
-					io->KeyAlt = true;
-				} else if (vkey == VK_SHIFT) {
-					io->KeyShift = true;
-				}
-				io->KeysDown[vkey] = true;
-				break;
-			}
 			case WM_ACTIVATEAPP: {
 				GlobalObjects::UpdateArcExports();
-				if (!wParam) {
-					io->KeysDown[GlobalObjects::ARC_GLOBAL_MOD1] = false;
-					io->KeysDown[GlobalObjects::ARC_GLOBAL_MOD2] = false;
-				}
 				break;
 			}
 			// track current input language
@@ -287,17 +257,7 @@ void mod_combat(cbtevent* ev, ag* src, ag* dst, const char* skillname, uint64_t 
 				}
 			}
 		} else {
-			if (ev->is_statechange == CBTS_TAG) {
-				// some other person is tag now!
-				uintptr_t id = src->id;
-				for (auto& cachedPlayer : cachedPlayers | std::views::values) {
-					if (cachedPlayer.id == id) {
-						cachedPlayer.commander = true;
-					} else {
-						cachedPlayer.commander = false;
-					}
-				}
-			} else if (ev->is_statechange == CBTS_ENTERCOMBAT) {
+			if (ev->is_statechange == CBTS_ENTERCOMBAT) {
 				if (src && src->name) {
 					const auto& player = cachedPlayers.find(src->name);
 					if (player != cachedPlayers.end()) {
@@ -501,12 +461,8 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, ImGuiC
 	ARC_LOG = (e3_func_ptr)GetProcAddress(ARC_DLL, "e8");
 
 	// dx11 not available in older arcdps versions
-	if (dxver == 11) {
-		auto swapChain = static_cast<IDXGISwapChain*>(dxptr);
-		swapChain->GetDevice(__uuidof(d3d11Device), reinterpret_cast<void**>(&d3d11Device));
-	} else {
-		d3d9Device = static_cast<IDirect3DDevice9*>(dxptr);
-	}
+	auto swapChain = static_cast<IDXGISwapChain*>(dxptr);
+	swapChain->GetDevice(__uuidof(d3d11Device), reinterpret_cast<void**>(&d3d11Device));
 
 	// install imgui hooks
 	PositioningComponentImGuiHook::InstallHooks(imguicontext);
