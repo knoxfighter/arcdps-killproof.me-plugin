@@ -105,6 +105,8 @@ enum KillproofMeTranslations {
 	KMT_FEBECM_Long,
 	KMT_Kela_Short,
 	KMT_Kela_Long,
+	KMT_KelaCM_Short,
+	KMT_KelaCM_Long,
 	KMT_Bananas,
 	KMT_KpWindowNameDefault,
 	KMT_AppearAsInOptionDefault,
@@ -225,6 +227,8 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_ENGLISH = std::to_array({
 	u8"Temple of Febe (Cerus) CM", // KMT_FEBECM_Long,
 	u8"Kela", // KMT_Kela_Short,
 	u8"Kela, Seneschal of Waves", // KMT_Kela_Long,
+	u8"Kela CM", // KMT_KelaCM_Short,
+	u8"Kela, Seneschal of Waves CM", // KMT_KelaCM_Long,
 	u8"Bananas", // KMT_Bananas
 	u8"Killproof.me", // KMT_KpWindowNameDefault
 	u8"Killproof.me", // KMT_AppearAsInOptionDefault
@@ -345,6 +349,8 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_GERMAN = std::to_array({
 	u8"Tempel von Febe (Cerus) CM", // KMT_FEBECM_Long,
 	u8"Kela", // KMT_Kela_Short,
 	u8"Kela, Seneschall der Wogen", // KMT_Kela_Long,
+	u8"Kela CM", // KMT_KelaCM_Short,
+	u8"Kela, Seneschall der Wogen CM", // KMT_KelaCM_Long,
 	u8"Bananen", // KMT_Bananas
 	u8"Killproof.me", // KMT_KpWindowNameDefault
 	u8"Killproof.me", // KMT_AppearAsInOptionDefault
@@ -465,6 +471,8 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_FRENCH = std::to_array({
 	u8"Temple de Febe (Cerus) CM", // KMT_FEBECM_Long,
 	u8"Kela", // KMT_Kela_Short,
 	u8"Kela, sénéchal des vagues", // KMT_Kela_Long,
+	u8"Kela CM", // KMT_KelaCM_Short,
+	u8"Kela, sénéchal des vagues CM", // KMT_KelaCM_Long,
 	u8"Bananes", // KMT_Bananas
 	u8"Killproof.me", // KMT_KpWindowNameDefault
 	u8"Killproof.me", // KMT_AppearAsInOptionDefault
@@ -585,6 +593,8 @@ constexpr std::array KILLPROOF_ME_TRANSLATION_SPANISH = std::to_array({
 	u8"Templo de Febe (Cerus) CM", // KMT_FEBECM_Long,
 	u8"Kela", // KMT_Kela_Short,
 	u8"Kela, Senescal de las Olas", // KMT_Kela_Long,
+	u8"Kela CM", // KMT_KelaCM_Short,
+	u8"Kela, Senescal de las Olas CM", // KMT_KelaCM_Long,
 	u8"Plátanos", // KMT_Bananas
 	u8"Killproof.me", // KMT_KpWindowNameDefault
 	u8"Killproof.me", // KMT_AppearAsInOptionDefault
