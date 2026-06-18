@@ -117,6 +117,7 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{Killproof::febe, [] {return to_string_short(Killproof::febe);}, []{ return draw_texture(KillproofIcons::Cerus); }, "3", [] {return to_string_long(Killproof::febe);}, false},
 	{Killproof::febeCM, [] {return to_string_short(Killproof::febeCM);}, []{ return draw_texture(KillproofIcons::Cerus); }, "3", [] {return to_string_long(Killproof::febeCM);}, false},
 	{Killproof::kela, [] {return to_string_short(Killproof::kela);}, []{ return draw_texture(KillproofIcons::Sandcastle); }, "3", []{return to_string_long(Killproof::kela);}, false},
+	{Killproof::kelaCM, [] {return to_string_short(Killproof::kelaCM);}, []{ return draw_texture(KillproofIcons::Sandcastle); }, "3", []{return to_string_long(Killproof::kelaCM);}, false},
 
 	{Killproof::bananas, [] {return to_string_short(Killproof::bananas);}, []{ return draw_texture(KillproofIcons::Bananas); }, "4", [] {return to_string_long(Killproof::bananas);}, false},
 };
@@ -169,7 +170,8 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 		Killproof::coCM,
 		Killproof::febe,
 		Killproof::febeCM,
-		Killproof::kela
+		Killproof::kela,
+		Killproof::kelaCM
 	})},
 	// W1
 	{1062, Convert({
@@ -334,6 +336,7 @@ static const std::unordered_map<uint32_t, std::vector<size_t>> mapIdToColumnSetu
 	{1609, Convert({
 		Killproof::liLd,
 		Killproof::kela,
+		Killproof::kelaCM,
 	})},
 
 	// Fractals
