@@ -2,7 +2,7 @@
 
 #include "Lang.h"
 
-#include "ArcdpsExtension/Localization.h"
+#include <ArcdpsExtension/Localization.h>
 
 using namespace ArcdpsExtension;
 

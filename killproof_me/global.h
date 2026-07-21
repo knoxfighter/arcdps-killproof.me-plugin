@@ -1,15 +1,15 @@
 #pragma once
 
+#include "Killproofs.h"
+
+#include <d3d9.h>
 #include <map>
 #include <mutex>
 #include <vector>
-#include <d3d9.h>
-
-#include "Killproofs.h"
-
-#include "ArcdpsExtension/UpdateChecker.h"
-#include "ArcdpsExtension/UpdateCheckerBase.h"
-#include "ArcdpsUnofficialExtras/Definitions.h"
+#include <ArcdpsExtension/Localization.h>
+#include <ArcdpsExtension/UpdateChecker.h>
+#include <ArcdpsExtension/UpdateCheckerBase.h>
+#include <ArcdpsUnofficialExtras/Definitions.h>
 
 constexpr auto KILLPROOF_ME_PLUGIN_NAME = "killproof.me";
 
@@ -65,6 +65,6 @@ public:
 
 	// other
 	// TODO: fill with actual values and keep them up to date
-	static inline Language CURRENT_LANGUAGE = Language::English;
+	static inline std::string CURRENT_LANGUAGE = ArcdpsExtension::Lang::English;
 	static inline HKL CURRENT_HKL;
 };

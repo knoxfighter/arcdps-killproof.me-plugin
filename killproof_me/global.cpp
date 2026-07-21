@@ -1,17 +1,15 @@
 #include "global.h"
 
-#include <map>
-#include <mutex>
-#include <vector>
-
-#include "ArcdpsExtension/IconLoader.h"
 #include "KillproofUI.h"
 #include "Player.h"
 #include "resource.h"
 #include "Settings.h"
 
-#include "ArcdpsExtension/arcdps_structs.h"
-
+#include <map>
+#include <mutex>
+#include <vector>
+#include <ArcdpsExtension/arcdps_structs.h>
+#include <ArcdpsExtension/IconLoader.h>
 #include <ArcdpsExtension/KeyBindHandler.h>
 #include <imgui/imgui.h>
 

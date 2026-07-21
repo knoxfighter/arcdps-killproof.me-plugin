@@ -8,10 +8,6 @@ HKL KillproofUIKeyBindComponent::getCurrentHKL() {
 	return GlobalObjects::CURRENT_HKL;
 }
 
-gwlanguage KillproofUIKeyBindComponent::getCurrentLanguage() {
-	return static_cast<gwlanguage>(Settings::instance().GetLanguage());
-}
-
 bool KillproofUIKeyBindComponent::getKeyBindSwitch() {
 	GlobalObjects::UpdateArcExports();
 	return !GlobalObjects::ARC_HIDE_ALL;

@@ -4,11 +4,9 @@
 #include "KillproofUI.h"
 #include "Settings.h"
 
-#include "ArcdpsExtension/arcdps_structs.h"
-
 #include <set>
+#include <ArcdpsExtension/arcdps_structs.h>
 #include <ArcdpsExtension/SimpleNetworkStack.h>
-
 #include <nlohmann/json.hpp>
 
 namespace {

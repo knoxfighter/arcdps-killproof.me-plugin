@@ -3,22 +3,21 @@
 #include "Settings.h"
 #include "SettingsUI.h"
 
-#include "ArcdpsExtension/arcdps_structs.h"
-#include "ArcdpsExtension/KeyBindHandler.h"
-#include "ArcdpsExtension/KeyInput.h"
-#include "ArcdpsExtension/MumbleLink.h"
-#include "ArcdpsExtension/UpdateChecker.h"
-#include "ArcdpsExtension/Windows/PositioningComponent.h"
-#include "ArcdpsExtension/Windows/Demo/DemoTableWindow.h"
-#include "ArcdpsExtension/Windows/Demo/DemoWindow.h"
-#include "ArcdpsExtension/SimpleNetworkStack.h"
-
 #include <d3d11.h>
 #include <d3d9.h>
 #include <format>
-#include <imgui/imgui.h>
 #include <mutex>
 #include <Windows.h>
+#include <ArcdpsExtension/arcdps_structs.h>
+#include <ArcdpsExtension/KeyBindHandler.h>
+#include <ArcdpsExtension/KeyInput.h>
+#include <ArcdpsExtension/MumbleLink.h>
+#include <ArcdpsExtension/SimpleNetworkStack.h>
+#include <ArcdpsExtension/UpdateChecker.h>
+#include <ArcdpsExtension/Windows/PositioningComponent.h>
+#include <ArcdpsExtension/Windows/Demo/DemoTableWindow.h>
+#include <ArcdpsExtension/Windows/Demo/DemoWindow.h>
+#include <imgui/imgui.h>
 
 namespace {
 	HMODULE SELF_DLL;
@@ -402,7 +401,7 @@ arcdps_exports* mod_init() {
 
 		LoadAdditionalTranslations();
 		// load current language
-		Localization::instance().ChangeLanguage(static_cast<gwlanguage>(Settings::instance().GetLanguage()));
+		Localization::instance().ChangeLanguage(Settings::instance().GetLanguage());
 
 		// windows init
 #if _DEBUG
@@ -588,10 +587,10 @@ void squad_update_callback(const UserInfo* updatedUsers, size_t updatedUsersCoun
 }
 
 void language_changed_callback(Language pNewLanguage) {
-	GlobalObjects::CURRENT_LANGUAGE = pNewLanguage;
+	GlobalObjects::CURRENT_LANGUAGE = Localization::ToLangCode(pNewLanguage);
 
-	if (Settings::instance().settings.language == LanguageSetting::LikeGame) {
-		Localization::SChangeLanguage(static_cast<gwlanguage>(GlobalObjects::CURRENT_LANGUAGE));
+	if (Settings::instance().settings.language2 == ::Lang::LikeGame) {
+		Localization::SChangeLanguage(GlobalObjects::CURRENT_LANGUAGE);
 	}
 }
 

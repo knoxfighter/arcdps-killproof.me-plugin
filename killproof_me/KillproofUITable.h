@@ -7,8 +7,8 @@
 #include "Player.h"
 #include "resource.h"
 
-#include "ArcdpsExtension/IconLoader.h"
-#include "ArcdpsExtension/Windows/MainTable.h"
+#include <ArcdpsExtension/IconLoader.h>
+#include <ArcdpsExtension/Windows/MainTable.h>
 
 using namespace ArcdpsExtension;
 using std::string_literals::operator ""s;

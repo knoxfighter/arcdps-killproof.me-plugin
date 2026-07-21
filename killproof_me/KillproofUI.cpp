@@ -1,21 +1,20 @@
 ﻿#include "KillproofUI.h"
 
 #include "global.h"
-#include "KillproofUIPositioningComponent.h"
 #include "KillproofUIKeyBindComponent.h"
+#include "KillproofUIPositioningComponent.h"
 #include "Lang.h"
 #include "Player.h"
 #include "Settings.h"
 
-#include "ArcdpsExtension/ExtensionTranslations.h"
-#include "ArcdpsExtension/IconLoader.h"
-#include "ArcdpsExtension/imgui_stdlib.h"
-#include "ArcdpsExtension/Localization.h"
-#include "ArcdpsExtension/Widgets.h"
-
 #include <future>
 #include <mutex>
 #include <Windows.h>
+#include <ArcdpsExtension/ExtensionTranslations.h>
+#include <ArcdpsExtension/IconLoader.h>
+#include <ArcdpsExtension/imgui_stdlib.h>
+#include <ArcdpsExtension/Localization.h>
+#include <ArcdpsExtension/Widgets.h>
 
 using std::string_literals::operator ""s;
 

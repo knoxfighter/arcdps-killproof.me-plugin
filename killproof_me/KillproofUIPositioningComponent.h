@@ -2,7 +2,7 @@
 
 #include "Settings.h"
 
-#include "ArcdpsExtension/Windows/PositioningComponent.h"
+#include <ArcdpsExtension/Windows/PositioningComponent.h>
 
 class KillproofUIPositioningComponent final : public PositioningComponent {
 public:

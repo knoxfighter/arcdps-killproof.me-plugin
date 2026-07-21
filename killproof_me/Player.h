@@ -6,7 +6,6 @@
 #include <string>
 #include <Windows.h>
 #include <ArcdpsExtension/SimpleNetworkStack.h>
-
 #include <nlohmann/json.hpp>
 
 enum class LoadingStatus {

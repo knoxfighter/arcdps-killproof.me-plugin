@@ -2,15 +2,20 @@
 
 #include "global.h"
 
-#include "ArcdpsUnofficialExtras/KeyBindHelper.h"
-
+#include <ArcdpsUnofficialExtras/KeyBindHelper.h>
 #include <fstream>
 
-Language Settings::GetLanguage() {
-	if (settings.language == LanguageSetting::LikeGame) {
+const std::string& Settings::GetLanguage() {
+	if (settings.language2 == ::Lang::LikeGame) {
 		return GlobalObjects::CURRENT_LANGUAGE;
 	}
-	return static_cast<Language>(settings.language);
+	return settings.language2;
+}
+
+void Settings::SetLanguage(std::string language) {
+	settings.language2 = std::move(language);
+
+	Localization::SChangeLanguage(GetLanguage());
 }
 
 void Settings::load() {
@@ -87,11 +92,7 @@ void Settings::readFromFile() {
 						UINT vscKey = MapVirtualKeyA(oldKey, MAPVK_VK_TO_VSC);
 						const auto& keyCode = KeyBinds::MsvcScanCodeToKeyCode(vscKey);
 						if (keyCode) {
-							settings.windowKey = {
-								KeyBinds::DeviceType::Keyboard,
-								static_cast<int32_t>(keyCode.value()),
-								0
-							};
+							settings.windowKey = SettingsKey(keyCode.value());
 						}
 					}
 				}
@@ -99,9 +100,28 @@ void Settings::readFromFile() {
 				settings.version = 1;
 			}
 
+			if (settings.version == 1) {
+				if (json.contains("language")) {
+					const auto& languageField = json.at("language");
+					if (languageField.is_number()) {
+						auto languageNum = languageField.get<uint8_t>();
+						switch (languageNum) {
+						case 1:
+							settings.language2 = ::Lang::LikeGame;
+						default:
+							settings.language2 = ArcdpsExtension::Localization::ToLangCode(static_cast<Language>(languageNum));
+						}
+					}
+				}
+
+				settings.version = 2;
+			}
+
 			// TODO: do further migrations here
 		}
 	} catch (const std::exception& e) {
 		// some exception was thrown, all settings are reset!
+		ARC_LOG(std::format("Error when reading settings: {}", e.what()).c_str());
+		ARC_LOG_FILE(std::format("Error when reading settings: {}", e.what()).c_str());
 	}
 }

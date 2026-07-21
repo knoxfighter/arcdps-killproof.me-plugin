@@ -2,22 +2,19 @@
 
 #include "KillproofUITable.h"
 
-#include "ArcdpsExtension/arcdps_structs.h"
-#include "ArcdpsExtension/nlohmannJsonExtension.h"
-#include "ArcdpsExtension/Singleton.h"
-
-#include <imgui/imgui.h>
-
-#include "ArcdpsUnofficialExtras/Definitions.h"
-#include "ArcdpsUnofficialExtras/KeyBindStructs.h"
-
 #include <map>
-
+#include <ArcdpsExtension/arcdps_structs.h>
+#include <ArcdpsExtension/nlohmannJsonExtension.h>
+#include <ArcdpsExtension/Singleton.h>
+#include <ArcdpsUnofficialExtras/Definitions.h>
+#include <ArcdpsUnofficialExtras/KeyBindStructs.h>
+#include <imgui/imgui.h>
 #include <nlohmann/json.hpp>
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_NON_THROWING(ImVec2, x, y)
 
 struct SettingsKey : KeyBinds::Key {
+	using Key::Key;
 	NLOHMANN_DEFINE_TYPE_INTRUSIVE(SettingsKey, DeviceType, Code, Modifier)
 };
 
@@ -25,7 +22,7 @@ class Settings : public Singleton<Settings> {
 public:
 	struct SettingsObject {
 		uint32_t version = 1;
-		SettingsKey windowKey{KeyBinds::DeviceType::Keyboard, static_cast<int32_t>(KeyBinds::KeyCode::K), 0};
+		SettingsKey windowKey{KeyBinds::KeyCode::K};
 		bool showPrivateAccounts = true;
 		bool showKillproof = false;
 		std::string blockedDataText = "-";
@@ -52,7 +49,7 @@ public:
 		std::optional<std::string> appearAsInOption;
 		std::optional<ImVec2> windowPadding;
 		int maxDisplayed = 0;
-		LanguageSetting language = LanguageSetting::LikeGame;
+		std::string language2 = ArcdpsExtension::Lang::English;
 		bool showAlternatingRowBackground = true;
 		bool highlightHoveredRows = true;
 		KillproofUITable::TableSettings tableSettings;
@@ -69,7 +66,7 @@ public:
 		                                            selfPanelCornerPosition, fromWindowID,
 		                                            showCommander, cofferValue, hideExtrasMessage, sizingPolicy,
 		                                            headerText, appearAsInOption, showBackground, showScrollbar,
-		                                            windowPadding, maxDisplayed, language, showAlternatingRowBackground,
+		                                            windowPadding, maxDisplayed, language2, showAlternatingRowBackground,
 		                                            highlightHoveredRows, tableSettings, showLinkedTotalsOnUser, 
 													showBasedOnMap, showMapBasedStrikes)
 	};
@@ -81,7 +78,8 @@ public:
 
 	SettingsObject settings;
 
-	[[nodiscard]] Language GetLanguage();
+	[[nodiscard]] const std::string& GetLanguage();
+	void SetLanguage(std::string language);
 
 	// delete copy/move
 	Settings(const Settings& other) = delete;
