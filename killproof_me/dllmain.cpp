@@ -376,6 +376,8 @@ arcdps_exports* mod_init() {
 		IconLoader::init(SELF_DLL, d3d11Device);
 		RegisterIcons();
 
+		LoadTranslationFiles();
+
 		// Clear old Files
 		updateChecker.ClearFiles(SELF_DLL);
 
@@ -471,6 +473,10 @@ extern "C" __declspec(dllexport) void* get_init_addr(char* arcversionstr, ImGuiC
 
 /* release mod -- return ignored */
 uintptr_t mod_release() {
+#ifdef _DEBUG
+	SaveTranslationFile();
+#endif
+
 	// finish and clear updateState
 	if (GlobalObjects::UPDATE_STATE) {
 		GlobalObjects::UPDATE_STATE->FinishPendingTasks();

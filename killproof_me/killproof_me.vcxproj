@@ -154,6 +154,7 @@
     <ClCompile Include="KillproofUI.cpp" />
     <ClCompile Include="KillproofUIKeyBindComponent.cpp" />
     <ClCompile Include="KillproofUITable.cpp" />
+    <ClCompile Include="Lang.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsUI.cpp" />

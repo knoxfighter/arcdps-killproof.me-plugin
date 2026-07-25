@@ -38,8 +38,18 @@ The killproof.me website will be opened, when you click on the accountname or on
 ![Ingame screenshot](screenshot.png)
 
 ## Translations
-The plugin is translated to English, French, German and Spanish. Translations, except english are only roughly, so please report any problems with them.
-There is no chinese translation yet, if you want to add one, go ahead.
+The plugin is translated to English, French, German and Spanish. French and Spanish Translations are only roughly, so please report any problems with them.
+
+To make a change or correction to one of the translations available in Boon Table, the files containing the text are as follows:
+* [Lang.cpp](killproof_me/Lang.cpp)
+* [ExtensionTranslations.h](https://github.com/Zinn-o-Matics/arcdps-extension/blob/main/ExtensionTranslations.h)
+* [UETranslations.h](https://github.com/Zinn-o-Matics/arcdps-extension/blob/main/UETranslations.h)
+
+It is also possible to add translations with files. If you want to add a translation, create a file in the format `arcdps_killproof_lang_<langCode>.ini` and place it into `addons/arcdps/`.
+The langCode is used as ID and also used in the save file to preserve the selected language.
+In the settings, the translation key `ET_LangageName` is used to display the name.
+The english translation is available as a template [`arcdps_killproof_lang_en.ini`](arcdps_killproof_lang_en.ini).
+Comments start with `;` and if a translation is missing, it falls back to english.
 
 ## Development
 
@@ -61,16 +71,18 @@ To change the default output directory, use a `Directory.Build.props` file. An e
 This project is licensed with the MIT License.
 
 ### Dear ImGui
-[Dear ImGui](https://github.com/ocornut/imgui) is also licensed with the MIT License and included as git submodule to this project. Used is a fork of it that adds a visual studio project.
+[Dear ImGui](https://github.com/ocornut/imgui) licensed with the MIT License.
 
 ### json
-[json](https://github.com/nlohmann/json) is a json library created by nlohmann and licensed with the MIT License. It is included with vcpkg.
+[json](https://github.com/nlohmann/json) licensed with the MIT License.
 
 ### magic_enum
-[magic_enum](https://github.com/Neargye/magic_enum) is licensed with the MIT License. It is included with vcpkg.
+[magic_enum](https://github.com/Neargye/magic_enum) is licensed with the MIT License.
 
 ### arcdps-extension
 [arcdps-extension](https://github.com/knoxfighter/arcdps-extension/) is licensed with the MIT License. Also developed by myself.
 
 ### arcdps-unofficial-extras
 [arcdps_unofficial_extras_releases](https://github.com/Krappa322/arcdps_unofficial_extras_releases) is a closed source addon that this addon can use. The public API included is licensed with the MIT License. Also partially developed by myself.
+
+

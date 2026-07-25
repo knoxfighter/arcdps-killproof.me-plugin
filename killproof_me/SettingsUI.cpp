@@ -20,11 +20,11 @@ void SettingsUI::Draw() {
 	auto langLabelPreview = settings.settings.language2 == ::Lang::LikeGame ? localization.Translate(ArcdpsExtension::ET_LikeInGame) : localization.Translate(settings.settings.language2, ArcdpsExtension::ET_LanguageName);
 	if (ImGui::BeginCombo(langLabel.c_str(), langLabelPreview.data())) {
 		for (auto& language : localization.GetLanguages()) {
-			if (ImGui::Selectable(localization.Translate(language, ArcdpsExtension::ET_LanguageName).data(), language == settings.settings.language2)) {
+			if (ImGui::Selectable(std::format("{}##{}", localization.Translate(language, ET_LanguageName), language).c_str(), language == settings.settings.language2)) {
 				settings.SetLanguage(language);
 			}
 		}
-		if (ImGui::Selectable(localization.Translate(ArcdpsExtension::ET_LikeInGame).data())) {
+		if (ImGui::Selectable(std::format("{}##{}", localization.Translate(ArcdpsExtension::ET_LikeInGame), ::Lang::LikeGame).c_str())) {
 			settings.SetLanguage(::Lang::LikeGame);
 		}
 		if (ImGui::IsItemHovered()) {
