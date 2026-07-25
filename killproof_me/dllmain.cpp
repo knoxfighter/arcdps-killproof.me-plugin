@@ -7,7 +7,7 @@
 #include <d3d9.h>
 #include <format>
 #include <mutex>
-#include <Windows.h>
+#include <windows.h>
 #include <ArcdpsExtension/arcdps_structs.h>
 #include <ArcdpsExtension/KeyBindHandler.h>
 #include <ArcdpsExtension/KeyInput.h>

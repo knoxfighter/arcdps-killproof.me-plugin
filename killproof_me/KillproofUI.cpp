@@ -9,7 +9,7 @@
 
 #include <future>
 #include <mutex>
-#include <Windows.h>
+#include <windows.h>
 #include <ArcdpsExtension/ExtensionTranslations.h>
 #include <ArcdpsExtension/IconLoader.h>
 #include <ArcdpsExtension/imgui_stdlib.h>
