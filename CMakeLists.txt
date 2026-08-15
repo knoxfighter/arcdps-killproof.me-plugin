@@ -34,8 +34,8 @@ add_custom_target(VersionInfo ALL
 		-DVERSION_REF_STR=${VERSION_REF_STR}
 		-DINTERNAL_NAME=d3d9_arcdps_killproof_me.dll
 		-DORIGINAL_FILENAME=d3d9_arcdps_killproof_me.dll
-		-DPRODUCT_NAME=Arcdps Killproof.me plugin
-		-DDESCRIPTION=Arcdps Killproof.me plugin
+		"-DPRODUCT_NAME=Arcdps Killproof.me plugin"
+		"-DDESCRIPTION=Arcdps Killproof.me plugin"
 		"-DCOPYRIGHT=Copyright (C) ${CURRENT_YEAR} knoxfighter"
 		-P ${ArcdpsExtension_DIR}/generate-version.cmake
 		BYPRODUCTS ${VERSION_FILE}
