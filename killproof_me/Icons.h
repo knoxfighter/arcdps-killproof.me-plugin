@@ -55,7 +55,8 @@ generate_icon_list(
 	Cerus ,
 	Bananas,
 	Commander_White,
-	Sandcastle
+	Sandcastle,
+	Vloxx
 );
 
 static_assert(magic_enum::enum_count<KillproofIcons>() == ICON_LIST.size());

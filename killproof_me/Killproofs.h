@@ -79,6 +79,8 @@ enum class Killproof : int {
 	febeCM = 47,
 	kela = 54,
 	kelaCM = 55,
+	vloxx = 56,
+	vloxxCM = 57,
 
 	// MISC
 	bananas = 41,
@@ -375,6 +377,12 @@ public:
 					break;
 				case 107608:
 					killproofs[Killproof::kelaCM] = amount;
+					break;
+				case 110231:
+					killproofs[Killproof::vloxx] = amount;
+					break;
+				case 110245:
+					killproofs[Killproof::vloxxCM] = amount;
 					break;
 				case 12251:
 					killproofs[Killproof::bananas] = amount;

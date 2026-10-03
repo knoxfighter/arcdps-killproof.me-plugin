@@ -98,7 +98,7 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	// Strikes
 	{Killproof::boneskinnerVial, [] {return to_string_short(Killproof::boneskinnerVial);}, []{ return draw_texture(KillproofIcons::Boneskinner_Vial); }, "3", [] {return to_string_long(Killproof::boneskinnerVial);}, true},
 	
-	// EOD strikes
+	// Strikes
 	{Killproof::maiTrin, []
 	{
 		return to_string_short(Killproof::maiTrin);
@@ -118,6 +118,8 @@ static const std::vector<MainTableColumn> COLUMN_SETUP {
 	{Killproof::febeCM, [] {return to_string_short(Killproof::febeCM);}, []{ return draw_texture(KillproofIcons::Cerus); }, "3", [] {return to_string_long(Killproof::febeCM);}, false},
 	{Killproof::kela, [] {return to_string_short(Killproof::kela);}, []{ return draw_texture(KillproofIcons::Sandcastle); }, "3", []{return to_string_long(Killproof::kela);}, false},
 	{Killproof::kelaCM, [] {return to_string_short(Killproof::kelaCM);}, []{ return draw_texture(KillproofIcons::Sandcastle); }, "3", []{return to_string_long(Killproof::kelaCM);}, false},
+	{Killproof::vloxx, [] {return to_string_short(Killproof::vloxx);}, []{ return draw_texture(KillproofIcons::Vloxx); }, "3", [] {return to_string_long(Killproof::vloxx);}, false},
+	{Killproof::vloxxCM, [] {return to_string_short(Killproof::vloxxCM);}, []{ return draw_texture(KillproofIcons::Vloxx); }, "3", [] {return to_string_long(Killproof::vloxxCM);}, false},
 
 	{Killproof::bananas, [] {return to_string_short(Killproof::bananas);}, []{ return draw_texture(KillproofIcons::Bananas); }, "4", [] {return to_string_long(Killproof::bananas);}, false},
 };
